@@ -1,0 +1,37 @@
+----------------------------------------------------------------------
+Email from J. Barrow on the locations of some cooked CLAS12 e4nu data
+----------------------------------------------------------------------
+
+Most of my code live here:
+/u/home/jbarrow/e4nu/rgm
+
+You’ll want to source the environment.csh file to get CLAS12 software (like CLAS12ROOT) up and running.
+
+Some of my monitoring codes live here:
+/u/home/jbarrow/e4nu/rgm/Macros
+
+Particularly, you can find some updated ones there, such as:
+e4nu_Comparison_byChannel_2p1GeV.C (most updated)
+e4nu_Comparison_byChannel_4p03GeV.C
+e4nu_Comparison_byChannel_5p98GeV.C
+
+You can run them in a screen session over .hipo files via
+clas12root -b
+
+and then a command like
+.x e4nu_Comparison_byChannel_2p1GeV.C("/volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo",
+"/lustre19/expphy/volatile/clas12/users/jbarrow/Simulation/reconhipo/recon_qe_GENIE_Ar40_2p1GeV_HighlyRad_*_torus0.5_sol-1.0.hipo",
+"Ar40_withIDs_wChi2cuts_wOmegaLT1p2_wHighRad_rgm_2p1GeV",2.07052,1.2)
+
+…feel free to also check through my .root_history if you like.
+
+You can see that most of that the arguments the script takes are ranges of subrun .hipo files using the * flag; most live on /volatile/clas12/rg-m.
+You’ll need to consult with someone like Tyler or Andrew (or, in truth, Justin) to get a full list, as I’ve only really worked with Ar40 and C12 due
+to those being the ones we have GENIE+GEMC simulations for.
+
+The simulated files usually all live in:
+/lustre19/expphy/volatile/clas12/users/jbarrow/Simulation/
+ 
+as you can see from the script run command; there should be several nuclei and several energies there. Note that the simulation files may have a
+systematic shift in their energies, as we exact beam energy (such as 2.07052 GeV) wasn’t known at run time; in principle, these can be corrected
+for in most ways with a  simple shift, but this is a subleading effect.
