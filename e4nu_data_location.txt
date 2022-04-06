@@ -1,3 +1,8 @@
+-----------------
+RGM Spreadsheets
+-----------------
+RGM Run List: https://docs.google.com/spreadsheets/d/1CZq7RdmOe0LnWycOieyigqfoVX9K0NG_MomypDRSCOs/edit#gid=0
+RGM Project Tasks: https://docs.google.com/spreadsheets/d/1181-OGAjxW7evvUnOCuFzNe8WTJNoOr8QM2YPpXgR7M/edit#gid=1579166657
 ----------------------------------------------------------------------
 Email from J. Barrow on the locations of some cooked CLAS12 e4nu data
 ----------------------------------------------------------------------
