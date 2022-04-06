@@ -32,6 +32,9 @@ using namespace clas12;
 using namespace std;
 
 void e4nu_piTransparency(){
+  
+  //hipo file location: /volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo  (for liquid Ar, for example)
+  // It seems a single run number is divided into many .hipo files which must be combined together.
 
   TString inFile_data = "";
   
