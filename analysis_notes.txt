@@ -1,0 +1,77 @@
+===================================
+Hall B CLAS12 (e4nu Collaboration)
+Pion Transparency Analysis Notes
+===================================
+
+=:=:=:=:=:=:=:=:
+April 07, 2022
+=:=:=:=:=:=:=:=:
+
+--------------------
+e4nu data location
+--------------------
+/volatile/clas12/rg-m/  (temporary file location)
+/work/clas12/rg-m/
+
+/lustre19/expphy/volatile/clas12/users/jbarrow/Simulation/  (example simulated files)
+
+The Hall B .hipo files for certain "cooked" runs
+can be located under their respective directories above,
+for each target, for example:
+
+/volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo
+
+the file location above is for Liquid Argon, run 015672, which is broken into many .hipo files
+to make analysis more maneagable. Once can look at a single or few combined .hipo files
+for a specific run for analysis tests, code development, debugging, etc.
+
+The "cooked" .hipo files only contain physics information like 4-momentum of particles, etc.
+However, the detector-specific information can also be added (branched) if needed, and ultimately
+written to an output ROOTfile format. 
+
+These .hipo file are a small sample of the data set, and as progress is made by the experts on
+calibrations, alignments, etc., then the files will be updated and put in new production versions.,
+like prod4.0 (which stands for all calibrations completed, as per Justin Esteves)
+
+--------------------------
+starting analysis script
+--------------------------
+
+Justin has put an example analysis script on: /lustre19/expphy/volatile/clas12/users/esteejus/forCarlos/CLAS12SkimmerTree_simple.C
+to be used as a starting point.
+
+The command:
+
+>> clas12root 'CLAS12SkimmerTree_simple.C("/volatile/clas12/rg-m/LAr/prod1.5/dst/recon/015723/rec_clas_015723.evio.00001.hipo","test_carlos.root")'
+
+for example, will convert the hipo file into a ROOTfile for analysis. This example script
+reads a .hipo file as input, add more branches if needed (specifically, detector-related variables, beta TOF, etc.)
+and saves the output as .root file for analysis. Or, the analysis can also be done within the code itself.
+
+** NOTE: It is important to note that, an important variable is chi2pid, as tighter cuts on this
+variable can be made to select particles of interest. It is not sufficient to get a particle pid,
+for example, for pions, as that was based on certain cuts on the beta vs. momentum plot during "cooking"
+stage. The criteria to set a proper chi2pid will be based on the beta vs. momentum plot
+
+
+
+------------------------------
+Rough Draft of Analysis Steps
+------------------------------
+
+1. write analysis script infrastruture for pion transparency using CLAS12SkimmerTree_simple.C as a starting point
+   ( we'll have to think about the relevant variables to look at to extract the pion yield)
+   The reaction of interest is: A(e,e'pi), and transparency can be extracted by dividing yield of nucleus A
+   to yield of deuterium, since deuterium transparency ~ 1, (ideally we would divide by H(e,e'p) yield, but only
+   calibration elastic data was taken for hydrogen.  IMPORTANT: Also develop infrastructure for simulation of the
+   pion yield using GENIE,for comparison.
+
+
+2. Once the infrastructure for the analysis is in place, then start looking at required quantities to extract the yield:
+   -> total beam charge,
+   -> detector inefficiencies,
+   -> additional corrections (e.g. Coulomb, radiative, energy loss, etc.)
+
+
+
+

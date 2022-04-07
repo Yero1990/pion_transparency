@@ -40,3 +40,20 @@ The simulated files usually all live in:
 as you can see from the script run command; there should be several nuclei and several energies there. Note that the simulation files may have a
 systematic shift in their energies, as we exact beam energy (such as 2.07052 GeV) wasn’t known at run time; in principle, these can be corrected
 for in most ways with a  simple shift, but this is a subleading effect.
+
+
+
+=== Meeting w/ Jsutin ===
+
+Safer location for RGM hipo files (volatile can get deleted) 
+work/clas12/rg-m/
+
+command to convert HIPO TO ROOT
+particleTree /volatile/clas12/rg-m/LAr/prod1.5/dst/recon/015723/rec_clas_015723.evio.00001.hipo testCarlos.root $CLAS12ROOT/RunRoot/Ex4_TreeMaker.C
+
+
+command to convert HIPO to ROOT. The .C code can also add new branches (most importantly, chi2pid) into the ROOTfile
+clas12root 'CLAS12SkimmerTree_simple.C("/volatile/clas12/rg-m/LAr/prod1.5/dst/recon/015723/rec_clas_015723.evio.00001.hipo","test_carlos.root")'
+
+location of where the code is located
+/lustre19/expphy/volatile/clas12/users/esteejus/forCarlos
