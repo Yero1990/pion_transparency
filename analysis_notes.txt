@@ -10,8 +10,8 @@ April 07, 2022
 --------------------
 e4nu data location
 --------------------
-/volatile/clas12/rg-m/  (temporary file location)
-/work/clas12/rg-m/
+/volatile/clas12/rg-m/  (temporary file location, raw data files get removed if quota exceeded)
+/work/clas12/rg-m/      (permanent location for raw data files)
 
 /lustre19/expphy/volatile/clas12/users/jbarrow/Simulation/  (example simulated files)
 
