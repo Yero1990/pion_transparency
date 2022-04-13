@@ -46,6 +46,7 @@ void e4nu_piTransparency(){
   clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
   clas12databases::SetRCDBRootConnection("rcdb.root");
 
+  //LH2 target (we can use to construct W and check.
   TString inFile = "/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.00001.hipo";
 
   // Chain multiple .hipo files
@@ -57,16 +58,20 @@ void e4nu_piTransparency(){
 
   auto& c12 = chain.C12ref();
   auto& rcdbData= config_c12->rcdb()->current();//struct with all relevent rcdb values        
-  auto beam_energy = rcdbData.beam_energy/1000;
-  cout << "Beam energy is " << beam_energy << endl;
-
+  auto Eb = 5.98636; // GeV  | this command does NOT work (it gives 0) : rcdbData.beam_energy/1000;
+  
+  cout << "Beam energy is " << Eb << endl;
+  
   // Load particle database from PDG to get mass
   auto db=TDatabasePDG::Instance();
   double MP = db->GetParticle(2212)->Mass();  
+  double me = db->GetParticle(11)->Mass();
 
-  cout << "particle mass (id=2212): " << MP << endl;
 
+  //Define some useful variables
   int evt_cnt=0;
+  
+
   // Loop over all events
   while(chain.Next())
     {
@@ -76,7 +81,7 @@ void e4nu_piTransparency(){
 
       
       // TESTING / DEBUGGING
-      cout << "beamE = " << rcdbData.beam_energy << endl;
+      //cout << "beamE = " << beam_energy << endl;
 
       auto particles = c12->getDetParticles();
       
@@ -84,17 +89,69 @@ void e4nu_piTransparency(){
       auto electrons = c12->getByID(11);
       auto protons   = c12->getByID(2212);
 
-      cout "particles size: " << particles.size() << endl;
-      cout "electrons size: " << electrons.size() << endl;
-      cout "protons size: "   << protons.size() << endl;
-
-      // loop over pth element in particles array
-      for(auto& p : particles)
-	{
-	  cout << "p-element: " << p << endl;
-	  cout << "particles.size = " << particles.size() << endl;
-	}
       
+      /*
+      double th_e = electrons[0]->getTheta();  //radians
+      
+      double Ef = sqrt( pow(me,2) + pow(electrons[0]->par()->getP(), 2) );
+      double Q2 = 4.*Eb*Ef*pow(sin(th_e/2.), 2);
+      double nu = Eb - Ef;
+      double W = pow(MP,2) + 2*MP*nu - Q2;
+
+      if (electrons.size()==1 && protons.size()==1) {
+	cout << "Ef = " << Ef << endl;
+	cout << "Q2 = " << Q2 << endl;
+	cout << "nu = " << nu << endl;
+	cout << "W = " << W << endl;
+      }       
+      */
+      
+      /*
+      cout << "particles size: " << particles.size() << endl;
+      cout << "electrons size: " << electrons.size() << endl;
+      cout << "protons size: "   << protons.size() << endl;
+
+      cout << "proton mass: " << db->GetParticle(2212)->Mass() << endl;
+      cout << "electron mass: " << db->GetParticle(11)->Mass() << endl;  
+      */
+
+      if (electrons.size()==1 && protons.size()==1){
+	
+	double th_e = electrons[0]->getTheta();  //radians                                                                                                             
+                                                                                                                                                                     
+	double Ef = sqrt( pow(me,2) + pow(electrons[0]->par()->getP(), 2) );                                                                                           
+	double Q2 = 4.*Eb*Ef*pow(sin(th_e/2.), 2);                                                                                                                     
+	double nu = Eb - Ef;                                                                                                                                           
+	double W = pow(MP,2) + 2*MP*nu - Q2;   
+	
+	cout << "Ef = " << Ef << endl;                                                                                                                               
+        cout << "Q2 = " << Q2 << endl;                                                                                                                               
+        cout << "nu = " << nu << endl;                                                                                                                               
+        cout << "W = " << W << endl;   
+
+	cout << "ELECTRONS == 1 ! ! ! ! " << endl;
+	// loop over pth element in particles array
+	for(int i=0;i<particles.size();i++){
+	  
+	  cout << "particle pid --> " << particles[i]->par()->getPid() << endl;	 
+	  cout << "particle time --> " << particles[i]->getTime() << endl;
+	  cout << "particle path --> " <<particles[i]->getPath() << endl;
+	  cout << "particle sector -->"	<< particles[i]->getSector() << endl;
+	  cout << "particle region --> " <<particles[i]->getRegion() << endl;
+	  cout << "particle theta --> " << particles[i]->getTheta() << endl;
+	  cout << "electron theta -->" << electrons[0]->getTheta() << endl;
+	  cout << "particle phi --> " << particles[i]->getPhi() << endl;
+
+	  cout << "px = " << particles[i]->par()->getPx() << endl;
+	  cout << "px_elec = " << electrons[0]->par()->getPx() << endl; 
+	  cout << "px = " << particles[i]->par()->getPy() << endl; 
+	  cout << "px = " << particles[i]->par()->getPz() << endl; 
+	  cout << "p = " << particles[i]->par()->getP() << endl; 
+
+	}
+      }
+      
+
       /* NOTE: particles detected are separated into central detector (CD) and forward detector (FD) ( < 35 deg in-plane)
 	 From Justin Esteeves, currently the CD has much worse resolution and so one should look at events reconstructed from
 	 these detectors separately in order to compare how well reconstruction is done.

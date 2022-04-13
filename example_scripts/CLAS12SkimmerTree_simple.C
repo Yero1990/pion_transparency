@@ -53,7 +53,7 @@ void CLAS12SkimmerTree_simple(TString inFile = "", TString outputFile = "", doub
 
   //initialising clas12writer with path to output file
   clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
-  //clas12databases::SetRCDBRootConnection("rcdb.root");
+  clas12databases::SetRCDBRootConnection("rcdb.root");
 
   clas12root::HipoChain chain;
   chain.Add(inFile);
@@ -71,6 +71,7 @@ void CLAS12SkimmerTree_simple(TString inFile = "", TString outputFile = "", doub
   double mass_p = db->GetParticle(2212)->Mass();
 
   //some particles
+  // Use a TClones array to store info.
   TLorentzVector beam(0,0,beam_energy, beam_energy);
   TLorentzVector target(0,0,0,mD);
   TLorentzVector el(0,0,0,db->GetParticle(11)->Mass());
