@@ -33,9 +33,22 @@ These .hipo file are a small sample of the data set, and as progress is made by 
 calibrations, alignments, etc., then the files will be updated and put in new production versions.,
 like prod4.0 (which stands for all calibrations completed, as per Justin Esteves)
 
---------------------------
-starting analysis script
---------------------------
+------------------------------------------
+example of how to run code from J. Barrow 
+to compare data/simulation
+--------------------------------------------
+J. Barrow monitoring codes live here:
+/u/home/jbarrow/e4nu/rgm/Macros
+
+clas12root -b                                                                                                                                            
+.x e4nu_Comparison_byChannel_2p1GeV.C("/volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo",                                                           
+"/lustre19/expphy/volatile/clas12/users/jbarrow/Simulation/reconhipo/recon_qe_GENIE_Ar40_2p1GeV_HighlyRad_*_torus0.5_sol-1.0.hipo",                                                  
+"Ar40_withIDs_wChi2cuts_wOmegaLT1p2_wHighRad_rgm_2p1GeV",2.07052,1.2)  
+
+
+--------------------------------------
+starting point for my analysis script
+--------------------------------------
 
 Justin has put an example analysis script on: /lustre19/expphy/volatile/clas12/users/esteejus/forCarlos/CLAS12SkimmerTree_simple.C
 to be used as a starting point.
@@ -52,7 +65,6 @@ and saves the output as .root file for analysis. Or, the analysis can also be do
 variable can be made to select particles of interest. It is not sufficient to get a particle pid,
 for example, for pions, as that was based on certain cuts on the beta vs. momentum plot during "cooking"
 stage. The criteria to set a proper chi2pid will be based on the beta vs. momentum plot
-
 
 
 ------------------------------
