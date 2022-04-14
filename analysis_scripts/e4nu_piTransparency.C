@@ -47,7 +47,7 @@ void e4nu_piTransparency(){
   clas12databases::SetRCDBRootConnection("rcdb.root");
 
   //LH2 target (we can use to construct W and check.
-  TString inFile = "/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.00001.hipo";
+  TString inFile = "/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.000*.hipo";
 
   // Chain multiple .hipo files
   clas12root::HipoChain chain;
@@ -130,17 +130,17 @@ void e4nu_piTransparency(){
 	double px_e = electrons[0]->par()->getPx(); 
 	double py_e = electrons[0]->par()->getPy();
 	double pz_e = electrons[0]->par()->getPz(); 
-	double p_e = electrons[0]->par()->getP()
+	double p_e = electrons[0]->par()->getP();
 	// knocked-out protons
 	double px_p = protons[0]->par()->getPx(); 
 	double py_p = protons[0]->par()->getPy();
 	double pz_p = protons[0]->par()->getPz(); 
 
 	// set 4-momenta of particle of interest
-	p4_beam.setXYZM(0., 0., Eb, me);
-	p4_target.setXYZM(0.,0.,0., MP);
-	p4_electron.setXYZM(px_e, py_e, pz_e, me);
-	p4_proton.setXYZM(px_p, py_p, pz_p, MP);		
+	p4_beam.SetXYZM(0., 0., Eb, me);
+	p4_target.SetXYZM(0.,0.,0., MP);
+	p4_electron.SetXYZM(px_e, py_e, pz_e, me);
+	p4_proton.SetXYZM(px_p, py_p, pz_p, MP);		
 	
 	// 4-momentum trasnferred
 	p4_q = p4_beam - p4_electron;
@@ -282,7 +282,7 @@ void e4nu_piTransparency(){
   outROOT->cd();
   
   // Write Histograms 
-  H_the ->Write(e);
+  H_the ->Write();
   H_kf  ->Write(); 
   H_W   ->Write();   
   H_W2  ->Write();  
