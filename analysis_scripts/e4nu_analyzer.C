@@ -7,10 +7,20 @@
   (e4nu Collaboration) 
   
   This code is used for sanity checks 
-  and analysis of Hall B run-group M (RGM) 
-  dataset 
-  
+  and pion transparency analysis of Hall B 
+  run-group M (RGM) dataset taken on 
+  Fall-2021 -> Spring 2022
 
+  The general reaction assumed is: A(e,e'h)X
+  e + A -> e' + h + X
+  e: incident electron
+  A: target nucleus with A nucleons
+  e': scattered electron
+  h: knocked-out hadron(s), where:
+     quasi-elastic (x ~ 1): h is a knocked-out proton (requires proton to carry most of the momentum transferred)
+     inelastic, resonance, or DIS ( x < 1 ): h is a newly produced hadron
+  X: recoil or residual system ("missing particle") reconstructed from momentum conservation
+     of the detected particles
 
 =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:*/
 
@@ -32,59 +42,58 @@
 #include "clas12reader.h"
 #include "clas12writer.h"
 #include "HipoChain.h"
+// include this analyzer header file
+#include "e4nu_analyzer.h"
 
 using namespace clas12;
 using namespace std;
 
-void e4nu_analyzer(){
+//_______________________________________________________________________________
+e4nu_analyzer::e4nu_analyzer(TString hipo_file="", TString tgt="" )
+  : inFile(hipo_file), target(tgt)
+{
   
-  //hipo file location: /volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo  (for liquid Ar, for example)
-  // It seems a single run number is divided into many .hipo files which must be combined together.
-
-  // Record start time
-  auto start = std::chrono::high_resolution_clock::now();
-
-  // output file (to write leaf variables)
-  TFile *outROOT = new TFile("e4nu_test_cyero.root","RECREATE");
-
-  // Define TTree and variables to write to it
-  TTree *tree = new TTree("tree","");
-
-  // Define variables to put in TTree here
-  // (remember, we want all particle types, and be able to make
-  // cuts on particle types, eaach sector, and either the FD or CND)
-
-  //---- DEFINE TTree branches ------
-  // tree->Branch("px",&px,"px/D");
-  //tree->Branch("py",&py,"px/D");
-  //tree->Branch("pz",&pz,"px/D");
-  //tree->Branch("chi2pid",&chi2pid,"chi2pid/D");
-
+  /* hipo file locations:
+     "/volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo"  
+     "/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.0001*.hipo"
+  */
   
-  // load databases (check with Justin where are these located)
+  /*
+    //Record analysis time
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    time_elapsed = diff.count();
+ */
+  
+  // load CLAS12 databases / Chain multiple .hipo files
+  // the user can give multiple .hipo file inputs to be chained,
+  // i.e., path/to/run/*.hipo (all hipo files of a given run)
   clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
   clas12databases::SetRCDBRootConnection("rcdb.root");
 
-  //LH2 target (we can use to construct W and check.
-  TString inFile = "/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.0001*.hipo";
-
-  // Chain multiple .hipo files
   clas12root::HipoChain chain;
   chain.Add(inFile);
   chain.SetReaderTags({0});
+  
   auto config_c12 = chain.GetC12Reader();
   chain.db()->turnOffQADB();
 
   auto& c12 = chain.C12ref();
   auto& rcdbData= config_c12->rcdb()->current();//struct with all relevent rcdb values        
-  auto Eb = 5.98636; // GeV  | this command does NOT work (it gives 0) : rcdbData.beam_energy/1000;
-  
-  cout << "Beam energy is " << Eb << endl;
-  
-  // Load particle database from PDG to get mass
+
+  // load particle database from PDG to get particle mass
   auto db=TDatabasePDG::Instance();
-  double MP = db->GetParticle(2212)->Mass();  
-  double me = db->GetParticle(11)->Mass();
+  
+  MP = db->GetParticle(2212)->Mass();  
+  me = db->GetParticle(11)->Mass();
+  
+  // set output file (to write tree branches)
+  outROOT = new TFile("e4nu_test_outout.root","RECREATE");
+
+
+  
+
 
   //Define 4-momentum particles
   TLorentzVector p4_beam;
@@ -117,7 +126,9 @@ void e4nu_analyzer(){
   //Define event counter
   int evt_cnt=0;
   
-  
+  // get beam energy from database (not working, need to ask)
+  Eb = 5.98636; // GeV  | this command does NOT work (it gives 0) : rcdbData.beam_energy/1000;
+    
   // Loop over all events
   while(chain.Next())
     {
@@ -261,4 +272,53 @@ void e4nu_analyzer(){
   H_MM2 ->Write();
 
   outROOT->Close();
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::~e4nu_analyzer()
+{
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::SetHistBins()
+{
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::CreateHist()
+{
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::CreateTree()
+{
+  // Define TTree and variables to write to it
+  data_tree = new TTree("data_tree","");
+
+  // Define variables to put in TTree here
+  // (remember, we want all particle types, and be able to make
+  // cuts on particle types, eaach sector, and either the FD or CND)
+  
+  
+  // define data TTree branches 
+  data_tree->Branch("px",&px,"px/D");
+  data_tree->Branch("py",&py,"px/D");
+  data_tree->Branch("pz",&pz,"px/D");
+  data_tree->Branch("chi2pid",&chi2pid,"chi2pid/D");
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::EventLoop()
+{
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::WriteHist()
+{
+
 }
