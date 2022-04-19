@@ -49,9 +49,12 @@ using namespace clas12;
 using namespace std;
 
 //_______________________________________________________________________________
-e4nu_analyzer::e4nu_analyzer(TString hipo_file="", TString tgt="" )
-  : inFile(hipo_file), target(tgt)
+e4nu_analyzer::e4nu_analyzer(TString inHIPO="", TString outROOT="", TString tgt="" )
+: ifname(inHIPO), ofname(outROOT), target(tgt)
 {
+
+  
+  cout << "Start e4nu_analyzer::e4nu_analyzer ... " << endl;
   
   /* hipo file locations:
      "/volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo"  
@@ -72,6 +75,7 @@ e4nu_analyzer::e4nu_analyzer(TString hipo_file="", TString tgt="" )
   clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
   clas12databases::SetRCDBRootConnection("rcdb.root");
 
+  // add many hipo files together
   clas12root::HipoChain chain;
   chain.Add(inFile);
   chain.SetReaderTags({0});
@@ -82,54 +86,160 @@ e4nu_analyzer::e4nu_analyzer(TString hipo_file="", TString tgt="" )
   auto& c12 = chain.C12ref();
   auto& rcdbData= config_c12->rcdb()->current();//struct with all relevent rcdb values        
 
+   // get beam energy from database (not working, need to ask)
+  Eb = 5.98636; // GeV  | this command does NOT work (it gives 0) : rcdbData.beam_energy/1000;
+
+  
+  SetParticleMass();
+
+  //Initialize TFile Pointers
+  outROOT = NULL;
+
+  //Initialize TTree Pointers
+  data_tree = NULL;
+  
+  // initialize histogram pointers
+  H_the  =  NULL; 
+  H_kf   =  NULL; 
+  H_W    =  NULL; 
+  H_W2   =  NULL; 
+  H_Q2   =  NULL; 
+  H_xbj  =  NULL; 
+  H_nu   =  NULL; 
+  H_q    =  NULL; 
+  H_qx 	 =  NULL; 
+  H_qy 	 =  NULL; 
+  H_qz 	 =  NULL; 
+  H_thq	 =  NULL; 
+  H_phq	 =  NULL;  
+  H_MM   =  NULL; 
+  H_MM2  =  NULL; 
+
+
+
+
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::~e4nu_analyzer()
+{
+
+    cout << "Start e4nu_analyzer::~e4nu_analyzer ... " << endl;
+
+    // delete TFile Pointers
+    delete outROOT;   outROOT = NULL;
+
+  
+  // delete TTree Pointers
+  delete data_tree; data_tree = NULL;
+  
+  // delete histogram pointers
+  delete H_the ;  H_the  =  NULL; 
+  delete H_kf  ;  H_kf   =  NULL; 
+  delete H_W   ;  H_W    =  NULL; 
+  delete H_W2  ;  H_W2   =  NULL; 
+  delete H_Q2  ;  H_Q2   =  NULL; 
+  delete H_xbj ;  H_xbj  =  NULL; 
+  delete H_nu  ;  H_nu   =  NULL; 
+  delete H_q   ;  H_q    =  NULL; 
+  delete H_qx  ;  H_qx   =  NULL; 
+  delete H_qy  ;  H_qy   =  NULL; 
+  delete H_qz  ;  H_qz   =  NULL; 
+  delete H_thq ;  H_thq  =  NULL; 
+  delete H_phq ;  H_phq  =  NULL; 
+  delete H_MM  ;  H_MM   =  NULL; 
+  delete H_MM2 ;  H_MM2  =  NULL; 
+
+
+
+  
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::SetParticleMass()
+{
+
+  cout << "Start e4nu_analyzer::SetParticleMass() ... " << endl;
+
   // load particle database from PDG to get particle mass
   auto db=TDatabasePDG::Instance();
   
   MP = db->GetParticle(2212)->Mass();  
   me = db->GetParticle(11)->Mass();
   
-  // set output file (to write tree branches)
-  outROOT = new TFile("e4nu_test_outout.root","RECREATE");
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::SetHistBins()
+{
+    cout << "Start e4nu_analyzer::SetHistBins() ... " << endl;
+
+
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::CreateHist()
+{
+  
+  cout << "Start e4nu_analyzer::CreateHist() ... " << endl;
+
+  SetHistBins();
+
+  H_the     = new TH1F("H_the", "Electron Scattering Angle, #theta_{e}", 200, 0.5, 180);	    
+  H_kf      = new TH1F("H_kf",  "Final e^{-} Momentum", 100, 0.5, 6);			    
+  H_W       = new TH1F("H_W",   "Invariant Mass, W", 100, 0.1, 5); 				    
+  H_W2      = new TH1F("H_W2",  "Invariant Mass, W^{2}", 100, -5, 5); 			    
+  H_Q2      = new TH1F("H_Q2",  "4-Momentum Transfer, Q^{2}", 100, 0.1, 5); 		    
+  H_xbj     = new TH1F("H_xbj", "x-Bjorken", 100, 0.2, 2);  				    
+  H_nu      = new TH1F("H_nu",  "Energy Transfer, #nu", 100, 0.2, 6); 			    
+  H_q       = new TH1F("H_q",   "3-Momentum Transfer, |#vec{q}|", 100, 0.2, 6);		    
+  H_qx      = new TH1F("H_qx",  "|#vec{q}_{x}|", 100, 0.2, 6);				    
+  H_qy      = new TH1F("H_qy",  "|#vec{q}_{y}|", 100, 0.2, 6);				    
+  H_qz      = new TH1F("H_qz",  "|#vec{q}_{z}|",                              100,  0.2, 6     );				    
+  H_thq     = new TH1F("H_thq", "In-Plane Angle w.r.t +z(lab), #theta_{q}",   100,  0,   180   );     
+  H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", 100, -180, 180   );       											    
+  H_MM      = new TH1F("H_MM",  "Missing Mass, M_{miss}",                     100, -5,   5     );        		    
+  H_MM2     = new TH1F("H_MM2", "Missing Mass Squared, M^{2}_{miss}",         100, -5,   5     ); 	    
+
 
 
   
+}
 
+//_______________________________________________________________________________
+e4nu_analyzer::CreateTree()
+{
 
-  //Define 4-momentum particles
-  TLorentzVector p4_beam;
-  TLorentzVector p4_target;
-  TLorentzVector p4_electron;
-  TLorentzVector p4_proton;
-  TLorentzVector p4_q; 
-  TLorentzVector p4_recoil; // recoil system 4-momenta (usually, undetected)
+  cout << "Start e4nu_analyzer::CreateTree() ... " << endl;
 
+  // Define TTree and variables to write to it
+  data_tree = new TTree("data_tree","");
 
-  //Define Histograms
-  TH1F *H_the     = new TH1F("H_the", "Electron Scattering Angle, #theta_{e}", 200, 0.5, 180);
-  TH1F *H_kf      = new TH1F("H_kf", "Final e^{-} Momentum", 100, 0.5, 6);
-  TH1F *H_W       = new TH1F("H_W", "Invariant Mass, W", 100, 0.1, 5); 
-  TH1F *H_W2      = new TH1F("H_W2", "Invariant Mass, W^{2}", 100, -5, 5); 
-  TH1F *H_Q2      = new TH1F("H_Q2","4-Momentum Transfer, Q^{2}", 100, 0.1, 5); 
-  TH1F *H_xbj     = new TH1F("H_xbj", "x-Bjorken", 100, 0.2, 2);  
-  TH1F *H_nu      = new TH1F("H_nu","Energy Transfer, #nu", 100, 0.2, 6); 
-  TH1F *H_q       = new TH1F("H_q", "3-Momentum Transfer, |#vec{q}|", 100, 0.2, 6);
-  TH1F *H_qx      = new TH1F("H_qx", "|#vec{q}_{x}|", 100, 0.2, 6);
-  TH1F *H_qy      = new TH1F("H_qy", "|#vec{q}_{y}|", 100, 0.2, 6);
-  TH1F *H_qz      = new TH1F("H_qz", "|#vec{q}_{z}|", 100, 0.2, 6);
-  TH1F *H_thq     = new TH1F("H_thq", "In-Plane Angle w.r.t +z(lab), #theta_{q}", 100, 0, 180); 
-  TH1F *H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", 100, -180, 180);
-  	     
-  TH1F *H_MM      = new TH1F("H_MM","Missing Mass, M_{miss}", 100, -5, 5 );        
-  TH1F *H_MM2     = new TH1F("H_MM2","Missing Mass Squared, M^{2}_{miss}", 100, -5, 5); 
+  // Define variables to put in TTree here
+  // (remember, we want all particle types, and be able to make
+  // cuts on particle types, eaach sector, and either the FD or CND)
+  
+  
+  // define data TTree branches 
+  data_tree->Branch("px",&px,"px/D");
+  data_tree->Branch("py",&py,"px/D");
+  data_tree->Branch("pz",&pz,"px/D");
+  data_tree->Branch("chi2pid",&chi2pid,"chi2pid/D");
 
+}
+
+//_______________________________________________________________________________
+e4nu_analyzer::EventLoop()
+{
+
+  cout << "Start e4nu_analyzer::EventLoop() ... " << endl;
 
   //Define event counter
   int evt_cnt=0;
   
-  // get beam energy from database (not working, need to ask)
-  Eb = 5.98636; // GeV  | this command does NOT work (it gives 0) : rcdbData.beam_energy/1000;
-    
-  // Loop over all events
+ // Loop over all events
   while(chain.Next())
     {
       cout << "===========" << endl;
@@ -206,9 +316,6 @@ e4nu_analyzer::e4nu_analyzer(TString hipo_file="", TString tgt="" )
 	  W = sqrt(W2); // INVARIANT MASS
 	}
 	
-
-
-	
 	
 	// Fill Histograms 
 	H_the ->Fill(th_e);
@@ -252,8 +359,16 @@ e4nu_analyzer::e4nu_analyzer(TString hipo_file="", TString tgt="" )
       // increment event number
       evt_cnt++;
     }
+}
 
+//_______________________________________________________________________________
+e4nu_analyzer::WriteHist()
+{
+  cout << "Start e4nu_analyzer::WriteHist() ... " << endl;
 
+  //Create Output ROOTfile
+  outROOT = new TFile(ofname.Data(), "RECREATE");
+      
   outROOT->cd();
   
   // Write Histograms 
@@ -275,50 +390,13 @@ e4nu_analyzer::e4nu_analyzer(TString hipo_file="", TString tgt="" )
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::~e4nu_analyzer()
+e4nu_analyzer::run_data_analysis()
 {
-
-}
-
-//_______________________________________________________________________________
-e4nu_analyzer::SetHistBins()
-{
-
-}
-
-//_______________________________________________________________________________
-e4nu_analyzer::CreateHist()
-{
-
-}
-
-//_______________________________________________________________________________
-e4nu_analyzer::CreateTree()
-{
-  // Define TTree and variables to write to it
-  data_tree = new TTree("data_tree","");
-
-  // Define variables to put in TTree here
-  // (remember, we want all particle types, and be able to make
-  // cuts on particle types, eaach sector, and either the FD or CND)
   
+ 
+  CreateHist();
+  CreateTree();
+  EventLoop();
+  WriteHist();
   
-  // define data TTree branches 
-  data_tree->Branch("px",&px,"px/D");
-  data_tree->Branch("py",&py,"px/D");
-  data_tree->Branch("pz",&pz,"px/D");
-  data_tree->Branch("chi2pid",&chi2pid,"chi2pid/D");
-
-}
-
-//_______________________________________________________________________________
-e4nu_analyzer::EventLoop()
-{
-
-}
-
-//_______________________________________________________________________________
-e4nu_analyzer::WriteHist()
-{
-
 }

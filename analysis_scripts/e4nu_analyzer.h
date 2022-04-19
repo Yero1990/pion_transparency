@@ -7,7 +7,7 @@ class e4nu_analyzer
  public:
 
   // constructor 
-  e4nu_analyzer(TString hipo_file="", TString tgt="" );
+  e4nu_analyzer(TString inHIPO="", TString outROOT="", TString tgt="" );
 
   // destructor
   ~e4nu_analyzer();
@@ -16,12 +16,14 @@ class e4nu_analyzer
   void run_data_analysis();
 
   // function prototypes
+  void SetParticleMass(); 
   void SetHistBins();
   void CreateHist();
   void CreateTree();
   void EventLoop();
   void WriteHist();
 
+  
  protected:
   
   //Set Constants
@@ -29,26 +31,43 @@ class e4nu_analyzer
   const Double_t dtr = pi / 180.;
 
   // init parms
-  TString inFile, target;
+  TString ifname, ofname, target;
 
-  // declare TFile pointers (reading/writing ROOTfiles)
-  TFile *inROOT;
+  // declare data TFile / ROOTTree pointers
   TFile *outROOT;
-
-  // particle masses variables 
-  Double_t MP, MN, me;
-  Double_t pip, pim, pi0;
-  Double_t MD;
-  
-  // declare histogram binning
-
-  // data-related user-defined variables
   TTree *data_tree;
   Long64_t nentries;
 
-  Double_t Eb; 
+  // declare particle masses
+  Double_t MP;
+  Double_t me;
+  
+  // declare particles 4-momentum 
+  TLorentzVector p4_beam;
+  TLorentzVector p4_target;
+  TLorentzVector p4_electron;
+  TLorentzVector p4_proton;
+  TLorentzVector p4_q; 
+  TLorentzVector p4_recoil; // recoil system 4-momenta (usually, undetected)
 
-  // data tree branch variables
+  
+  //Define Histograms
+  TH1F *H_the;    
+  TH1F *H_kf;     
+  TH1F *H_W;      
+  TH1F *H_W2;     
+  TH1F *H_Q2;     
+  TH1F *H_xbj;    
+  TH1F *H_nu;     
+  TH1F *H_q;      
+  TH1F *H_qx;     
+  TH1F *H_qy;     
+  TH1F *H_qz;     
+  TH1F *H_thq;    
+  TH1F *H_phq;      	     
+  TH1F *H_MM;     
+  TH1F *H_MM2; 
+
   
 };
 
