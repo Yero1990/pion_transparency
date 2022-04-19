@@ -399,7 +399,10 @@ void e4nu_analyzer::WriteHist()
   
   // write histograms objects
   H_the ->Write();
-  H_kf  ->Write(); 
+  H_kf  ->Write();
+  H_kfx  ->Write(); 
+  H_kfy  ->Write(); 
+  H_kfz  ->Write(); 
   H_W   ->Write();   
   H_W2  ->Write();  
   H_Q2  ->Write();  
