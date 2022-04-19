@@ -1,6 +1,7 @@
 #ifndef E4NU_ANALYZER_H
 #define E4NU_ANALUZER_H
 
+
 class e4nu_analyzer
 {
   
