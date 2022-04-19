@@ -209,11 +209,11 @@ void e4nu_analyzer::CreateTree()
   // (remember, we want all particle types, and be able to make
   // cuts on particle types, eaach sector, and either the FD or CND)
   
-  Double_t px, py, pz, chi2pid;
   // define data TTree branches 
   data_tree->Branch("px",&px,"px/D");
   data_tree->Branch("py",&py,"px/D");
   data_tree->Branch("pz",&pz,"px/D");
+  data_tree->Branch("pid",&pid,"pid/I");
   data_tree->Branch("chi2pid",&chi2pid,"chi2pid/D");
 
 }
@@ -257,7 +257,14 @@ void e4nu_analyzer::EventLoop()
 
       for(auto& p : particles)
 	{
-	  // get all the info for every particle ttype here, and fill the tree outside
+	  // get all the info for every particle type here, and fill the tree outside
+
+	  px = p->par()->getPx();
+	  py = p->par()->getPy();
+	  pz = p->par()->getPz();
+	  pid = p->par()->getPid();
+	  chi2pid = p->par()->getChi2Pid();
+	  
 	}
       
       //Fill Tree Here !
@@ -375,7 +382,10 @@ void e4nu_analyzer::WriteHist()
       
   outROOT->cd();
   
-  // Write Histograms 
+  // write leaf branches 
+  data_tree->Write();
+  
+  // write histograms objects
   H_the ->Write();
   H_kf  ->Write(); 
   H_W   ->Write();   

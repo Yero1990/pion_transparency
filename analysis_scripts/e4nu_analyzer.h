@@ -51,8 +51,11 @@ class e4nu_analyzer
   TLorentzVector p4_q; 
   TLorentzVector p4_recoil; // recoil system 4-momenta (usually, undetected)
 
+  // declare branch variables
+  Double_t px, py, pz, chi2pid;
+  Int_t pid;
   
-  //Define Histograms
+  // declare histograms
   TH1F *H_the;    
   TH1F *H_kf;     
   TH1F *H_W;      
