@@ -89,6 +89,9 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   // initialize histogram pointers
   H_the  =  NULL; 
   H_kf   =  NULL; 
+  H_kfx  =  NULL; 
+  H_kfy  =  NULL; 
+  H_kfz  =  NULL; 
   H_W    =  NULL; 
   H_W2   =  NULL; 
   H_Q2   =  NULL; 
@@ -125,6 +128,9 @@ e4nu_analyzer::~e4nu_analyzer()
     // delete histogram pointers
     delete H_the ;  H_the  =  NULL; 
     delete H_kf  ;  H_kf   =  NULL; 
+    delete H_kfx ;  H_kfx   =  NULL; 
+    delete H_kfy ;  H_kfy   =  NULL; 
+    delete H_kfz ;  H_kfz   =  NULL; 
     delete H_W   ;  H_W    =  NULL; 
     delete H_W2  ;  H_W2   =  NULL; 
     delete H_Q2  ;  H_Q2   =  NULL; 
@@ -177,6 +183,9 @@ void e4nu_analyzer::CreateHist()
 
   H_the     = new TH1F("H_the", "Electron Scattering Angle, #theta_{e}", 200, 0.5, 180);	    
   H_kf      = new TH1F("H_kf",  "Final e^{-} Momentum", 100, 0.5, 6);			    
+  H_kfx     = new TH1F("H_kfx","Final e^{-} Momentum (x-comp)", 100, -50, 50);
+  H_kfy     = new TH1F("H_kfy","Final e^{-} Momentum (y-comp)", 100, -50, 50);			    
+  H_kfz     = new TH1F("H_kfz","Final e^{-} Momentum (z-comp)", 100, -50, 50);			    
   H_W       = new TH1F("H_W",   "Invariant Mass, W", 100, 0.1, 5); 				    
   H_W2      = new TH1F("H_W2",  "Invariant Mass, W^{2}", 100, -5, 5); 			    
   H_Q2      = new TH1F("H_Q2",  "4-Momentum Transfer, Q^{2}", 100, 0.1, 5); 		    
@@ -331,6 +340,9 @@ void e4nu_analyzer::EventLoop()
 	// Fill Histograms 
 	H_the ->Fill(th_e);
 	H_kf  ->Fill(p_e); 
+	H_kfx ->Fill(px_e); 
+	H_kfy ->Fill(py_e); 
+	H_kfz ->Fill(pz_e); 
 	H_W   ->Fill(W);   
 	H_W2  ->Fill(W2);  
 	H_Q2  ->Fill(Q2);  

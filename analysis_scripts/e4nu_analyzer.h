@@ -58,6 +58,9 @@ class e4nu_analyzer
   // declare histograms
   TH1F *H_the;    
   TH1F *H_kf;     
+  TH1F *H_kfx;
+  TH1F *H_kfy;
+  TH1F *H_kfz;
   TH1F *H_W;      
   TH1F *H_W2;     
   TH1F *H_Q2;     
