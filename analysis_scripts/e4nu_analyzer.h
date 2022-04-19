@@ -1,5 +1,5 @@
 #ifndef E4NU_ANALYZER_H
-#define E4NU_ANALUZER_H
+#define E4NU_ANALYZER_H
 
 
 class e4nu_analyzer
@@ -8,7 +8,7 @@ class e4nu_analyzer
  public:
 
   // constructor 
-  e4nu_analyzer(TString inHIPO="", TString outROOT="", TString tgt="" );
+  e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", TString tgt="" );
 
   // destructor
   ~e4nu_analyzer();

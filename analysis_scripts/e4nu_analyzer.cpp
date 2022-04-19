@@ -49,8 +49,8 @@ using namespace clas12;
 using namespace std;
 
 //_______________________________________________________________________________
-e4nu_analyzer::e4nu_analyzer(TString inHIPO="", TString outROOT="", TString tgt="" )
-: ifname(inHIPO), ofname(outROOT), target(tgt)
+e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", TString tgt="" )
+: ifname(inHIPO_fname), ofname(outROOT_fname), target(tgt)
 {
 
   
@@ -75,19 +75,7 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO="", TString outROOT="", TString tgt=
   clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
   clas12databases::SetRCDBRootConnection("rcdb.root");
 
-  // add many hipo files together
-  clas12root::HipoChain chain;
-  chain.Add(inFile);
-  chain.SetReaderTags({0});
   
-  auto config_c12 = chain.GetC12Reader();
-  chain.db()->turnOffQADB();
-
-  auto& c12 = chain.C12ref();
-  auto& rcdbData= config_c12->rcdb()->current();//struct with all relevent rcdb values        
-
-   // get beam energy from database (not working, need to ask)
-  Eb = 5.98636; // GeV  | this command does NOT work (it gives 0) : rcdbData.beam_energy/1000;
 
   
   SetParticleMass();
@@ -129,38 +117,38 @@ e4nu_analyzer::~e4nu_analyzer()
 
     // delete TFile Pointers
     delete outROOT;   outROOT = NULL;
+    
+    
+    // delete TTree Pointers
+    delete data_tree; data_tree = NULL;
+    
+    // delete histogram pointers
+    delete H_the ;  H_the  =  NULL; 
+    delete H_kf  ;  H_kf   =  NULL; 
+    delete H_W   ;  H_W    =  NULL; 
+    delete H_W2  ;  H_W2   =  NULL; 
+    delete H_Q2  ;  H_Q2   =  NULL; 
+    delete H_xbj ;  H_xbj  =  NULL; 
+    delete H_nu  ;  H_nu   =  NULL; 
+    delete H_q   ;  H_q    =  NULL; 
+    delete H_qx  ;  H_qx   =  NULL; 
+    delete H_qy  ;  H_qy   =  NULL; 
+    delete H_qz  ;  H_qz   =  NULL; 
+    delete H_thq ;  H_thq  =  NULL; 
+    delete H_phq ;  H_phq  =  NULL; 
+    delete H_MM  ;  H_MM   =  NULL; 
+    delete H_MM2 ;  H_MM2  =  NULL; 
+    
 
-  
-  // delete TTree Pointers
-  delete data_tree; data_tree = NULL;
-  
-  // delete histogram pointers
-  delete H_the ;  H_the  =  NULL; 
-  delete H_kf  ;  H_kf   =  NULL; 
-  delete H_W   ;  H_W    =  NULL; 
-  delete H_W2  ;  H_W2   =  NULL; 
-  delete H_Q2  ;  H_Q2   =  NULL; 
-  delete H_xbj ;  H_xbj  =  NULL; 
-  delete H_nu  ;  H_nu   =  NULL; 
-  delete H_q   ;  H_q    =  NULL; 
-  delete H_qx  ;  H_qx   =  NULL; 
-  delete H_qy  ;  H_qy   =  NULL; 
-  delete H_qz  ;  H_qz   =  NULL; 
-  delete H_thq ;  H_thq  =  NULL; 
-  delete H_phq ;  H_phq  =  NULL; 
-  delete H_MM  ;  H_MM   =  NULL; 
-  delete H_MM2 ;  H_MM2  =  NULL; 
-
-
-
-  
+    
+    
 
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::SetParticleMass()
+void e4nu_analyzer::SetParticleMass()
 {
-
+  
   cout << "Start e4nu_analyzer::SetParticleMass() ... " << endl;
 
   // load particle database from PDG to get particle mass
@@ -172,7 +160,7 @@ e4nu_analyzer::SetParticleMass()
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::SetHistBins()
+void e4nu_analyzer::SetHistBins()
 {
     cout << "Start e4nu_analyzer::SetHistBins() ... " << endl;
 
@@ -180,7 +168,7 @@ e4nu_analyzer::SetHistBins()
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::CreateHist()
+void e4nu_analyzer::CreateHist()
 {
   
   cout << "Start e4nu_analyzer::CreateHist() ... " << endl;
@@ -209,7 +197,7 @@ e4nu_analyzer::CreateHist()
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::CreateTree()
+void e4nu_analyzer::CreateTree()
 {
 
   cout << "Start e4nu_analyzer::CreateTree() ... " << endl;
@@ -231,11 +219,25 @@ e4nu_analyzer::CreateTree()
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::EventLoop()
+void e4nu_analyzer::EventLoop()
 {
 
   cout << "Start e4nu_analyzer::EventLoop() ... " << endl;
 
+  // add many hipo files together
+  clas12root::HipoChain chain;
+  chain.Add(ifname);
+  chain.SetReaderTags({0});
+  
+  auto config_c12 = chain.GetC12Reader();
+  chain.db()->turnOffQADB();
+
+  auto& c12 = chain.C12ref();
+  auto& rcdbData= config_c12->rcdb()->current();//struct with all relevent rcdb values        
+
+   // get beam energy from database (not working, need to ask)
+  Double_t Eb = 5.98636; // GeV  | this command does NOT work (it gives 0) : rcdbData.beam_energy/1000;
+  
   //Define event counter
   int evt_cnt=0;
   
@@ -362,7 +364,7 @@ e4nu_analyzer::EventLoop()
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::WriteHist()
+void e4nu_analyzer::WriteHist()
 {
   cout << "Start e4nu_analyzer::WriteHist() ... " << endl;
 
@@ -390,7 +392,7 @@ e4nu_analyzer::WriteHist()
 }
 
 //_______________________________________________________________________________
-e4nu_analyzer::run_data_analysis()
+void e4nu_analyzer::run_data_analysis()
 {
   
  
