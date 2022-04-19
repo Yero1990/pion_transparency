@@ -263,17 +263,17 @@ void e4nu_analyzer::EventLoop()
 
       // get std::vector array of all final state particles per event
       auto particles = c12->getDetParticles();
-
+      cout << "# of particles: " << particles.size() << endl;
       for(auto& p : particles)
 	{
 	  // get all the info for every particle type here, and fill the tree outside
-
+	 
 	  px = p->par()->getPx();
 	  py = p->par()->getPy();
 	  pz = p->par()->getPz();
 	  pid = p->par()->getPid();
 	  chi2pid = p->par()->getChi2Pid();
-	  
+	  cout << "pid: " << pid << endl;
 	}
       
       //Fill Tree Here !
@@ -287,7 +287,7 @@ void e4nu_analyzer::EventLoop()
 
 
       //select final state particle of interest to analyze
-      if (electrons.size()==1 && protons.size()==1){
+      if (electrons.size()>0){
 
 
 	// --- get momentum components of final state particles ---
