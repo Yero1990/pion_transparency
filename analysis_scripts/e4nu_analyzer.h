@@ -40,8 +40,10 @@ class e4nu_analyzer
   Long64_t nentries;
 
   // declare particle masses
-  Double_t MP;
   Double_t me;
+  Double_t MP;
+  Double_t MN;
+  Double_t MD;
   
   // declare particles 4-momentum 
   TLorentzVector p4_beam;
@@ -54,6 +56,10 @@ class e4nu_analyzer
   // declare branch variables
   Double_t px, py, pz, chi2pid;
   Int_t pid;
+  Int_t e_pid;
+  Int_t p_pid;
+  Int_t pip_pid;
+  Int_t pim_pid;
   
   // declare histograms
   TH1F *H_the;    

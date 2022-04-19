@@ -196,7 +196,7 @@ void e4nu_analyzer::CreateHist()
   H_qy      = new TH1F("H_qy",  "|#vec{q}_{y}|", 100, 0.2, 6);				    
   H_qz      = new TH1F("H_qz",  "|#vec{q}_{z}|",                              100,  0.2, 6     );				    
   H_thq     = new TH1F("H_thq", "In-Plane Angle w.r.t +z(lab), #theta_{q}",   100,  0,   180   );     
-  H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", 100, -180, 180   );       											    
+  H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", 100, -180, 180   );  
   H_MM      = new TH1F("H_MM",  "Missing Mass, M_{miss}",                     100, -5,   5     );        		    
   H_MM2     = new TH1F("H_MM2", "Missing Mass Squared, M^{2}_{miss}",         100, -5,   5     ); 	    
 
@@ -219,10 +219,15 @@ void e4nu_analyzer::CreateTree()
   // cuts on particle types, eaach sector, and either the FD or CND)
   
   // define data TTree branches 
-  data_tree->Branch("px",&px,"px/D");
-  data_tree->Branch("py",&py,"px/D");
-  data_tree->Branch("pz",&pz,"px/D");
-  data_tree->Branch("pid",&pid,"pid/I");
+  data_tree->Branch("px",     &px,    "px/D");
+  data_tree->Branch("py",     &py,    "px/D");
+  data_tree->Branch("pz",     &pz,    "px/D");
+  data_tree->Branch("pid",    &pid,   "pid/I");
+  data_tree->Branch("e_pid",  &e_pid, "e_pid/I");
+  data_tree->Branch("p_pid",  &p_pid,  "p_pid/I");
+  data_tree->Branch("pip_pid",&pip_pid, "pip_pid/I");
+  data_tree->Branch("pim_pid",&pim_pid, "pim_pid/I");
+
   data_tree->Branch("chi2pid",&chi2pid,"chi2pid/D");
 
 }
@@ -267,13 +272,25 @@ void e4nu_analyzer::EventLoop()
       for(auto& p : particles)
 	{
 	  // get all the info for every particle type here, and fill the tree outside
-	 
+
+	  // set defaul values
+	  e_pid   = -10000;
+	  p_pid   = -10000;
+	  pip_pid = -10000;
+	  pim_pid = -10000;
+	  
 	  px = p->par()->getPx();
 	  py = p->par()->getPy();
 	  pz = p->par()->getPz();
 	  pid = p->par()->getPid();
 	  chi2pid = p->par()->getChi2Pid();
 	  cout << "pid: " << pid << endl;
+
+	  if(pid==11)   { e_pid = pid;   }
+	  if(pid==2212) { p_pid = pid;   }
+	  if(pid==211)  { pip_pid = pid; }
+	  if(pid==-211) { pim_pid = pid; }
+
 	}
       
       //Fill Tree Here !
@@ -287,7 +304,7 @@ void e4nu_analyzer::EventLoop()
 
 
       //select final state particle of interest to analyze
-      if (electrons.size()>0){
+      if (electrons.size()>0 && protons.size()>0 ){
 
 
 	// --- get momentum components of final state particles ---
