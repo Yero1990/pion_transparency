@@ -234,7 +234,7 @@ class e4nu_analyzer
   
   // declare hadron kinematic variables
   Double_t pf, pf_x, pf_y, pf_z;
-  Double_t th_h;     // hadron in-palne angle
+  Double_t th_x;     // hadron in-palne angle
   Double_t MM, MM2;  // missing mass
   Double_t Em, Em_nuc;       // missing energy, deuteron special :)
   Double_t Pm;

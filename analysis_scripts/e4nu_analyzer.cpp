@@ -660,7 +660,7 @@ void e4nu_analyzer::WriteHist()
   H_pfx  ->Write();
   H_pfy  ->Write();
   H_pfz  ->Write();
-  H_thh  ->Write();
+  H_thx  ->Write();
   H_MM  ->Write();    
   H_MM2 ->Write();
 
