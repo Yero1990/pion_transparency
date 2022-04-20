@@ -1,6 +1,7 @@
 #ifndef E4NU_ANALYZER_H
 #define E4NU_ANALYZER_H
 
+#include "./UTILS/parse_utils.h" //useful C++ string parsing utilities
 
 class e4nu_analyzer
 {
