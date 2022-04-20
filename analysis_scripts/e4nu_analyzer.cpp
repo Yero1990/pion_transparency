@@ -504,8 +504,12 @@ void e4nu_analyzer::EventLoop()
       auto protons   = c12->getByID(2212);
 
 
-      //select final state particle of interest to analyze
-
+      //======================================================
+      //
+      // select final state particle of interest to analyze
+      //
+      //======================================================
+      
       // (e,e'p) 
       if ( electrons.size()==1 && protons.size()==1 && particles.size()==2 ){
 	
@@ -638,7 +642,8 @@ void e4nu_analyzer::WriteHist()
   data_tree->Write();
   
   // write histograms objects
-  
+
+  // electron kinematics
   H_kf  ->Write();
   H_kfx ->Write(); 
   H_kfy ->Write(); 
@@ -656,6 +661,7 @@ void e4nu_analyzer::WriteHist()
   H_W   ->Write();   
   H_W2  ->Write();
 
+  // hadron (detected and "missing") kinematics
   H_pf  ->Write();
   H_pfx  ->Write();
   H_pfy  ->Write();
