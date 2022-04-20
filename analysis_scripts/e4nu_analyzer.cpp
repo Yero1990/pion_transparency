@@ -255,12 +255,12 @@ void e4nu_analyzer::CreateTree()
   // cuts on particle types, eaach sector, and either the FD or CND)
   
   // define data TTree branches 
-  data_tree->Branch("px",     &px,    "px/D");
-  data_tree->Branch("py",     &py,    "px/D");
-  data_tree->Branch("pz",     &pz,    "px/D");
-  data_tree->Branch("pid",    &pid,   "pid/I");
-  data_tree->Branch("npart",  &npart, "npart/I");
-  data_tree->Branch("chi2pid",&chi2pid,"chi2pid/D");
+  data_tree->Branch("px",     &br_px,    "px/D");
+  data_tree->Branch("py",     &br_py,    "px/D");
+  data_tree->Branch("pz",     &br_pz,    "px/D");
+  data_tree->Branch("pid",    &br_pid,   "pid/I");
+  data_tree->Branch("npart",  &br_npart, "npart/I");
+  data_tree->Branch("chi2pid",&br_chi2pid,"chi2pid/D");
 
 }
 
