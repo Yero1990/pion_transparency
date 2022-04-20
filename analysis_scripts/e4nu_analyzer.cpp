@@ -296,7 +296,7 @@ void e4nu_analyzer::EventLoop()
 
       // get std::vector array of all final state particles per event
       auto particles = c12->getDetParticles();
-      npart = particles.size();
+      br_npart = particles.size();
       cout << "# of particles: " << particles.size() << endl;
       for(auto& p : particles)
 	{
@@ -412,9 +412,9 @@ void e4nu_analyzer::EventLoop()
 	// hadron kinematics
 	H_pf  ->Fill(pf);
 	H_pf_v2  ->Fill(pf_v2);
-	H_pfx  ->Fill(pfx);
-	H_pfy  ->Fill(pfy);
-	H_pfz  ->Fill(pfz);
+	H_pfx  ->Fill(pf_x);
+	H_pfy  ->Fill(pf_y);
+	H_pfz  ->Fill(pf_z);
 	H_thh  ->Fill(th_h);
 	H_thh_v2  ->Fill(th_h_v2);
 	H_MM  ->Fill(MM);  
