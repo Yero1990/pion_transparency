@@ -362,14 +362,14 @@ void e4nu_analyzer::EventLoop()
 	qz = p4_q.Pz();
 	th_q = p4_q.Theta()*TMath::RadToDeg();
 	ph_q = p4_q.Phi()*TMath::RadToDeg();
-	th_e = electrons[0]->par()->getTheta()*TMath::RadToDeg();
+	th_e = electrons[0]->getTheta()*TMath::RadToDeg();
 	th_e_v2 = p4_beam.Angle( p4_electron.Vect() ) *TMath::RadToDeg();
 	
 	// define recoil (usually undetected) system kinematics
 	p4_recoil = p4_q + p4_target - p4_hadron;  
 
-	xangle = p4_hadron.Angle( p4_electron.Vect() );
-	th_h = protons[0]->par()->getTheta()*TMath::RadToDeg();
+	xangle = p4_hadron.Angle( p4_electron.Vect() )*TMath::RadToDeg();
+	th_h = protons[0]->getTheta()*TMath::RadToDeg();
 	th_h_v2 = xangle - th_e_v2;
 	
 	W = -1000.;
