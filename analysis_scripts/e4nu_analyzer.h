@@ -62,18 +62,17 @@ class e4nu_analyzer
 
   // declare electron kinematics
   Double_t Eb;
-  Double_t kf, kf_v2, kf_x, kf_y, kf_z;  
+  Double_t kf, kf_x, kf_y, kf_z;  
   Double_t q, qx, qy, qz;
   Double_t nu;
   Double_t Q2; 
   Double_t xbj;
-  Double_t th_e, th_e_v2;
+  Double_t th_e;
   Double_t th_q, ph_q;
   Double_t W, W2;
   
   // declare hadron kinematics
-  Double_t pf, pf_v2, pf_x, pf_y, pf_z;
-  Double_t xangle;    // opening angle between scat. e- and detected hadron
+  Double_t pf, pf_x, pf_y, pf_z;
   Double_t th_h, th_h_v2;     // hadron in-palne angle
   Double_t MM, MM2;  // missing mass
   Double_t Em;       // missing energy
@@ -83,7 +82,6 @@ class e4nu_analyzer
 
   // electron
   TH1F *H_kf;
-  TH1F *H_kf_v2;   
   TH1F *H_kfx;
   TH1F *H_kfy;
   TH1F *H_kfz;
@@ -95,7 +93,6 @@ class e4nu_analyzer
   TH1F *H_Q2;     
   TH1F *H_xbj;
   TH1F *H_the;
-  TH1F *H_the_v2;
   TH1F *H_thq;    
   TH1F *H_phq;  
   TH1F *H_W;      
@@ -103,12 +100,10 @@ class e4nu_analyzer
 
   // hadron
   TH1F *H_pf;
-  TH1F *H_pf_v2;
   TH1F *H_pfx;
   TH1F *H_pfy;
   TH1F *H_pfz;
   TH1F *H_thh;
-  TH1F *H_thh_v2;
   TH1F *H_MM;     
   TH1F *H_MM2; 
 

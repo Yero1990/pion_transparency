@@ -87,7 +87,6 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
 
   // electron
   H_kf   =  NULL;
-  H_kf_v2   =  NULL; 
   H_kfx  =  NULL; 
   H_kfy  =  NULL; 
   H_kfz  =  NULL;
@@ -99,7 +98,6 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_Q2   =  NULL; 
   H_xbj  =  NULL;
   H_the  =  NULL;
-  H_the_v2  =  NULL;
   H_thq	 =  NULL; 
   H_phq	 =  NULL;  
   H_W    =  NULL; 
@@ -107,12 +105,10 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
  
   // hadron
   H_pf   =  NULL;
-  H_pf_v2 = NULL;
   H_pfx  =  NULL;
   H_pfy  =  NULL;
   H_pfz  =  NULL;
   H_thh  =  NULL;
-  H_thh_v2  =  NULL;
   H_MM   =  NULL; 
   H_MM2  =  NULL; 
 
@@ -139,7 +135,6 @@ e4nu_analyzer::~e4nu_analyzer()
 
     // electron
     delete H_kf  ;  H_kf   =  NULL;
-    delete H_kf_v2  ;  H_kf_v2   =  NULL; 
     delete H_kfx ;  H_kfx   =  NULL; 
     delete H_kfy ;  H_kfy   =  NULL; 
     delete H_kfz ;  H_kfz   =  NULL; 
@@ -151,7 +146,6 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_Q2  ;  H_Q2   =  NULL; 
     delete H_xbj ;  H_xbj  =  NULL;
     delete H_the ;  H_the  =  NULL;
-    delete H_the_v2 ;  H_the_v2  =  NULL;
     delete H_thq ;  H_thq  =  NULL; 
     delete H_phq ;  H_phq  =  NULL; 
     delete H_W   ;  H_W    =  NULL; 
@@ -159,12 +153,10 @@ e4nu_analyzer::~e4nu_analyzer()
 
     // hadron
     delete H_pf  ;  H_pf   =  NULL;
-    delete H_pf_v2  ;  H_pf_v2   =  NULL;
     delete H_pfx  ;  H_pfx   =  NULL;
     delete H_pfy  ;  H_pfy   =  NULL;
     delete H_pfz  ;  H_pfz   =  NULL;
     delete H_thh  ;  H_thh   = NULL;
-    delete H_thh_v2  ;  H_thh_v2   = NULL;
     delete H_MM  ;  H_MM   =  NULL; 
     delete H_MM2 ;  H_MM2  =  NULL; 
     
@@ -207,7 +199,6 @@ void e4nu_analyzer::CreateHist()
 
   // electron
   H_kf      = new TH1F("H_kf",  "Final e^{-} Momentum",                       100,  0.5, 6  );
-  H_kf_v2      = new TH1F("H_kf_v2",  "Final e^{-} Momentum",                 100,  0.5, 6  );
   H_kfx     = new TH1F("H_kfx","Final e^{-} Momentum (x-comp)",               100, -50,  50 );
   H_kfy     = new TH1F("H_kfy","Final e^{-} Momentum (y-comp)",               100, -50,  50 );			    
   H_kfz     = new TH1F("H_kfz","Final e^{-} Momentum (z-comp)",               100, -50,  50 );
@@ -219,7 +210,6 @@ void e4nu_analyzer::CreateHist()
   H_Q2      = new TH1F("H_Q2",  "4-Momentum Transfer, Q^{2}",                 100,  0.1, 5  ); 		    
   H_xbj     = new TH1F("H_xbj", "x-Bjorken",                                  100,  0.2, 2  );
   H_the     = new TH1F("H_the", "Electron Scattering Angle, #theta_{e}",      200,  0.5, 180);
-  H_the_v2  = new TH1F("H_the_v2", "Electron Scattering Angle, #theta_{e}",   200,  0.5, 180);
   H_thq     = new TH1F("H_thq", "In-Plane Angle w.r.t +z(lab), #theta_{q}",   100,  0,   180);     
   H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", 100, -180, 180);
   H_W       = new TH1F("H_W",   "Invariant Mass, W",                          100,  0.1, 5  ); 				    
@@ -227,12 +217,10 @@ void e4nu_analyzer::CreateHist()
 
   // hadron
   H_pf      = new TH1F("H_pf",  "Final Hadron Momentum, p_{f}",               100, 0,    5  );
-  H_pf_v2      = new TH1F("H_pf_v2",  "Final Hadron Momentum, p_{f}",               100, 0,    5  );
   H_pfx      = new TH1F("H_pfx",  "Final Hadron Momentum, p_{fx}",               100, -5,    5  );
   H_pfy      = new TH1F("H_pfy",  "Final Hadron Momentum, p_{fy}",               100, -5,    5  );
   H_pfz      = new TH1F("H_pfz",  "Final Hadron Momentum, p_{fz}",               100, -5,    5  );
   H_thh      = new TH1F("H_thh",  "Final Hadron Angle, #theta_{h}",              100,  0,    180);
-  H_thh_v2      = new TH1F("H_thh_v2",  "Final Hadron Angle, #theta_{h}",              100,  0,    180);
   H_MM      = new TH1F("H_MM",  "Missing Mass, M_{miss}",                     100, -5,   5  );        		    
   H_MM2     = new TH1F("H_MM2", "Missing Mass Squared, M^{2}_{miss}",         100, -5,   5  ); 	    
 
@@ -334,14 +322,12 @@ void e4nu_analyzer::EventLoop()
 	kf_y = electrons[0]->par()->getPy();
 	kf_z = electrons[0]->par()->getPz(); 
 	kf   = electrons[0]->par()->getP();
-	kf_v2 = sqrt(kf_x*kf_x + kf_y*kf_y + kf_z*kf_z);
 	
 	// knocked-out protons 3-momentum
 	pf_x = protons[0]->par()->getPx(); 
 	pf_y = protons[0]->par()->getPy();
 	pf_z = protons[0]->par()->getPz(); 
 	pf   = protons[0]->par()->getP();
-	pf_v2 = sqrt(pf_x*pf_x + pf_y*pf_y + pf_z*pf_z);
 	
 	// set 4-momenta of particle of interest
 	p4_beam.SetXYZM(0., 0., Eb, me);
@@ -363,14 +349,11 @@ void e4nu_analyzer::EventLoop()
 	th_q = p4_q.Theta()*TMath::RadToDeg();
 	ph_q = p4_q.Phi()*TMath::RadToDeg();
 	th_e = electrons[0]->getTheta()*TMath::RadToDeg();
-	th_e_v2 = p4_beam.Angle( p4_electron.Vect() ) *TMath::RadToDeg();
 	
 	// define recoil (usually undetected) system kinematics
 	p4_recoil = p4_q + p4_target - p4_hadron;  
 
-	xangle = p4_hadron.Angle( p4_electron.Vect() )*TMath::RadToDeg();
 	th_h = protons[0]->getTheta()*TMath::RadToDeg();
-	th_h_v2 = xangle - th_e_v2;
 	
 	W = -1000.;
 	MM = -1000.;
@@ -391,7 +374,6 @@ void e4nu_analyzer::EventLoop()
 
 	// electron kinematics
 	H_kf  ->Fill(kf);
-	H_kf_v2  ->Fill(kf_v2); 
 	H_kfx ->Fill(kf_x); 
 	H_kfy ->Fill(kf_y); 
 	H_kfz ->Fill(kf_z);
@@ -403,7 +385,6 @@ void e4nu_analyzer::EventLoop()
 	H_Q2  ->Fill(Q2);
 	H_xbj ->Fill(xbj); 	
 	H_the ->Fill(th_e);
-	H_the_v2 ->Fill(th_e_v2);
 	H_thq ->Fill(th_q);
 	H_phq ->Fill(ph_q);	
 	H_W   ->Fill(W);   
@@ -411,12 +392,10 @@ void e4nu_analyzer::EventLoop()
 
 	// hadron kinematics
 	H_pf  ->Fill(pf);
-	H_pf_v2  ->Fill(pf_v2);
 	H_pfx  ->Fill(pf_x);
 	H_pfy  ->Fill(pf_y);
 	H_pfz  ->Fill(pf_z);
 	H_thh  ->Fill(th_h);
-	H_thh_v2  ->Fill(th_h_v2);
 	H_MM  ->Fill(MM);  
 	H_MM2 ->Fill(MM2); 
 
