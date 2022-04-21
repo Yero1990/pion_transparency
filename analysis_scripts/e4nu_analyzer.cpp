@@ -784,7 +784,6 @@ void e4nu_analyzer::EventLoop()
 	 
       // increment event number
       evt_cnt++;
-      cout << "DataEventLoop: " << std::setprecision(2) << double( chain.GetEntry() ) / chain.GetEntries() * 100. << "  % " << std::flush << "\r";
 
     }
 }
