@@ -200,9 +200,9 @@ Pmy_q_xmin = -5.
 Pmy_q_xmax = 5.
 
 # Missing Momentum (Z-component, q-frame: +z_lab rotated to +q)
-Pmz_q_nbins = 80
-Pmz_q_xmin = -5.
-Pmz_q_xmax = 5.
+Pmz_q_nbins = 100
+Pmz_q_xmin = -10.
+Pmz_q_xmax = -10.
 
 # Kinetic Energy (Detected Hadron, X)
 Tx_nbins = 100

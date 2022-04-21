@@ -632,9 +632,9 @@ void e4nu_analyzer::EventLoop()
   while(chain.Next())
     {
       
-      //cout << "===========" << endl;
-      //cout << "event #: " << evt_cnt << endl;
-      //cout << "===========" << endl;
+      cout << "===========" << endl;
+      cout << "event #: " << evt_cnt << endl;
+      cout << "===========" << endl;
 
       // get std::vector array of all final state particles per event
       auto particles = c12->getDetParticles();
@@ -675,6 +675,13 @@ void e4nu_analyzer::EventLoop()
       
       // (e,e'p)
       if ( electrons.size()==1 && protons.size()==1 && particles.size()>=2 ){
+	
+
+	cout << "e- region: " << electrons.getRegion() << endl;
+	cout << "hadron region: " << protons.getRegion() << endl;
+
+	cout << "e- sector: " << electrons.getSector() << endl;
+	cout << "hadron sector: " << protons.getSector() << endl;
 	
 	
 	// --- get vertex/momentum components of final state particles ---
