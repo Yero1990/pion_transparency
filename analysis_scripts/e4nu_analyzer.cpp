@@ -486,8 +486,8 @@ void e4nu_analyzer::CreateHist()
   H_phrq    = new TH1F("H_phrq", "Out-of-Plane Angle, #phi_{rq}",                    phrq_nbins, phrq_xmin, phrq_xmax);
 
   // 2d kinematics
-  H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #theta_{e} [deg]; #phi_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
-  H_kf_vs_the = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; k_{f}; #theta_{e} [deg];", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
+  H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
+  H_kf_vs_the = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; #theta_{e} [deg]; k_{f} [GeV/c]", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
   
 }
 
@@ -504,7 +504,11 @@ void e4nu_analyzer::CreateTree()
   // (remember, we want all particle types, and be able to make
   // cuts on particle types, eaach sector, and either the FD or CND)
   
-  // define data TTree branches 
+  // define data TTree branches
+  data_tree->Branch("vx",     &br_vx,    "vx/D");
+  data_tree->Branch("vy",     &br_vy,    "vx/D");
+  data_tree->Branch("vz",     &br_vz,    "vx/D");
+  data_tree->Branch("vt",     &br_vt,    "vt/D");  
   data_tree->Branch("px",     &br_px,    "px/D");
   data_tree->Branch("py",     &br_py,    "px/D");
   data_tree->Branch("pz",     &br_pz,    "px/D");
@@ -552,7 +556,10 @@ void e4nu_analyzer::EventLoop()
       for(auto& p : particles)
 	{
 	  // get all the info for every particle type here, and fill the tree outside
-	  
+	  br_vx = p->par()->getVx();
+	  br_vy = p->par()->getVy();
+	  br_vz = p->par()->getVz();
+	  br_vt = p->par()->getVt();
 	  br_px = p->par()->getPx();
 	  br_py = p->par()->getPy();
 	  br_pz = p->par()->getPz();
@@ -756,8 +763,8 @@ void e4nu_analyzer::EventLoop()
 	H_phrq      ->Fill(ph_rq);
 
 	// 2d kinematics
-	H_the_vs_phe ->Fill(th_e, ph_e);
-	H_kf_vs_the ->Fill(kf, th_e);
+	H_the_vs_phe ->Fill(ph_e, th_e);
+	H_kf_vs_the ->Fill(th_e, kf);
 	  
       } // end final state particle requirement
 

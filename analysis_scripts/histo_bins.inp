@@ -15,8 +15,8 @@
 
 # final electron vertex [cm]
 kf_vert_nbins = 100
-kf_vert_xmin = -5.
-kf_vert_xmax = 5.
+kf_vert_xmin = -10.
+kf_vert_xmax = 10.
 
 # final electron vertex time [ns]
 kf_vtime_nbins = 100

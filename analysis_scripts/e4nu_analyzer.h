@@ -47,6 +47,7 @@ class e4nu_analyzer
   Double_t MD;
   
   // declare generic branch variables
+  Double_t br_vx, br_vy, br_vz, br_vt;  // generic final state particle vertex components, time
   Double_t br_px, br_py, br_pz, br_p;  // generic final state particle momentum components
   Double_t br_chi2pid;
   Int_t br_pid;    // particle identification (e.g., 11-> electron, 2212-> proton, etc)
