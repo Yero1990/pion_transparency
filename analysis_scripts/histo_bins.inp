@@ -16,7 +16,7 @@
 # final electron momentum [GeV/c]
 kf_nbins = 100
 kf_xmin = 0.
-kf_xmax = 5.
+kf_xmax = 10.
 
 # final electron momentum (x-component)
 kfx_nbins = 100
@@ -30,8 +30,8 @@ kfy_xmax = 5.
 
 # final electron momentum (z-component)
 kfz_nbins = 100
-kfz_xmin = -5.
-kfz_xmax = 5.
+kfz_xmin = 0.
+kfz_xmax = 10.
 
 # 3-momentum transfer
 q_nbins = 100
@@ -40,13 +40,13 @@ q_xmax = 10.
 
 # 3-momentum transfer (x-component)
 qx_nbins = 100
-qx_xmin = 0.
-qx_xmax = 10.
+qx_xmin = -5.
+qx_xmax = 5.
 
 # 3-momentum transfer (y-component)
 qy_nbins = 100
-qy_xmin = 0.
-qy_xmax = 10.
+qy_xmin = -5.
+qy_xmax = 5.
 
 # 3-momentum transfer (z-component)
 qz_nbins = 100
@@ -66,12 +66,12 @@ Q2_xmax = 10.
 # Bjorken-X
 xbj_nbins = 100
 xbj_xmin = 0.
-xbj_xmax = 10.
+xbj_xmax = 2.
 
 # electron arm central angle
-the_nbins = 70
-the_xmin = 5.0
-the_xmax = 45.0
+the_nbins = 100
+the_xmin = 0.
+the_xmax = 90.0
 
 # in-plane angle between q-vector and +z (beam)
 thq_nbins = 100
@@ -80,26 +80,22 @@ thq_xmax = 90.
 
 # out-of-plane angle between q-vector and +z (beam)
 phq_nbins = 100
-phq_xmin = 0.
-phq_xmax = 360.
+phq_xmin = -180.
+phq_xmax = 180.
 
 
 # invariant mass (assuming proton target mass)
 W_nbins = 100
 W_xmin = 0.5
-W_xmax = 1.5
+W_xmax = 3.5
 
 # invariant mass squared
 W2_nbins = 100
 W2_xmin = 0.1 
-W2_xmax = 3.0;
-
-
-
-
+W2_xmax = 3.5;
 
 #--------------------------------------
-#-----Secondary Kinematics (Hadron)----
+#-----Detected Hadron Kinematics   ----
 #--------------------------------------
 # Units | kinematical  angles: deg,  energy: GeV
 
@@ -110,28 +106,28 @@ pf_xmax = 9.
 
 # final hadron arm momentum (x-component)
 pfx_nbins = 100
-pfx_xmin = 0.
-pfx_xmax = 9.
+pfx_xmin = -5.
+pfx_xmax = 5.
 
 # final hadron arm momentum (y-component)
 pfy_nbins = 100
-pfy_xmin = 0.
-pfy_xmax = 9.
+pfy_xmin = -5.
+pfy_xmax = 5.
 
 # final hadron arm momentum (z-component)
 pfz_nbins = 100
-pfz_xmin = 0.
+pfz_xmin = -2.
 pfz_xmax = 9.
 
 # hadron in-plane scat. angle
 thx_nbins = 100  
-thx_xmin = 10.
-thx_xmax = 60.
+thx_xmin = 0.
+thx_xmax = 180.
 
 # Missing Mass (Undetected Recoil System Mass)
 MM_nbins = 100
-MM_xmin = 0.
-MM_xmax = 10.
+MM_xmin = -5.
+MM_xmax = 5.
 
 # Missing Mass Squared
 MM2_nbins = 100  
@@ -140,73 +136,73 @@ MM2_xmax = 10.
 
 # Missing Energy
 Em_nbins = 100
-Em_xmin = -0.1
-Em_xmax = 0.3
+Em_xmin = -10
+Em_xmax = 10
 
 # Missing (Recoil) Momentum
-Pm_nbins = 80
-Pm_xmin = 0.
-Pm_xmax = 5.
+Pm_nbins = 100
+Pm_xmin = -2.
+Pm_xmax = 10.
 
 # Missing Momentum (X-component, lab)
 Pmx_lab_nbins = 80 
-Pmx_lab_xmin = 0.
+Pmx_lab_xmin = -5.
 Pmx_lab_xmax = 5.
 
 # Missing Momentum (Y-component, lab)
 Pmy_lab_nbins = 80
-Pmy_lab_xmin = 0.
+Pmy_lab_xmin = -5.
 Pmy_lab_xmax = 5.
 
 # Missing Momentum (Z-component, lab)
 Pmz_lab_nbins = 80
-Pmz_lab_xmin = 0.
-Pmz_lab_xmax = 5.
+Pmz_lab_xmin = -2.
+Pmz_lab_xmax = 10.
 
 # Missing Momentum (X-component, q-frame: +z_lab rotated to +q)
 Pmx_q_nbins = 80
-Pmx_q_xmin = 0.
+Pmx_q_xmin = -5.
 Pmx_q_xmax = 5.
 
 # Missing Momentum (Y-component, q-frame: +z_lab rotated to +q)
 Pmy_q_nbins = 80
-Pmy_q_xmin = 0.
+Pmy_q_xmin = -5.
 Pmy_q_xmax = 5.
 
 # Missing Momentum (Z-component, q-frame: +z_lab rotated to +q)
 Pmz_q_nbins = 80
-Pmz_q_xmin = 0.
+Pmz_q_xmin = -5.
 Pmz_q_xmax = 5.
 
 # Kinetic Energy (Detected Hadron, X)
 Tx_nbins = 100
-Tx_xmin = 0.
+Tx_xmin = -2.
 Tx_xmax = 10.
 
 # Kinetic Energy (Undetected Recoil System, R)
 Tr_nbins = 100 
-Tr_xmin = 0.
+Tr_xmin = -2.
 Tr_xmax = 10.
 
 # In-plane angle between detected particle and q 
 thxq_nbins = 100
-thxq_xmin = 0.
-thxq_xmax = 360.
+thxq_xmin = -180.
+thxq_xmax = 180.
 
 # In-plane angle between the recoil system and q 
 thrq_nbins = 100
-thrq_xmin = 0.
-thrq_xmax = 360.
+thrq_xmin = -180.
+thrq_xmax = 180.
 
 # Out-of-plane angle between detected particle and q
 phxq_nbins = 100
-phxq_xmin = 0.
-phxq_xmax = 360.
+phxq_xmin = -180.
+phxq_xmax = 180.
 
 # Out-of-plane angle between recoil system and q 
 phrq_nbins = 100
-phrq_xmin = 0.
-phrq_xmax = 360.
+phrq_xmin = -180.
+phrq_xmax = 180.
 
 
 

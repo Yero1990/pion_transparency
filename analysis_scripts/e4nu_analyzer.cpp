@@ -592,10 +592,10 @@ void e4nu_analyzer::EventLoop()
 	xq *= rot_to_q;  
 	bq *= rot_to_q;
 
-	th_xq     = xq.Theta();   //"theta_xq" (in-plane angle of detected particle relative to q-vector)
-	ph_xq     = xq.Phi();     //"out-of-plane angle", "phi" 
-	th_rq     = bq.Theta();
-	ph_rq     = bq.Phi();
+	th_xq     = xq.Theta()*TMath::RadToDeg();   //"theta_xq" (in-plane angle of detected particle relative to q-vector)
+	ph_xq     = xq.Phi()*TMath::RadToDeg();     //"out-of-plane angle", "phi" 
+	th_rq     = bq.Theta()*TMath::RadToDeg();
+	ph_rq     = bq.Phi()*TMath::RadToDeg();
 
 	// Missing momentum and components wrt q-vector
 	// The definition of p_miss as the negative of the undetected recoil
