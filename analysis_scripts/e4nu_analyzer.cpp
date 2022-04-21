@@ -681,7 +681,7 @@ void e4nu_analyzer::EventLoop()
       //======================================================
       
       // (e,e'p)
-      if ( electrons.size()==1 && protons.size()==1 && particles.size()>=2 ){
+      if ( electrons.size()==1 && protons.size()>=1 && particles.size()>=2 ){
 	
 
 	
