@@ -68,6 +68,14 @@ class e4nu_analyzer
   //-----------------------------
   
   // electron Kinematics
+  Double_t kf_vert_nbins;   
+  Double_t kf_vert_xmin;
+  Double_t kf_vert_xmax;
+
+  Double_t kf_vtime_nbins;   
+  Double_t kf_vtime_xmin;
+  Double_t kf_vtime_xmax;
+  
   Double_t kf_nbins;   
   Double_t kf_xmin;
   Double_t kf_xmax;
@@ -138,6 +146,14 @@ class e4nu_analyzer
 
 
   // hadron
+  Double_t pf_vert_nbins;   
+  Double_t pf_vert_xmin;
+  Double_t pf_vert_xmax;
+
+  Double_t pf_vtime_nbins;   
+  Double_t pf_vtime_xmin;
+  Double_t pf_vtime_xmax;
+  
   Double_t pf_nbins;
   Double_t pf_xmin;
   Double_t pf_xmax;
@@ -230,6 +246,7 @@ class e4nu_analyzer
    
   // declare electron kinematic variables
   Double_t Eb;
+  Double_t kf_vx, kf_vy, kf_vz, kf_vt; // e- vertex, time [cm], [ns]
   Double_t kf, kf_x, kf_y, kf_z;  
   Double_t q, qx, qy, qz;
   Double_t nu;
@@ -241,6 +258,7 @@ class e4nu_analyzer
   Double_t W, W2;
   
   // declare hadron kinematic variables
+  Double_t pf_vx, pf_vy, pf_vz, pf_vt; // hadron vertex, time [cm], [ns]
   Double_t pf, pf_x, pf_y, pf_z;
   Double_t th_x;     // hadron in-palne angle
   Double_t MM, MM2;  // missing mass
@@ -258,6 +276,10 @@ class e4nu_analyzer
   // --- declare histograms ---
 
   // electron
+  TH1F *H_kf_vx;
+  TH1F *H_kf_vy;
+  TH1F *H_kf_vz;
+  TH1F *H_kf_vt;
   TH1F *H_kf;
   TH1F *H_kfx;
   TH1F *H_kfy;
@@ -277,6 +299,10 @@ class e4nu_analyzer
   TH1F *H_W2;     
 
   // hadron
+  TH1F *H_pf_vx;
+  TH1F *H_pf_vy;
+  TH1F *H_pf_vz;
+  TH1F *H_pf_vt;
   TH1F *H_pf;
   TH1F *H_pfx;
   TH1F *H_pfy;

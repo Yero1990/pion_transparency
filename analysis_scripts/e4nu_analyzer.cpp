@@ -86,6 +86,10 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   // --- initialize histogram pointers ----
 
   // electron kinematics
+  H_kf_vx = NULL;
+  H_kf_vy = NULL;
+  H_kf_vz = NULL;
+  H_kf_vt = NULL;
   H_kf   =  NULL;
   H_kfx  =  NULL; 
   H_kfy  =  NULL; 
@@ -105,6 +109,10 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_W2   =  NULL; 
  
   // hadron kinematics
+  H_pf_vx = NULL;
+  H_pf_vy = NULL;
+  H_pf_vz = NULL;
+  H_pf_vt = NULL;
   H_pf   =  NULL;
   H_pfx  =  NULL;
   H_pfy  =  NULL;
@@ -151,6 +159,11 @@ e4nu_analyzer::~e4nu_analyzer()
     // --- delete histogram pointers ---
 
     // electron
+    delete H_kf_vx ; H_kf_vx = NULL;
+    delete H_kf_vy ; H_kf_vy = NULL;
+    delete H_kf_vz ; H_kf_vz = NULL;
+    delete H_kf_vt ; H_kf_vt = NULL;
+    
     delete H_kf  ;  H_kf   =  NULL;
     delete H_kfx ;  H_kfx   =  NULL; 
     delete H_kfy ;  H_kfy   =  NULL; 
@@ -170,6 +183,10 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_W2  ;  H_W2   =  NULL;     
 
     // hadron
+    delete H_pf_vx ; H_pf_vx = NULL;
+    delete H_pf_vy ; H_pf_vy = NULL;
+    delete H_pf_vz ; H_pf_vz = NULL;
+    delete H_pf_vt ; H_pf_vt = NULL;
     delete H_pf  ;  H_pf   =  NULL;
     delete H_pfx  ;  H_pfx   =  NULL;
     delete H_pfy  ;  H_pfy   =  NULL;
@@ -230,7 +247,15 @@ void e4nu_analyzer::SetHistBins()
   //---------------------------------
 
   TString input_HBinFileName = "histo_bins.inp";
+
   // detected electron
+  kf_vert_nbins	= stod(split(FindString("kf_vert_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
+  kf_vert_xmin	= stod(split(FindString("kf_vert_xmin",  	input_HBinFileName.Data())[0], '=')[1]);
+  kf_vert_xmax	= stod(split(FindString("kf_vert_xmax",  	input_HBinFileName.Data())[0], '=')[1]);
+
+  kf_vtime_nbins = stod(split(FindString("kf_vtime_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
+  kf_vtime_xmin	 = stod(split(FindString("kf_vtime_xmin",  	input_HBinFileName.Data())[0], '=')[1]);
+  kf_vtime_xmax	 = stod(split(FindString("kf_vtime_xmax",  	input_HBinFileName.Data())[0], '=')[1]);
   
   kf_nbins	= stod(split(FindString("kf_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
   kf_xmin	= stod(split(FindString("kf_xmin",  	input_HBinFileName.Data())[0], '=')[1]);
@@ -302,6 +327,14 @@ void e4nu_analyzer::SetHistBins()
 
 
   // detected hadron kinematics (and also recoil system)
+  pf_vert_nbins	= stod(split(FindString("pf_vert_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
+  pf_vert_xmin	= stod(split(FindString("pf_vert_xmin",  	input_HBinFileName.Data())[0], '=')[1]);
+  pf_vert_xmax	= stod(split(FindString("pf_vert_xmax",  	input_HBinFileName.Data())[0], '=')[1]);
+
+  pf_vtime_nbins = stod(split(FindString("pf_vtime_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
+  pf_vtime_xmin	 = stod(split(FindString("pf_vtime_xmin",  	input_HBinFileName.Data())[0], '=')[1]);
+  pf_vtime_xmax	 = stod(split(FindString("pf_vtime_xmax",  	input_HBinFileName.Data())[0], '=')[1]);
+  
   pf_nbins	= stod(split(FindString("pf_nbins",  	input_HBinFileName.Data())[0], '=')[1]);
   pf_xmin	= stod(split(FindString("pf_xmin",  	input_HBinFileName.Data())[0], '=')[1]);
   pf_xmax	= stod(split(FindString("pf_xmax",  	input_HBinFileName.Data())[0], '=')[1]);
@@ -400,6 +433,11 @@ void e4nu_analyzer::CreateHist()
   SetHistBins();
 
   // electron
+  H_kf_vx      = new TH1F("H_kf_vx",  "Final e^{-} x-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
+  H_kf_vy      = new TH1F("H_kf_vy",  "Final e^{-} y-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
+  H_kf_vz      = new TH1F("H_kf_vz",  "Final e^{-} z-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
+  H_kf_vt      = new TH1F("H_kf_vt",  "Final e^{-} time @ Vertex ",           kf_vtime_nbins, kf_vtime_xmin, kf_vtime_xmax );
+
   H_kf      = new TH1F("H_kf",  "Final e^{-} Momentum",                       kf_nbins,  kf_xmin,  kf_xmax );
   H_kfx     = new TH1F("H_kfx", "Final e^{-} Momentum (x-comp)",              kfx_nbins, kfx_xmin, kfx_xmax );
   H_kfy     = new TH1F("H_kfy", "Final e^{-} Momentum (y-comp)",              kfy_nbins, kfy_xmin, kfy_xmax );			    
@@ -419,6 +457,10 @@ void e4nu_analyzer::CreateHist()
   H_W2      = new TH1F("H_W2",  "Invariant Mass, W^{2}",                      W2_nbins,  W2_xmin,  W2_xmax); 			     		 				    
 
   // hadron
+  H_pf_vx      = new TH1F("H_pf_vx",  "Final Hadron x-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
+  H_pf_vy      = new TH1F("H_pf_vy",  "Final Hadron y-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
+  H_pf_vz      = new TH1F("H_pf_vz",  "Final Hadron z-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
+  H_pf_vt      = new TH1F("H_pf_vt",  "Final Hadron time @ Vertex ",           pf_vtime_nbins, pf_vtime_xmin, pf_vtime_xmax );
   H_pf      = new TH1F("H_pf",    "Final Hadron Momentum (detected), p_{f}",              pf_nbins, pf_xmin, pf_xmax  );
   H_pfx      = new TH1F("H_pfx",  "Final Hadron Momentum, X-comp. p_{fx}",                    pfx_nbins, pfx_xmin, pfx_xmax );
   H_pfy      = new TH1F("H_pfy",  "Final Hadron Momentum, Y-comp. p_{fy}",                    pfy_nbins, pfy_xmin, pfy_xmax);
@@ -498,14 +540,15 @@ void e4nu_analyzer::EventLoop()
  // Loop over all events
   while(chain.Next())
     {
-      cout << "===========" << endl;
-      cout << "event #: " << evt_cnt << endl;
-      cout << "===========" << endl;
+      
+      //cout << "===========" << endl;
+      //cout << "event #: " << evt_cnt << endl;
+      //cout << "===========" << endl;
 
       // get std::vector array of all final state particles per event
       auto particles = c12->getDetParticles();
       br_npart = particles.size();
-      cout << "# of particles: " << particles.size() << endl;
+      //cout << "# of particles: " << particles.size() << endl;
       for(auto& p : particles)
 	{
 	  // get all the info for every particle type here, and fill the tree outside
@@ -539,13 +582,25 @@ void e4nu_analyzer::EventLoop()
       if ( electrons.size()==1 && protons.size()==1 && particles.size()>=2 ){
 	
 	
-	// --- get momentum components of final state particles ---
+	// --- get vertex/momentum components of final state particles ---
 
+	// scattered electrons vertex (i.e., interaction point location)
+	kf_vx = electrons[0]->par()->getVx();
+	kf_vy = electrons[0]->par()->getVy();
+	kf_vz = electrons[0]->par()->getVz();
+	kf_vt = electrons[0]->par()->getVt();
+	
 	// scattered electrons 3-momentum
 	kf_x = electrons[0]->par()->getPx(); 
 	kf_y = electrons[0]->par()->getPy();
 	kf_z = electrons[0]->par()->getPz(); 
 	kf   = electrons[0]->par()->getP();
+	
+	// knocked-out hadron vertex (i.e., interaction point location)
+	pf_vx = protons[0]->par()->getVx();
+	pf_vy = protons[0]->par()->getVy();
+	pf_vz = protons[0]->par()->getVz();
+	pf_vt = protons[0]->par()->getVt();
 	
 	// knocked-out protons 3-momentum
 	pf_x = protons[0]->par()->getPx(); 
@@ -649,6 +704,10 @@ void e4nu_analyzer::EventLoop()
 	// Fill Histograms 
 
 	// electron kinematics
+	H_kf_vx  ->Fill(kf_vx);
+	H_kf_vy  ->Fill(kf_vy);
+	H_kf_vz  ->Fill(kf_vz);
+	H_kf_vt  ->Fill(kf_vt); 
 	H_kf  ->Fill(kf);
 	H_kfx ->Fill(kf_x); 
 	H_kfy ->Fill(kf_y); 
@@ -668,6 +727,10 @@ void e4nu_analyzer::EventLoop()
 	H_W2  ->Fill(W2);  	
 
 	// hadron kinematics
+	H_pf_vx  ->Fill(pf_vx);
+	H_pf_vy  ->Fill(pf_vy);
+	H_pf_vz  ->Fill(pf_vz);
+	H_pf_vt  ->Fill(pf_vt); 
 	H_pf   ->Fill(pf);
 	H_pfx  ->Fill(pf_x);
 	H_pfy  ->Fill(pf_y);
@@ -721,6 +784,8 @@ void e4nu_analyzer::EventLoop()
 	 
       // increment event number
       evt_cnt++;
+      cout << "DataEventLoop: " << std::setprecision(2) << double( chain.GetEntry() ) / chain.GetEntries() * 100. << "  % " << std::flush << "\r";
+
     }
 }
 
@@ -740,6 +805,10 @@ void e4nu_analyzer::WriteHist()
   // write histograms objects
 
   // electron kinematics
+  H_kf_vx  ->Write();
+  H_kf_vy  ->Write();
+  H_kf_vz  ->Write();
+  H_kf_vt  ->Write(); 
   H_kf  ->Write();
   H_kfx ->Write(); 
   H_kfy ->Write(); 
@@ -758,6 +827,10 @@ void e4nu_analyzer::WriteHist()
   H_W2  ->Write();
 
   // hadron (detected and "missing") kinematics
+  H_pf_vx  ->Write();
+  H_pf_vy  ->Write();
+  H_pf_vz  ->Write();
+  H_pf_vt  ->Write(); 
   H_pf  ->Write();
   H_pfx  ->Write();
   H_pfy  ->Write();
@@ -781,7 +854,11 @@ void e4nu_analyzer::WriteHist()
   H_thrq    ->Write(); 
   H_phxq    ->Write(); 
   H_phrq    ->Write(); 
-  
+
+  // 2d kinematics
+  H_the_vs_phe ->Write();
+  H_kf_vs_the ->Write();
+	
   outROOT->Close();
 }
 

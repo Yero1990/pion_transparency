@@ -13,6 +13,16 @@
 # Units | angle: deg,  energy: GeV
 
 
+# final electron vertex [cm]
+kf_vert_nbins = 100
+kf_vert_xmin = -5.
+kf_vert_xmax = 5.
+
+# final electron vertex time [ns]
+kf_vtime_nbins = 100
+kf_vtime_xmin = -25.
+kf_vtime_xmax = 25.
+
 # final electron momentum [GeV/c]
 kf_nbins = 100
 kf_xmin = 0.
@@ -103,6 +113,16 @@ W2_xmax = 3.5;
 #-----Detected Hadron Kinematics   ----
 #--------------------------------------
 # Units | kinematical  angles: deg,  energy: GeV
+
+# final detected hadron vertex [cm]
+pf_vert_nbins = 100
+pf_vert_xmin = -5.
+pf_vert_xmax = 5.
+
+# final detected hadron vertex time [ns]
+pf_vtime_nbins = 100
+pf_vtime_xmin = -25.
+pf_vtime_xmax = 25.
 
 # final hadron arm momentum 
 pf_nbins = 100
