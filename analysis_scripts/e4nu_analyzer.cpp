@@ -892,6 +892,8 @@ void e4nu_analyzer::WriteHist()
   // 2d kinematics
   H_the_vs_phe ->Write();
   H_kf_vs_the ->Write();
+  H_kf_vs_beta ->Write();
+  H_pf_vs_beta ->Write();
 	
   outROOT->Close();
 }
