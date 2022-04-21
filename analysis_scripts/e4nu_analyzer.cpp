@@ -82,6 +82,9 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   
   //Initialize TTree Pointers
   data_tree = NULL;
+
+  //Initialize TList Pointers
+  kin_HList = NULL;
   
   // --- initialize histogram pointers ----
 
@@ -142,8 +145,10 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   // 2D kinematics
   H_the_vs_phe = NULL;
   H_kf_vs_the  = NULL;
-  H_kf_vs_beta = NULL;
-  H_pf_vs_beta = NULL;
+  H_beta_vs_kf = NULL;
+  H_beta_vs_pf = NULL;
+
+  
   
 }
 
@@ -159,7 +164,10 @@ e4nu_analyzer::~e4nu_analyzer()
     
     // delete TTree Pointers
     delete data_tree; data_tree = NULL;
-    
+
+    //Delete TList Pointers
+    delete kin_HList; kin_HList = NULL;
+  
     // --- delete histogram pointers ---
 
     // electron
@@ -219,8 +227,8 @@ e4nu_analyzer::~e4nu_analyzer()
     // 2D kinematics
     delete H_the_vs_phe; H_the_vs_phe = NULL;
     delete H_kf_vs_the;  H_kf_vs_the  = NULL;
-    delete H_kf_vs_beta; H_kf_vs_beta = NULL;
-    delete H_pf_vs_beta; H_pf_vs_beta = NULL;
+    delete H_beta_vs_kf; H_beta_vs_kf = NULL;
+    delete H_beta_vs_pf; H_beta_vs_pf = NULL;
   
 }
 
@@ -447,7 +455,6 @@ void e4nu_analyzer::CreateHist()
   H_kf_vy      = new TH1F("H_kf_vy",  "Final e^{-} y-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
   H_kf_vz      = new TH1F("H_kf_vz",  "Final e^{-} z-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
   H_kf_vt      = new TH1F("H_kf_vt",  "Final e^{-} time @ Vertex ",           kf_vtime_nbins, kf_vtime_xmin, kf_vtime_xmax );
-
   H_kf      = new TH1F("H_kf",  "Final e^{-} Momentum",                       kf_nbins,  kf_xmin,  kf_xmax );
   H_kfx     = new TH1F("H_kfx", "Final e^{-} Momentum (x-comp)",              kfx_nbins, kfx_xmin, kfx_xmax );
   H_kfy     = new TH1F("H_kfy", "Final e^{-} Momentum (y-comp)",              kfy_nbins, kfy_xmin, kfy_xmax );			    
@@ -472,36 +479,98 @@ void e4nu_analyzer::CreateHist()
   H_pf_vy      = new TH1F("H_pf_vy",  "Final Hadron y-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
   H_pf_vz      = new TH1F("H_pf_vz",  "Final Hadron z-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
   H_pf_vt      = new TH1F("H_pf_vt",  "Final Hadron time @ Vertex ",           pf_vtime_nbins, pf_vtime_xmin, pf_vtime_xmax );
-  H_pf      = new TH1F("H_pf",    "Final Hadron Momentum (detected), p_{f}",              pf_nbins, pf_xmin, pf_xmax  );
-  H_pfx      = new TH1F("H_pfx",  "Final Hadron Momentum, X-comp. p_{fx}",                    pfx_nbins, pfx_xmin, pfx_xmax );
-  H_pfy      = new TH1F("H_pfy",  "Final Hadron Momentum, Y-comp. p_{fy}",                    pfy_nbins, pfy_xmin, pfy_xmax);
-  H_pfz      = new TH1F("H_pfz",  "Final Hadron Momentum, Z-comp p_{fz}",                     pfz_nbins, pfz_xmin, pfz_xmax  );
-  H_thx      = new TH1F("H_thx",  "Final Hadron Scatteting Angle (detected), #theta_{x}",              thx_nbins, thx_xmin, thx_xmax);
-  H_MM      = new TH1F("H_MM",  "Missing Mass, M_{miss}",                       MM_nbins, MM_xmin, MM_xmax);        		    
-  H_MM2     = new TH1F("H_MM2", "Missing Mass Squared, M^{2}_{miss}",          MM2_nbins, MM2_xmin, MM2_xmax); 	    
-  H_Em      = new TH1F("H_Emiss","Missing Energy",                            Em_nbins, Em_xmin, Em_xmax);   
+  H_pf        = new TH1F("H_pf",    "Final Hadron Momentum (detected), p_{f}",              pf_nbins, pf_xmin, pf_xmax  );
+  H_pfx       = new TH1F("H_pfx",  "Final Hadron Momentum, X-comp. p_{fx}",                    pfx_nbins, pfx_xmin, pfx_xmax );
+  H_pfy       = new TH1F("H_pfy",  "Final Hadron Momentum, Y-comp. p_{fy}",                    pfy_nbins, pfy_xmin, pfy_xmax);
+  H_pfz       = new TH1F("H_pfz",  "Final Hadron Momentum, Z-comp p_{fz}",                     pfz_nbins, pfz_xmin, pfz_xmax  );
+  H_thx       = new TH1F("H_thx",  "Final Hadron Scatteting Angle (detected), #theta_{x}",              thx_nbins, thx_xmin, thx_xmax);
+  H_MM        = new TH1F("H_MM",  "Missing Mass, M_{miss}",                       MM_nbins, MM_xmin, MM_xmax);        		    
+  H_MM2       = new TH1F("H_MM2", "Missing Mass Squared, M^{2}_{miss}",          MM2_nbins, MM2_xmin, MM2_xmax); 	    
+  H_Em        = new TH1F("H_Emiss","Missing Energy",                            Em_nbins, Em_xmin, Em_xmax);   
   H_Em_nuc    = new TH1F("H_Em_nuc","Nuclear Missing Energy",                    Em_nbins, Em_xmin, Em_xmax);
-  H_Em_recoil  = new TH1F("H_Em_recoil","Recoil Missing Energy",                Em_nbins, Em_xmin, Em_xmax); 
-  H_Pm      = new TH1F("H_Pm","Missing Momentum, P_{miss}",                    Pm_nbins, Pm_xmin, Pm_xmax); 
-  H_Pmx_lab = new TH1F("H_Pmx_Lab","P_{miss, x} (Lab)",                    Pmx_lab_nbins, Pmx_lab_xmin, Pmx_lab_xmax);         
-  H_Pmy_lab = new TH1F("H_Pmy_Lab","P_{miss, y} (Lab)",                    Pmy_lab_nbins, Pmy_lab_xmin, Pmy_lab_xmax);    
-  H_Pmz_lab = new TH1F("H_Pmz_Lab","P_{miss, z} (Lab)",                    Pmz_lab_nbins, Pmz_lab_xmin, Pmz_lab_xmax);  
-  H_Pmx_q   = new TH1F("H_Pmx_q","P_{miss, xq} (w.r.t #vec{q}) ",                    Pmx_q_nbins, Pmx_q_xmin, Pmx_q_xmax);   
-  H_Pmy_q   = new TH1F("H_Pmy_q","P_{miss, yq} (w.r.t #vec{q}) ",                    Pmy_q_nbins, Pmy_q_xmin, Pmy_q_xmax); 
-  H_Pmz_q   = new TH1F("H_Pmz_q","P_{miss, zq} (along #vec{q}) ",                    Pmz_q_nbins, Pmz_q_xmin, Pmz_q_xmax); 
-  H_Tx      = new TH1F("H_Tx", "Kinetic Energy, T_{x} (detected)",                    Tx_nbins, Tx_xmin, Tx_xmax);     
-  H_Tr      = new TH1F("H_Tr", "Kinetic Energy, T_{r} (recoil)",                      Tr_nbins, Tr_xmin, Tr_xmax);  
-  H_thxq    = new TH1F("H_thxq", "In-Plane Angle, #theta_{xq}",                    thxq_nbins, thxq_xmin, thxq_xmax);
-  H_thrq    = new TH1F("H_thrq", "In-Plane Angle, #theta_{rq}",                    thrq_nbins, thrq_xmin, thrq_xmax);
-  H_phxq    = new TH1F("H_phxq", "Out-of-Plane Angle, #phi_{xq}",                    phxq_nbins, phxq_xmin, phxq_xmax);
-  H_phrq    = new TH1F("H_phrq", "Out-of-Plane Angle, #phi_{rq}",                    phrq_nbins, phrq_xmin, phrq_xmax);
-  H_beta_had = new TH1F("H_beta_had",  "Hadron #beta",                             beta_nbins, beta_xmin, beta_xmax); 			     		 				    
+  H_Em_recoil = new TH1F("H_Em_recoil","Recoil Missing Energy",                Em_nbins, Em_xmin, Em_xmax); 
+  H_Pm        = new TH1F("H_Pm","Missing Momentum, P_{miss}",                    Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_Pmx_lab   = new TH1F("H_Pmx_Lab","P_{miss, x} (Lab)",                    Pmx_lab_nbins, Pmx_lab_xmin, Pmx_lab_xmax);         
+  H_Pmy_lab   = new TH1F("H_Pmy_Lab","P_{miss, y} (Lab)",                    Pmy_lab_nbins, Pmy_lab_xmin, Pmy_lab_xmax);    
+  H_Pmz_lab   = new TH1F("H_Pmz_Lab","P_{miss, z} (Lab)",                    Pmz_lab_nbins, Pmz_lab_xmin, Pmz_lab_xmax);  
+  H_Pmx_q     = new TH1F("H_Pmx_q","P_{miss, xq} (w.r.t #vec{q}) ",                    Pmx_q_nbins, Pmx_q_xmin, Pmx_q_xmax);   
+  H_Pmy_q     = new TH1F("H_Pmy_q","P_{miss, yq} (w.r.t #vec{q}) ",                    Pmy_q_nbins, Pmy_q_xmin, Pmy_q_xmax); 
+  H_Pmz_q     = new TH1F("H_Pmz_q","P_{miss, zq} (along #vec{q}) ",                    Pmz_q_nbins, Pmz_q_xmin, Pmz_q_xmax); 
+  H_Tx        = new TH1F("H_Tx", "Kinetic Energy, T_{x} (detected)",                    Tx_nbins, Tx_xmin, Tx_xmax);     
+  H_Tr        = new TH1F("H_Tr", "Kinetic Energy, T_{r} (recoil)",                      Tr_nbins, Tr_xmin, Tr_xmax);  
+  H_thxq      = new TH1F("H_thxq", "In-Plane Angle, #theta_{xq}",                    thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq      = new TH1F("H_thrq", "In-Plane Angle, #theta_{rq}",                    thrq_nbins, thrq_xmin, thrq_xmax);
+  H_phxq      = new TH1F("H_phxq", "Out-of-Plane Angle, #phi_{xq}",                    phxq_nbins, phxq_xmin, phxq_xmax);
+  H_phrq      = new TH1F("H_phrq", "Out-of-Plane Angle, #phi_{rq}",                    phrq_nbins, phrq_xmin, phrq_xmax);
+  H_beta_had  = new TH1F("H_beta_had",  "Hadron #beta",                             beta_nbins, beta_xmin, beta_xmax); 			     		 				    
 
   // 2d kinematics
-  H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
-  H_kf_vs_the = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; #theta_{e} [deg]; k_{f} [GeV/c]", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
-  H_kf_vs_beta = new TH2F("H_kf_vs_beta", "e^{-} Momentum vs. #beta_{e}; #beta_{e} ; k_{f} [GeV/c]", beta_nbins, beta_xmin, beta_xmax, kf_nbins, kf_xmin, kf_xmax);      
-  H_pf_vs_beta = new TH2F("H_pf_vs_beta", "Hadron Momentum vs. #beta_{h}; #beta_{h} ; p_{f} [GeV/c]", beta_nbins, beta_xmin, beta_xmax, pf_nbins, pf_xmin, pf_xmax);      
+   H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
+   H_kf_vs_the  = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; #theta_{e} [deg]; k_{f} [GeV/c]", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
+   H_beta_vs_kf = new TH2F("H_beta_vs_kf", " #beta_{e} vs. e^{-} Momentum; k_{f} [GeV/c]; #beta_{e}", kf_nbins, kf_xmin, kf_xmax, beta_nbins, beta_xmin, beta_xmax);      
+   H_beta_vs_pf = new TH2F("H_beta_vs_pf", " #beta_{h} vs. Hadron Momentum; p_{f} [GeV/c]; #beta_{h}", pf_nbins, pf_xmin, pf_xmax, beta_nbins, beta_xmin, beta_xmax);      
+
+  //Add Kin Histos to TList
+
+  // electron kinematic histos
+  kin_HList->Add( H_kf_vx);
+  kin_HList->Add( H_kf_vy);
+  kin_HList->Add( H_kf_vz);
+  kin_HList->Add( H_kf_vt);
+  kin_HList->Add( H_kf   );
+  kin_HList->Add( H_kfx  );
+  kin_HList->Add( H_kfy  );
+  kin_HList->Add( H_kfz  );
+  kin_HList->Add( H_q    );
+  kin_HList->Add( H_qx   );
+  kin_HList->Add( H_qy   );
+  kin_HList->Add( H_qz   );
+  kin_HList->Add( H_nu   );
+  kin_HList->Add( H_Q2   ); 
+  kin_HList->Add( H_xbj  );
+  kin_HList->Add( H_the  );
+  kin_HList->Add( H_phe  );
+  kin_HList->Add( H_thq  );
+  kin_HList->Add( H_phq  );
+  kin_HList->Add( H_W    );
+  kin_HList->Add( H_W2   );
+  kin_HList->Add( H_beta_elec);
+  
+  // hadron kinematic histos
+  kin_HList->Add(  H_pf_vx    );
+  kin_HList->Add(  H_pf_vy    );
+  kin_HList->Add(  H_pf_vz    );
+  kin_HList->Add(  H_pf_vt    );
+  kin_HList->Add(  H_pf       );
+  kin_HList->Add(  H_pfx      );
+  kin_HList->Add(  H_pfy      );
+  kin_HList->Add(  H_pfz      );
+  kin_HList->Add(  H_thx      );
+  kin_HList->Add(  H_MM       );
+  kin_HList->Add(  H_MM2      );
+  kin_HList->Add(  H_Em       );
+  kin_HList->Add(  H_Em_nuc   );
+  kin_HList->Add(  H_Em_recoil);
+  kin_HList->Add(  H_Pm       );
+  kin_HList->Add(  H_Pmx_lab  );
+  kin_HList->Add(  H_Pmy_lab  );
+  kin_HList->Add(  H_Pmz_lab  );
+  kin_HList->Add(  H_Pmx_q    );
+  kin_HList->Add(  H_Pmy_q    );
+  kin_HList->Add(  H_Pmz_q    );
+  kin_HList->Add(  H_Tx       );
+  kin_HList->Add(  H_Tr       );
+  kin_HList->Add(  H_thxq     );
+  kin_HList->Add(  H_thrq     );
+  kin_HList->Add(  H_phxq     );
+  kin_HList->Add(  H_phrq     );
+  kin_HList->Add(  H_beta_had );
+
+  // 2d kin
+  kin_HList->Add( H_the_vs_phe );
+  kin_HList->Add( H_kf_vs_the  );
+  kin_HList->Add( H_beta_vs_kf );
+  kin_HList->Add( H_beta_vs_pf );
   
 }
 
@@ -789,8 +858,8 @@ void e4nu_analyzer::EventLoop()
 	// 2d kinematics
 	H_the_vs_phe ->Fill(ph_e, th_e);
 	H_kf_vs_the ->Fill(th_e, kf);
-	H_kf_vs_beta ->Fill(e_beta, kf);
-	H_pf_vs_beta ->Fill(h_beta, pf);
+	H_beta_vs_kf ->Fill(kf, e_beta);
+	H_beta_vs_pf ->Fill(pf, h_beta);
 	  
       } // end final state particle requirement
 
@@ -828,73 +897,17 @@ void e4nu_analyzer::WriteHist()
 
   //Create Output ROOTfile
   outROOT = new TFile(ofname.Data(), "RECREATE");
+
+  //Make directories to store histograms based on category
+  outROOT->mkdir("kin_plots");
       
   outROOT->cd();
-  
-  // write leaf branches 
-  data_tree->Write();
-  
-  // write histograms objects
 
-  // electron kinematics
-  H_kf_vx  ->Write();
-  H_kf_vy  ->Write();
-  H_kf_vz  ->Write();
-  H_kf_vt  ->Write(); 
-  H_kf  ->Write();
-  H_kfx ->Write(); 
-  H_kfy ->Write(); 
-  H_kfz ->Write(); 
-  H_q   ->Write();
-  H_qx  ->Write();
-  H_qy  ->Write();
-  H_qz  ->Write();
-  H_nu  ->Write();  
-  H_Q2  ->Write();  
-  H_xbj ->Write();
-  H_the ->Write();
-  H_thq ->Write();
-  H_phq ->Write();
-  H_W   ->Write();   
-  H_W2  ->Write();
-  H_beta_elec ->Write();
-  
-  // hadron (detected and "missing") kinematics
-  H_pf_vx  ->Write();
-  H_pf_vy  ->Write();
-  H_pf_vz  ->Write();
-  H_pf_vt  ->Write(); 
-  H_pf  ->Write();
-  H_pfx  ->Write();
-  H_pfy  ->Write();
-  H_pfz  ->Write();
-  H_thx  ->Write();
-  H_MM  ->Write();    
-  H_MM2 ->Write();
-  H_Em  ->Write();
-  H_Em_nuc ->Write();
-  H_Em_recoil ->Write();
-  H_Pm      ->Write(); 
-  H_Pmx_lab ->Write(); 
-  H_Pmy_lab ->Write(); 
-  H_Pmz_lab ->Write(); 
-  H_Pmx_q   ->Write(); 
-  H_Pmy_q   ->Write(); 
-  H_Pmz_q   ->Write(); 
-  H_Tx      ->Write(); 
-  H_Tr      ->Write(); 
-  H_thxq    ->Write(); 
-  H_thrq    ->Write(); 
-  H_phxq    ->Write(); 
-  H_phrq    ->Write(); 
-  H_beta_had ->Write();
+  //Write Kinematics histos to kin_plots directory
+  outROOT->cd("kin_plots");
+  kin_HList->Write();
 
-  // 2d kinematics
-  H_the_vs_phe ->Write();
-  H_kf_vs_the ->Write();
-  H_kf_vs_beta ->Write();
-  H_pf_vs_beta ->Write();
-	
+  
   outROOT->Close();
 }
 

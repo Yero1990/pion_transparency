@@ -339,10 +339,14 @@ class e4nu_analyzer
   // 2d kinematics
   TH2F *H_the_vs_phe;
   TH2F *H_kf_vs_the;
-  TH2F *H_kf_vs_beta;
-  TH2F *H_pf_vs_beta;
+  TH2F *H_beta_vs_kf;
+  TH2F *H_beta_vs_pf;
 
-
+  
+  //Create Categorical TLists to store histograms based on caterogy
+  TList *kin_HList;    //store kinematical histograms (i.e., Q2, W, th_e, etc.)
+  
+  
   
 };
 
