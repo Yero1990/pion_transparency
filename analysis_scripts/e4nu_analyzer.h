@@ -116,6 +116,10 @@ class e4nu_analyzer
   Double_t the_xmin;
   Double_t the_xmax;
 
+  Double_t phe_nbins;
+  Double_t phe_xmin;
+  Double_t phe_xmax;
+  
   Double_t thq_nbins;
   Double_t thq_xmin;
   Double_t thq_xmax;
@@ -232,6 +236,7 @@ class e4nu_analyzer
   Double_t Q2; 
   Double_t xbj;
   Double_t th_e;
+  Double_t ph_e;
   Double_t th_q, ph_q;
   Double_t W, W2;
   
@@ -265,6 +270,7 @@ class e4nu_analyzer
   TH1F *H_Q2;     
   TH1F *H_xbj;
   TH1F *H_the;
+  TH1F *H_phe;
   TH1F *H_thq;    
   TH1F *H_phq;  
   TH1F *H_W;      
@@ -294,6 +300,10 @@ class e4nu_analyzer
   TH1F *H_thrq;	  
   TH1F *H_phxq;	  
   TH1F *H_phrq;	  
+
+  // 2d kinematics
+  TH2F *H_the_vs_phe;
+  TH2F *H_kf_vs_the;
   
 };
 

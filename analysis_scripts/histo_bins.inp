@@ -68,10 +68,15 @@ xbj_nbins = 100
 xbj_xmin = 0.
 xbj_xmax = 2.
 
-# electron arm central angle
+# electron arm in-plane angle
 the_nbins = 100
 the_xmin = 0.
 the_xmax = 90.0
+
+# electron arm out-of-plane angle
+phe_nbins = 100
+phe_xmin = -180.
+phe_xmax = 180.0
 
 # in-plane angle between q-vector and +z (beam)
 thq_nbins = 100
@@ -186,23 +191,23 @@ Tr_xmax = 10.
 
 # In-plane angle between detected particle and q 
 thxq_nbins = 100
-thxq_xmin = -180.
-thxq_xmax = 180.
+thxq_xmin = -190.
+thxq_xmax = 190.
 
 # In-plane angle between the recoil system and q 
 thrq_nbins = 100
-thrq_xmin = -180.
-thrq_xmax = 180.
+thrq_xmin = -190.
+thrq_xmax = 190.
 
 # Out-of-plane angle between detected particle and q
 phxq_nbins = 100
-phxq_xmin = -180.
-phxq_xmax = 180.
+phxq_xmin = -190.
+phxq_xmax = 190.
 
 # Out-of-plane angle between recoil system and q 
 phrq_nbins = 100
-phrq_xmin = -180.
-phrq_xmax = 180.
+phrq_xmin = -190.
+phrq_xmax = 190.
 
 
 

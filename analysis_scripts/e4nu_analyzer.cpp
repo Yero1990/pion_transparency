@@ -85,7 +85,7 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   
   // --- initialize histogram pointers ----
 
-  // electron
+  // electron kinematics
   H_kf   =  NULL;
   H_kfx  =  NULL; 
   H_kfy  =  NULL; 
@@ -98,12 +98,13 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_Q2   =  NULL; 
   H_xbj  =  NULL;
   H_the  =  NULL;
+  H_phe  =  NULL;
   H_thq	 =  NULL; 
   H_phq	 =  NULL;  
   H_W    =  NULL; 
   H_W2   =  NULL; 
  
-  // hadron
+  // hadron kinematics
   H_pf   =  NULL;
   H_pfx  =  NULL;
   H_pfy  =  NULL;
@@ -127,7 +128,11 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_thrq       = NULL;	
   H_phxq       = NULL;	
   H_phrq       = NULL;
-  
+
+  // 2D kinematics
+  H_the_vs_phe = NULL;
+  H_kf_vs_the  = NULL;
+
 }
 
 //_______________________________________________________________________________
@@ -158,6 +163,7 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_Q2  ;  H_Q2   =  NULL; 
     delete H_xbj ;  H_xbj  =  NULL;
     delete H_the ;  H_the  =  NULL;
+    delete H_phe ;  H_phe  =  NULL;
     delete H_thq ;  H_thq  =  NULL; 
     delete H_phq ;  H_phq  =  NULL; 
     delete H_W   ;  H_W    =  NULL; 
@@ -188,8 +194,10 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_phxq;	   H_phxq       = NULL;	
     delete H_phrq;	   H_phrq       = NULL;	
     
+    // 2D kinematics
+    delete H_the_vs_phe; H_the_vs_phe = NULL;
+    delete H_kf_vs_the;  H_kf_vs_the  = NULL;
     
-
 }
 
 //_______________________________________________________________________________
@@ -271,6 +279,10 @@ void e4nu_analyzer::SetHistBins()
   the_nbins    	= stod(split(FindString("the_nbins",  input_HBinFileName.Data())[0], '=')[1]);
   the_xmin     	= stod(split(FindString("the_xmin",  input_HBinFileName.Data())[0], '=')[1]);
   the_xmax     	= stod(split(FindString("the_xmax",  input_HBinFileName.Data())[0], '=')[1]);
+
+  phe_nbins    	= stod(split(FindString("phe_nbins",  input_HBinFileName.Data())[0], '=')[1]);
+  phe_xmin     	= stod(split(FindString("phe_xmin",  input_HBinFileName.Data())[0], '=')[1]);
+  phe_xmax     	= stod(split(FindString("phe_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
   thq_nbins    	= stod(split(FindString("thq_nbins",  input_HBinFileName.Data())[0], '=')[1]);
   thq_xmin     	= stod(split(FindString("thq_xmin",  input_HBinFileName.Data())[0], '=')[1]);
@@ -399,7 +411,8 @@ void e4nu_analyzer::CreateHist()
   H_nu      = new TH1F("H_nu",  "Energy Transfer, #nu",                       nu_nbins,  nu_xmin,  nu_xmax);
   H_Q2      = new TH1F("H_Q2",  "4-Momentum Transfer, Q^{2}",                 Q2_nbins,  Q2_xmin,  Q2_xmax); 		    
   H_xbj     = new TH1F("H_xbj", "x-Bjorken",                                  xbj_nbins, xbj_xmin, xbj_xmax);
-  H_the     = new TH1F("H_the", "Electron Scattering Angle, #theta_{e}",      the_nbins, the_xmin, the_xmax);
+  H_the     = new TH1F("H_the", "Electron In-Plane Scattering Angle, #theta_{e}",      the_nbins, the_xmin, the_xmax);
+  H_phe     = new TH1F("H_phe", "Electron Out-Of-Plane Scattering Angle, #phi_{e}",      phe_nbins, phe_xmin, phe_xmax);
   H_thq     = new TH1F("H_thq", "In-Plane Angle w.r.t +z(lab), #theta_{q}",   thq_nbins, thq_xmin, thq_xmax);     
   H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", phq_nbins, phq_xmin, phq_xmax);
   H_W       = new TH1F("H_W",   "Invariant Mass, W",                          W_nbins,   W_xmin,   W_xmax); 				    
@@ -430,6 +443,9 @@ void e4nu_analyzer::CreateHist()
   H_phxq    = new TH1F("H_phxq", "Out-of-Plane Angle, #phi_{xq}",                    phxq_nbins, phxq_xmin, phxq_xmax);
   H_phrq    = new TH1F("H_phrq", "Out-of-Plane Angle, #phi_{rq}",                    phrq_nbins, phrq_xmin, phrq_xmax);
 
+  // 2d kinematics
+  H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #theta_{e} [deg]; #phi_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
+  H_kf_vs_the = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; k_{f}; #theta_{e} [deg];", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
   
 }
 
@@ -558,6 +574,8 @@ void e4nu_analyzer::EventLoop()
 	th_q = p4_q.Theta()*TMath::RadToDeg();
 	ph_q = p4_q.Phi()*TMath::RadToDeg();
 	th_e = electrons[0]->getTheta()*TMath::RadToDeg();
+	ph_e = electrons[0]->getPhi()*TMath::RadToDeg();
+
 	//invariant mass squared 
 	W2 = (p4_q + p4_target).M2();
 	W =  (p4_q + p4_target).M();
@@ -643,6 +661,7 @@ void e4nu_analyzer::EventLoop()
 	H_Q2  ->Fill(Q2);
 	H_xbj ->Fill(xbj); 	
 	H_the ->Fill(th_e);
+	H_phe ->Fill(ph_e);		
 	H_thq ->Fill(th_q);
 	H_phq ->Fill(ph_q);	
 	H_W   ->Fill(W);   
@@ -672,7 +691,11 @@ void e4nu_analyzer::EventLoop()
 	H_thrq      ->Fill(th_rq);	  
 	H_phxq      ->Fill(ph_xq);	  
 	H_phrq      ->Fill(ph_rq);
-	
+
+	// 2d kinematics
+	H_the_vs_phe ->Fill(th_e, ph_e);
+	H_kf_vs_the ->Fill(kf, th_e);
+	  
       } // end final state particle requirement
 
       
