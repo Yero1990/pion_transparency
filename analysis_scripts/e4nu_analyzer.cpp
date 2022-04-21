@@ -450,6 +450,9 @@ void e4nu_analyzer::CreateHist()
 
   SetHistBins();
 
+  //Create TLists to store categorical histograms
+  kin_HList  = new TList();
+    
   // electron
   H_kf_vx      = new TH1F("H_kf_vx",  "Final e^{-} x-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
   H_kf_vy      = new TH1F("H_kf_vy",  "Final e^{-} y-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
