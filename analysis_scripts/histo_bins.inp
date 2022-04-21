@@ -15,13 +15,13 @@
 
 # final electron vertex [cm]
 kf_vert_nbins = 100
-kf_vert_xmin = -10.
-kf_vert_xmax = 10.
+kf_vert_xmin = -15.
+kf_vert_xmax = 15.
 
 # final electron vertex time [ns]
 kf_vtime_nbins = 100
-kf_vtime_xmin = -25.
-kf_vtime_xmax = 25.
+kf_vtime_xmin = 0.1
+kf_vtime_xmax = 200.
 
 # final electron momentum [GeV/c]
 kf_nbins = 100
@@ -85,8 +85,8 @@ the_xmax = 90.0
 
 # electron arm out-of-plane angle
 phe_nbins = 100
-phe_xmin = -180.
-phe_xmax = 180.0
+phe_xmin = -190.
+phe_xmax = 190.0
 
 # in-plane angle between q-vector and +z (beam)
 thq_nbins = 100
@@ -95,8 +95,8 @@ thq_xmax = 90.
 
 # out-of-plane angle between q-vector and +z (beam)
 phq_nbins = 100
-phq_xmin = -180.
-phq_xmax = 180.
+phq_xmin = -190.
+phq_xmax = 190.
 
 
 # invariant mass (assuming proton target mass)
@@ -107,7 +107,12 @@ W_xmax = 3.5
 # invariant mass squared
 W2_nbins = 100
 W2_xmin = 0.1 
-W2_xmax = 3.5;
+W2_xmax = 3.5
+
+# beta
+beta_nbins = 100
+beta_xmin = 0.01
+beta_xmax = 1.5
 
 #--------------------------------------
 #-----Detected Hadron Kinematics   ----
@@ -116,8 +121,8 @@ W2_xmax = 3.5;
 
 # final detected hadron vertex [cm]
 pf_vert_nbins = 100
-pf_vert_xmin = -5.
-pf_vert_xmax = 5.
+pf_vert_xmin = -15.
+pf_vert_xmax = 15.
 
 # final detected hadron vertex time [ns]
 pf_vtime_nbins = 100

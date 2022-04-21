@@ -107,7 +107,8 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_phq	 =  NULL;  
   H_W    =  NULL; 
   H_W2   =  NULL; 
- 
+  H_beta_elec = NULL;
+  
   // hadron kinematics
   H_pf_vx = NULL;
   H_pf_vy = NULL;
@@ -136,11 +137,14 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_thrq       = NULL;	
   H_phxq       = NULL;	
   H_phrq       = NULL;
+  H_beta_had   = NULL;
 
   // 2D kinematics
   H_the_vs_phe = NULL;
   H_kf_vs_the  = NULL;
-
+  H_kf_vs_beta = NULL;
+  H_pf_vs_beta = NULL;
+  
 }
 
 //_______________________________________________________________________________
@@ -181,7 +185,7 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_phq ;  H_phq  =  NULL; 
     delete H_W   ;  H_W    =  NULL; 
     delete H_W2  ;  H_W2   =  NULL;     
-
+    delete H_beta_elec; H_beta_elec = NULL;
     // hadron
     delete H_pf_vx ; H_pf_vx = NULL;
     delete H_pf_vy ; H_pf_vy = NULL;
@@ -210,11 +214,14 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_thrq;	   H_thrq       = NULL;	
     delete H_phxq;	   H_phxq       = NULL;	
     delete H_phrq;	   H_phrq       = NULL;	
-    
+    delete H_beta_had; H_beta_had = NULL;
+
     // 2D kinematics
     delete H_the_vs_phe; H_the_vs_phe = NULL;
     delete H_kf_vs_the;  H_kf_vs_the  = NULL;
-    
+    delete H_kf_vs_beta; H_kf_vs_beta = NULL;
+    delete H_pf_vs_beta; H_pf_vs_beta = NULL;
+  
 }
 
 //_______________________________________________________________________________
@@ -325,6 +332,9 @@ void e4nu_analyzer::SetHistBins()
   W2_xmin      	= stod(split(FindString("W2_xmin",  input_HBinFileName.Data())[0], '=')[1]);
   W2_xmax      	= stod(split(FindString("W2_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
+  beta_nbins    = stod(split(FindString("beta_nbins",  input_HBinFileName.Data())[0], '=')[1]);
+  beta_xmin     = stod(split(FindString("beta_xmin",  input_HBinFileName.Data())[0], '=')[1]);
+  beta_xmax     = stod(split(FindString("beta_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
   // detected hadron kinematics (and also recoil system)
   pf_vert_nbins	= stod(split(FindString("pf_vert_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
@@ -455,7 +465,8 @@ void e4nu_analyzer::CreateHist()
   H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", phq_nbins, phq_xmin, phq_xmax);
   H_W       = new TH1F("H_W",   "Invariant Mass, W",                          W_nbins,   W_xmin,   W_xmax); 				    
   H_W2      = new TH1F("H_W2",  "Invariant Mass, W^{2}",                      W2_nbins,  W2_xmin,  W2_xmax); 			     		 				    
-
+  H_beta_elec = new TH1F("H_beta_elec",  "e^{-} #beta",                       beta_nbins, beta_xmin, beta_xmax); 			     		 				    
+  
   // hadron
   H_pf_vx      = new TH1F("H_pf_vx",  "Final Hadron x-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
   H_pf_vy      = new TH1F("H_pf_vy",  "Final Hadron y-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
@@ -484,10 +495,13 @@ void e4nu_analyzer::CreateHist()
   H_thrq    = new TH1F("H_thrq", "In-Plane Angle, #theta_{rq}",                    thrq_nbins, thrq_xmin, thrq_xmax);
   H_phxq    = new TH1F("H_phxq", "Out-of-Plane Angle, #phi_{xq}",                    phxq_nbins, phxq_xmin, phxq_xmax);
   H_phrq    = new TH1F("H_phrq", "Out-of-Plane Angle, #phi_{rq}",                    phrq_nbins, phrq_xmin, phrq_xmax);
+  H_beta_had = new TH1F("H_beta_had",  "Hadron #beta",                             beta_nbins, beta_xmin, beta_xmax); 			     		 				    
 
   // 2d kinematics
   H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
   H_kf_vs_the = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; #theta_{e} [deg]; k_{f} [GeV/c]", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
+  H_kf_vs_beta = new TH2F("H_kf_vs_beta", "e^{-} Momentum vs. #beta_{e}; #beta_{e} ; k_{f} [GeV/c]", beta_nbins, beta_xmin, beta_xmax, kf_nbins, kf_xmin, kf_xmax);      
+  H_pf_vs_beta = new TH2F("H_pf_vs_beta", "Hadron Momentum vs. #beta_{h}; #beta_{h} ; p_{f} [GeV/c]", beta_nbins, beta_xmin, beta_xmax, pf_nbins, pf_xmin, pf_xmax);      
   
 }
 
@@ -512,6 +526,7 @@ void e4nu_analyzer::CreateTree()
   data_tree->Branch("px",     &br_px,    "px/D");
   data_tree->Branch("py",     &br_py,    "px/D");
   data_tree->Branch("pz",     &br_pz,    "px/D");
+  data_tree->Branch("beta",   &br_beta,  "beta/D");
   data_tree->Branch("pid",    &br_pid,   "pid/I");
   data_tree->Branch("npart",  &br_npart, "npart/I");
   data_tree->Branch("chi2pid",&br_chi2pid,"chi2pid/D");
@@ -564,6 +579,7 @@ void e4nu_analyzer::EventLoop()
 	  br_py = p->par()->getPy();
 	  br_pz = p->par()->getPz();
 	  br_p  = p->par()->getP();
+	  br_beta = p->par()->getBeta();
 	  br_pid = p->par()->getPid();	  
 	  br_chi2pid = p->par()->getChi2Pid();
 
@@ -602,6 +618,9 @@ void e4nu_analyzer::EventLoop()
 	kf_y = electrons[0]->par()->getPy();
 	kf_z = electrons[0]->par()->getPz(); 
 	kf   = electrons[0]->par()->getP();
+
+	// scattered electron beta
+	e_beta = electrons[0]->par()->getBeta();
 	
 	// knocked-out hadron vertex (i.e., interaction point location)
 	pf_vx = protons[0]->par()->getVx();
@@ -614,6 +633,9 @@ void e4nu_analyzer::EventLoop()
 	pf_y = protons[0]->par()->getPy();
 	pf_z = protons[0]->par()->getPz(); 
 	pf   = protons[0]->par()->getP();
+
+	// knocked-out protons beta
+	h_beta = protons[0]->par()->getBeta();
 
 	
 	// set 4-momenta of beam, target, scattered electron and primary hadron detected 
@@ -732,7 +754,8 @@ void e4nu_analyzer::EventLoop()
 	H_phq ->Fill(ph_q);	
 	H_W   ->Fill(W);   
 	H_W2  ->Fill(W2);  	
-
+	H_beta_elec->Fill(e_beta);
+	
 	// hadron kinematics
 	H_pf_vx  ->Fill(pf_vx);
 	H_pf_vy  ->Fill(pf_vy);
@@ -761,10 +784,13 @@ void e4nu_analyzer::EventLoop()
 	H_thrq      ->Fill(th_rq);	  
 	H_phxq      ->Fill(ph_xq);	  
 	H_phrq      ->Fill(ph_rq);
+	H_beta_had->Fill(h_beta);
 
 	// 2d kinematics
 	H_the_vs_phe ->Fill(ph_e, th_e);
 	H_kf_vs_the ->Fill(th_e, kf);
+	H_kf_vs_beta ->Fill(e_beta, kf);
+	H_pf_vs_beta ->Fill(h_beta, pf);
 	  
       } // end final state particle requirement
 
@@ -831,7 +857,8 @@ void e4nu_analyzer::WriteHist()
   H_phq ->Write();
   H_W   ->Write();   
   H_W2  ->Write();
-
+  H_beta_elec ->Write();
+  
   // hadron (detected and "missing") kinematics
   H_pf_vx  ->Write();
   H_pf_vy  ->Write();
@@ -860,6 +887,7 @@ void e4nu_analyzer::WriteHist()
   H_thrq    ->Write(); 
   H_phxq    ->Write(); 
   H_phrq    ->Write(); 
+  H_beta_had ->Write();
 
   // 2d kinematics
   H_the_vs_phe ->Write();

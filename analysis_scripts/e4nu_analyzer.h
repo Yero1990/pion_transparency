@@ -49,6 +49,7 @@ class e4nu_analyzer
   // declare generic branch variables
   Double_t br_vx, br_vy, br_vz, br_vt;  // generic final state particle vertex components, time
   Double_t br_px, br_py, br_pz, br_p;  // generic final state particle momentum components
+  Double_t br_beta;
   Double_t br_chi2pid;
   Int_t br_pid;    // particle identification (e.g., 11-> electron, 2212-> proton, etc)
   Int_t br_npart; // total number of particles per event
@@ -145,6 +146,9 @@ class e4nu_analyzer
   Double_t W2_xmin;
   Double_t W2_xmax;
 
+  Double_t beta_nbins;
+  Double_t beta_xmin;
+  Double_t beta_xmax;
 
   // hadron
   Double_t pf_vert_nbins;   
@@ -257,6 +261,7 @@ class e4nu_analyzer
   Double_t ph_e;
   Double_t th_q, ph_q;
   Double_t W, W2;
+  Double_t e_beta;
   
   // declare hadron kinematic variables
   Double_t pf_vx, pf_vy, pf_vz, pf_vt; // hadron vertex, time [cm], [ns]
@@ -273,7 +278,8 @@ class e4nu_analyzer
   Double_t th_rq;                 //In-plane angle between the recoil system and q [rad]  
   Double_t ph_xq;                 //Out-of-plane angle between detected particle and q [rad]   
   Double_t ph_rq;                 //Out-of-plane anfle between recoil system and q [rad]
-  
+  Double_t h_beta;
+
   // --- declare histograms ---
 
   // electron
@@ -298,7 +304,8 @@ class e4nu_analyzer
   TH1F *H_phq;  
   TH1F *H_W;      
   TH1F *H_W2;     
-
+  TH1F *H_beta_elec;
+  
   // hadron
   TH1F *H_pf_vx;
   TH1F *H_pf_vy;
@@ -327,10 +334,15 @@ class e4nu_analyzer
   TH1F *H_thrq;	  
   TH1F *H_phxq;	  
   TH1F *H_phrq;	  
+  TH1F *H_beta_had;
 
   // 2d kinematics
   TH2F *H_the_vs_phe;
   TH2F *H_kf_vs_the;
+  TH2F *H_kf_vs_beta;
+  TH2F *H_pf_vs_beta;
+
+
   
 };
 
