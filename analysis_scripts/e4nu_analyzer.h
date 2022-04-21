@@ -9,7 +9,7 @@ class e4nu_analyzer
  public:
 
   // constructor 
-  e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", TString tgt="" );
+  e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", TString tgt="", TString det_h="");
 
   // destructor
   ~e4nu_analyzer();
@@ -33,7 +33,7 @@ class e4nu_analyzer
   const Double_t dtr = pi / 180.;
 
   // init parms
-  TString ifname, ofname, target;
+  TString ifname, ofname, target, detected_hadron;
 
   // declare data TFile / ROOTTree pointers
   TFile *outROOT;
@@ -60,8 +60,7 @@ class e4nu_analyzer
   TLorentzVector p4_q; 
   TLorentzVector p4_recoil; // recoil system 4-momenta (usually, undetected)
 
-
-
+  
   // declare histogram bining variables
 
   //-----------------------------
@@ -220,7 +219,11 @@ class e4nu_analyzer
   Double_t phrq_nbins;
   Double_t phrq_xmin;
   Double_t phrq_xmax;
-  
+
+  // declare generic mass variables
+  Double_t Mt;  // mass of target
+  Double_t Mh;  // mass of detected particle X
+   
   // declare electron kinematic variables
   Double_t Eb;
   Double_t kf, kf_x, kf_y, kf_z;  
@@ -236,7 +239,7 @@ class e4nu_analyzer
   Double_t pf, pf_x, pf_y, pf_z;
   Double_t th_x;     // hadron in-palne angle
   Double_t MM, MM2;  // missing mass
-  Double_t Em, Em_nuc;       // missing energy, deuteron special :)
+  Double_t Em, Em_nuc, Erecoil;       // missing energy, deuteron special :), production reaction
   Double_t Pm;
   Double_t Pmx_lab, Pmy_lab, Pmz_lab;  // missing momentum (lab frame)
   Double_t Pmx_q, Pmy_q, Pmz_q;  // missing momentum (lab frame)
@@ -275,9 +278,10 @@ class e4nu_analyzer
   TH1F *H_thx;
   TH1F *H_MM;     
   TH1F *H_MM2; 
-  TH1F *H_Em;
+  TH1F *H_Em;	  
   TH1F *H_Em_nuc;
-  TH1F *H_Pm;
+  TH1F *H_Em_recoil; 
+  TH1F *H_Pm;	  
   TH1F *H_Pmx_lab;
   TH1F *H_Pmy_lab;
   TH1F *H_Pmz_lab;
@@ -286,10 +290,10 @@ class e4nu_analyzer
   TH1F *H_Pmz_q;  
   TH1F *H_Tx;	  
   TH1F *H_Tr;	  
-  TH1F *H_thxq;
-  TH1F *H_thrq;
-  TH1F *H_phxq;
-  TH1F *H_phrq;
+  TH1F *H_thxq;	  
+  TH1F *H_thrq;	  
+  TH1F *H_phxq;	  
+  TH1F *H_phrq;	  
   
 };
 

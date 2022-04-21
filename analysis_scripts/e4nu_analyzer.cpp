@@ -49,8 +49,8 @@ using namespace clas12;
 using namespace std;
 
 //_______________________________________________________________________________
-e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", TString tgt="" )
-  : ifname(inHIPO_fname), ofname(outROOT_fname), target(tgt)
+e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", TString tgt="", TString det_h="" )
+  : ifname(inHIPO_fname), ofname(outROOT_fname), target(tgt), detected_hadron(det_h)
 {
   
   
@@ -113,6 +113,7 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_MM2  =  NULL; 
   H_Em   =  NULL;
   H_Em_nuc   =  NULL;
+  H_Em_recoil   =  NULL;
   H_Pm       =  NULL;
   H_Pmx_lab  =  NULL;
   H_Pmy_lab  =  NULL;
@@ -171,7 +172,8 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_MM  ;  H_MM   =  NULL; 
     delete H_MM2 ;  H_MM2  =  NULL; 
     delete H_Em      ;	  H_Em       =  NULL;	
-    delete H_Em_nuc  ;	  H_Em_nuc   =  NULL;	
+    delete H_Em_nuc  ;	  H_Em_nuc   =  NULL;
+    delete H_Em_recoil  ;	  H_Em_recoil   =  NULL;	
     delete H_Pm      ;	  H_Pm       =  NULL;	
     delete H_Pmx_lab ;	  H_Pmx_lab  =  NULL;	
     delete H_Pmy_lab ;	  H_Pmy_lab  =  NULL;	
@@ -201,6 +203,12 @@ void e4nu_analyzer::SetParticleMass()
   
   MP = db->GetParticle(2212)->Mass();  
   me = db->GetParticle(11)->Mass();
+
+  // set target mass
+  if(target=="LH2"){ Mt = MP };
+
+  // set detected primary hadron mass A(e,e'p)X
+  if(detected_hadron=="proton") { Mh = MP };
   
 }
 
@@ -406,7 +414,8 @@ void e4nu_analyzer::CreateHist()
   H_MM      = new TH1F("H_MM",  "Missing Mass, M_{miss}",                       MM_nbins, MM_xmin, MM_xmax);        		    
   H_MM2     = new TH1F("H_MM2", "Missing Mass Squared, M^{2}_{miss}",          MM2_nbins, MM2_xmin, MM2_xmax); 	    
   H_Em      = new TH1F("H_Emiss","Missing Energy",                            Em_nbins, Em_xmin, Em_xmax);   
-  H_Em_nuc  = new TH1F("H_Em_nuc","Nuclear Missing Energy",                    Em_nbins, Em_xmin, Em_xmax); 
+  H_Em_nuc    = new TH1F("H_Em_nuc","Nuclear Missing Energy",                    Em_nbins, Em_xmin, Em_xmax);
+  H_Em_recoil  = new TH1F("H_Em_recoil","Recoil Missing Energy",                Em_nbins, Em_xmin, Em_xmax); 
   H_Pm      = new TH1F("H_Pm","Missing Momentum, P_{miss}",                    Pm_nbins, Pm_xmin, Pm_xmax); 
   H_Pmx_lab = new TH1F("H_Pmx_Lab","P_{miss, x} (Lab)",                    Pmx_lab_nbins, Pmx_lab_xmin, Pmx_lab_xmax);         
   H_Pmy_lab = new TH1F("H_Pmy_Lab","P_{miss, y} (Lab)",                    Pmy_lab_nbins, Pmy_lab_xmin, Pmy_lab_xmax);    
@@ -510,8 +519,8 @@ void e4nu_analyzer::EventLoop()
       //
       //======================================================
       
-      // (e,e'p) 
-      if ( electrons.size()==1 && protons.size()==1 && particles.size()==2 ){
+      // (e,e'p)
+      if ( electrons.size()==1 && protons.size()==1 && particles.size()>=2 ){
 	
 	
 	// --- get momentum components of final state particles ---
@@ -527,14 +536,15 @@ void e4nu_analyzer::EventLoop()
 	pf_y = protons[0]->par()->getPy();
 	pf_z = protons[0]->par()->getPz(); 
 	pf   = protons[0]->par()->getP();
+
 	
-	// set 4-momenta of particle of interest
+	// set 4-momenta of beam, target, scattered electron and primary hadron detected 
 	p4_beam.SetXYZM(0., 0., Eb, me);
-	p4_target.SetXYZM(0.,0.,0., MP);
+	p4_target.SetXYZM(0.,0.,0., Mt);
 	p4_electron.SetXYZM(kf_x, kf_y, kf_z, me);
-	p4_hadron.SetXYZM(pf_x, pf_y, pf_z, MP);		
+	p4_hadron.SetXYZM(pf_x, pf_y, pf_z, Mh);		
 	
-	// 4-momentum trasnferred
+	// 4-momentum transferred
 	p4_q = p4_beam - p4_electron;
 
 	// calculate electron kinematics
@@ -548,26 +558,74 @@ void e4nu_analyzer::EventLoop()
 	th_q = p4_q.Theta()*TMath::RadToDeg();
 	ph_q = p4_q.Phi()*TMath::RadToDeg();
 	th_e = electrons[0]->getTheta()*TMath::RadToDeg();
+	//invariant mass squared 
+	W2 = (p4_q + p4_target).M2();
+	W =  (p4_q + p4_target).M();
+	//if(W2>0){
+	//  W = sqrt(W2); // INVARIANT MASS
+	//}
+
 	
-	// define recoil (usually undetected) system kinematics
+	// calculate hadron (and "missing" particles) kinematics
+
+	// detected particle in-plane angle
+	th_x = protons[0]->getTheta()*TMath::RadToDeg();
+
+	// 4-momentum of undetected recoil system
 	p4_recoil = p4_q + p4_target - p4_hadron;  
 
-	// detected particle X : in-plane angle
-	th_x = protons[0]->getTheta()*TMath::RadToDeg();
+	// missing momentum components in the lab coordinate system
+	Pmx_lab = p4_recoil.X();
+	Pmy_lab = p4_recoil.Y();
+	Pmz_lab = p4_recoil.Z();
 	
-	W = -1000.;
-	MM = -1000.;
+	// Calculate angles of detected and recoil system wrt q-vector 
+	// xq and bq are the 3-momentum vectors of "detected" and "recoil" expressed in
+	// the coordinate system where q is the z-axis and the x-axis
+	// lies in the scattering plane (defined by q and e') and points
+	// in the direction of e', so the out-of-plane angle lies within
+	// -90<phi_xq<90deg if the hadron is detected on the downstream/forward side of q.
+	TRotation rot_to_q;
+	rot_to_q.SetZAxis( p4_q->Vect(), p4_electron->Vect()).Invert();
+	TVector3 xq = p4_hadron.Vect();
+	TVector3 bq = p4_recoil.Vect();
+	xq *= rot_to_q;  
+	bq *= rot_to_q;
 
-	MM2 = p4_recoil.M2();  //recoil ("MISSING") mass squared of the system
+	th_xq     = xq.Theta();   //"theta_xq" (in-plane angle of detected particle relative to q-vector)
+	ph_xq     = xq.Phi();     //"out-of-plane angle", "phi" 
+	th_rq     = bq.Theta();
+	ph_rq     = bq.Phi();
 
-	if(MM2>0){
-	  MM = sqrt(MM2); // INVARIANT MASS
-	}
+	// Missing momentum and components wrt q-vector
+	// The definition of p_miss as the negative of the undetected recoil
+	// momentum is the standard nuclear physics convention.
+	TVector3 p_miss = -bq;
+	Pm   = p_miss.Mag();  
+
+	// The missing momentum components in the q coordinate system.
+	Pmx_q = p_miss.X();
+	Pmy_q = p_miss.Y();
+	Pmz_q = p_miss.Z();
+
+
+	// invariant mass of the recoil system a.k.a. "missing" mass 
+	MM2 = p4_recoil.M2();  
+	MM = p4_recoil.M();
+
+	//if(MM2>0){
+	//  MM = sqrt(MM2); // INVARIANT MASS
+	//}
+
+	// calculate kinetic energues of detected and recoil system
+	Tx =  p4_hadron.E() - p4_hadron.M();
+	Tr =  p4_recoil.E() - p4_recoil.M();
 	
-	W2 = (p4_q + p4_target).M2(); //invariant mass squared 
-	if(W2>0){
-	  W = sqrt(W2); // INVARIANT MASS
-	}
+	// missing energy calculations
+	Em_nuc    = nu - Tx - Tr;
+	Em        = nu + p4_target.M() - p4_hadron.E();
+	Em_recoil = p4_recoil.E();
+	
 	
 	
 	// Fill Histograms 
@@ -591,14 +649,29 @@ void e4nu_analyzer::EventLoop()
 	H_W2  ->Fill(W2);  	
 
 	// hadron kinematics
-	H_pf  ->Fill(pf);
+	H_pf   ->Fill(pf);
 	H_pfx  ->Fill(pf_x);
 	H_pfy  ->Fill(pf_y);
 	H_pfz  ->Fill(pf_z);
 	H_thx  ->Fill(th_x);
-	H_MM  ->Fill(MM);  
-	H_MM2 ->Fill(MM2); 
-
+	H_MM   ->Fill(MM);  
+	H_MM2  ->Fill(MM2); 
+	H_Em   ->Fill(Em);	  
+	H_Em_nuc    ->Fill(Em_nuc);
+	H_Em_recoil ->Fill(Em_recoil); 
+	H_Pm        ->Fill(Pm);	  
+	H_Pmx_lab   ->Fill(Pmx_lab);
+	H_Pmy_lab   ->Fill(Pmy_lab);
+	H_Pmz_lab   ->Fill(Pmz_lab);
+	H_Pmx_q     ->Fill(Pmx_q);  
+	H_Pmy_q     ->Fill(Pmy_q);  
+	H_Pmz_q     ->Fill(Pmz_q);  
+	H_Tx        ->Fill(Tx);	  
+	H_Tr        ->Fill(Tr);	  
+	H_thxq      ->Fill(th_xq);	  
+	H_thrq      ->Fill(th_rq);	  
+	H_phxq      ->Fill(ph_xq);	  
+	H_phrq      ->Fill(ph_rq);
 	
       } // end final state particle requirement
 
@@ -669,7 +742,23 @@ void e4nu_analyzer::WriteHist()
   H_thx  ->Write();
   H_MM  ->Write();    
   H_MM2 ->Write();
-
+  H_Em  ->Write();
+  H_Em_nuc ->Write();
+  H_Em_recoil ->Write();
+  H_Pm      ->Write(); 
+  H_Pmx_lab ->Write(); 
+  H_Pmy_lab ->Write(); 
+  H_Pmz_lab ->Write(); 
+  H_Pmx_q   ->Write(); 
+  H_Pmy_q   ->Write(); 
+  H_Pmz_q   ->Write(); 
+  H_Tx      ->Write(); 
+  H_Tr      ->Write(); 
+  H_thxq    ->Write(); 
+  H_thrq    ->Write(); 
+  H_phxq    ->Write(); 
+  H_phrq    ->Write(); 
+  
   outROOT->Close();
 }
 
