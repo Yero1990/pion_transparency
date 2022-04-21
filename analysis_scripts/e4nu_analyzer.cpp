@@ -205,10 +205,10 @@ void e4nu_analyzer::SetParticleMass()
   me = db->GetParticle(11)->Mass();
 
   // set target mass
-  if(target=="LH2"){ Mt = MP };
+  if(target=="LH2"){ Mt = MP; }
 
   // set detected primary hadron mass A(e,e'p)X
-  if(detected_hadron=="proton") { Mh = MP };
+  if(detected_hadron=="proton") { Mh = MP; }
   
 }
 
@@ -586,7 +586,7 @@ void e4nu_analyzer::EventLoop()
 	// in the direction of e', so the out-of-plane angle lies within
 	// -90<phi_xq<90deg if the hadron is detected on the downstream/forward side of q.
 	TRotation rot_to_q;
-	rot_to_q.SetZAxis( p4_q->Vect(), p4_electron->Vect()).Invert();
+	rot_to_q.SetZAxis( p4_q.Vect(), p4_electron.Vect()).Invert();
 	TVector3 xq = p4_hadron.Vect();
 	TVector3 bq = p4_recoil.Vect();
 	xq *= rot_to_q;  

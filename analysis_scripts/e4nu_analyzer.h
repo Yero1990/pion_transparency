@@ -239,7 +239,7 @@ class e4nu_analyzer
   Double_t pf, pf_x, pf_y, pf_z;
   Double_t th_x;     // hadron in-palne angle
   Double_t MM, MM2;  // missing mass
-  Double_t Em, Em_nuc, Erecoil;       // missing energy, deuteron special :), production reaction
+  Double_t Em, Em_nuc, Em_recoil;       // missing energy, deuteron special :), production reaction
   Double_t Pm;
   Double_t Pmx_lab, Pmy_lab, Pmz_lab;  // missing momentum (lab frame)
   Double_t Pmx_q, Pmy_q, Pmz_q;  // missing momentum (lab frame)
