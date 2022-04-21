@@ -655,6 +655,13 @@ void e4nu_analyzer::EventLoop()
 	  br_pid = p->par()->getPid();	  
 	  br_chi2pid = p->par()->getChi2Pid();
 
+	  cout << "pid: " << br_pid << endl;
+	  cout << " region: " << p->getRegion() << endl;
+	  //cout << "hadron region: " << p->getRegion() << endl;
+	  
+	  cout << " sector: " << p->getSector() << endl;
+	  //cout << "hadron sector: " << p->getSector() << endl;
+	
 	}
       
       //Fill Tree Here !
@@ -677,11 +684,6 @@ void e4nu_analyzer::EventLoop()
       if ( electrons.size()==1 && protons.size()==1 && particles.size()>=2 ){
 	
 
-	cout << "e- region: " << electrons.getRegion() << endl;
-	cout << "hadron region: " << protons.getRegion() << endl;
-
-	cout << "e- sector: " << electrons.getSector() << endl;
-	cout << "hadron sector: " << protons.getSector() << endl;
 	
 	
 	// --- get vertex/momentum components of final state particles ---
