@@ -684,7 +684,9 @@ void e4nu_analyzer::EventLoop()
       if ( electrons.size()==1 && protons.size()>=1 && particles.size()>=2 ){
 	
 
-	
+	//NOTE: if there are multiple protons, the proton with highest momentum is the most
+	// likely to have been directly hit by the virtual photon, so in order to get the maximum, one can do:
+	//double leading_proton = *max_element(protons_momentum.begin(), protons_momentum.end());, where protons_momentum [] is an array
 	
 	// --- get vertex/momentum components of final state particles ---
 
@@ -872,8 +874,39 @@ void e4nu_analyzer::EventLoop()
 	H_kf_vs_the ->Fill(th_e, kf);
 	H_beta_vs_kf ->Fill(kf, e_beta);
 	H_beta_vs_pf ->Fill(pf, h_beta);
-	  
-      } // end final state particle requirement
+
+
+	// Fill certain kin. variables per region (either detected in Forward or Central Detector, FD - 2000, CD - 4000)
+
+	//Forward Detector
+	if(electrons[0]->getRegion()==2000){
+	  /*
+	  H_W_FD->Fill();
+	  if( electrons[0]->getSector()==0 ) {H_W_FD_sec1;}
+	  if( electrons[0]->getSector()==1 ) {H_W_FD_sec2;}
+	  if( electrons[0]->getSector()==2 ) {H_W_FD_sec3;}
+	  if( electrons[0]->getSector()==3 ) {H_W_FD_sec4;}
+	  if( electrons[0]->getSector()==4 ) {H_W_FD_sec5;}
+	  if( electrons[0]->getSector()==5 ) {H_W_FD_sec6;}
+
+	  if(protons[0]->getRegion()==2000){
+	    H_MM_FD->Fill();
+	  }
+	  */
+	}
+	//Central Detector
+	else if(electrons[0]->getRegion()==4000){
+	  /*
+	  H_W_CD->Fill();
+	  if( electrons[0]->getSector()==0 ) {H_W_CD_sec1;}
+	  if( electrons[0]->getSector()==1 ) {H_W_CD_sec2;}
+	  if( electrons[0]->getSector()==2 ) {H_W_CD_sec3;}
+	  if( electrons[0]->getSector()==3 ) {H_W_CD_sec4;}
+	  if( electrons[0]->getSector()==4 ) {H_W_CD_sec5;}
+	  if( electrons[0]->getSector()==5 ) {H_W_CD_sec6;}
+	}
+	  */
+	} // end final state particle requirement
 
       
       
