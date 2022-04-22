@@ -85,6 +85,8 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
 
   //Initialize TList Pointers
   kin_HList = NULL;
+  kin_HList_FD = NULL;
+  kin_HList_CD = NULL;
   
   // --- initialize histogram pointers ----
 
@@ -148,6 +150,23 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_beta_vs_kf = NULL;
   H_beta_vs_pf = NULL;
 
+  // selected kin. @ Forward Detector 
+  H_W_FD        = NULL;
+  H_W_FD_sec1   = NULL;
+  H_W_FD_sec2   = NULL;
+  H_W_FD_sec3   = NULL;
+  H_W_FD_sec4   = NULL;
+  H_W_FD_sec5   = NULL;
+  H_W_FD_sec6   = NULL;
+  
+  // selected kin. @ Central Detector 
+  H_W_CD        = NULL;
+  H_W_CD_sec1   = NULL;
+  H_W_CD_sec2   = NULL;
+  H_W_CD_sec3   = NULL;
+  H_W_CD_sec4   = NULL;
+  H_W_CD_sec5   = NULL;
+  H_W_CD_sec6   = NULL;
   
   
 }
@@ -229,6 +248,24 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_kf_vs_the;  H_kf_vs_the  = NULL;
     delete H_beta_vs_kf; H_beta_vs_kf = NULL;
     delete H_beta_vs_pf; H_beta_vs_pf = NULL;
+
+    // selected kin. @ Forward Detector 
+    delete H_W_FD;      H_W_FD       = NULL;
+    delete H_W_FD_sec1; H_W_FD_sec1  = NULL;
+    delete H_W_FD_sec2; H_W_FD_sec2  = NULL;
+    delete H_W_FD_sec3; H_W_FD_sec3  = NULL;
+    delete H_W_FD_sec4; H_W_FD_sec4  = NULL;
+    delete H_W_FD_sec5; H_W_FD_sec5  = NULL;
+    delete H_W_FD_sec6; H_W_FD_sec6  = NULL;
+    
+    // selected kin. @ Central Detector 
+    delete H_W_CD;      H_W_CD       = NULL;
+    delete H_W_CD_sec1; H_W_CD_sec1  = NULL;
+    delete H_W_CD_sec2; H_W_CD_sec2  = NULL;
+    delete H_W_CD_sec3; H_W_CD_sec3  = NULL;
+    delete H_W_CD_sec4; H_W_CD_sec4  = NULL;
+    delete H_W_CD_sec5; H_W_CD_sec5  = NULL;
+    delete H_W_CD_sec6; H_W_CD_sec6  = NULL;
   
 }
 
@@ -452,7 +489,9 @@ void e4nu_analyzer::CreateHist()
 
   //Create TLists to store categorical histograms
   kin_HList  = new TList();
-    
+  kin_HList_FD  = new TList();
+  kin_HList_CD  = new TList();
+  
   // electron
   H_kf_vx      = new TH1F("H_kf_vx",  "Final e^{-} x-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
   H_kf_vy      = new TH1F("H_kf_vy",  "Final e^{-} y-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
@@ -474,8 +513,8 @@ void e4nu_analyzer::CreateHist()
   H_thq     = new TH1F("H_thq", "In-Plane Angle w.r.t +z(lab), #theta_{q}",   thq_nbins, thq_xmin, thq_xmax);     
   H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", phq_nbins, phq_xmin, phq_xmax);
   H_W       = new TH1F("H_W",   "Invariant Mass, W",                          W_nbins,   W_xmin,   W_xmax); 				    
-  H_W2      = new TH1F("H_W2",  "Invariant Mass, W^{2}",                      W2_nbins,  W2_xmin,  W2_xmax); 			     		 				    
-  H_beta_elec = new TH1F("H_beta_elec",  "e^{-} #beta",                       beta_nbins, beta_xmin, beta_xmax); 			     		 				    
+  H_W2      = new TH1F("H_W2",  "Invariant Mass, W^{2}",                      W2_nbins,  W2_xmin,  W2_xmax);   
+  H_beta_elec = new TH1F("H_beta_elec",  "e^{-} #beta",                       beta_nbins, beta_xmin, beta_xmax);  
   
   // hadron
   H_pf_vx      = new TH1F("H_pf_vx",  "Final Hadron x-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
@@ -505,14 +544,33 @@ void e4nu_analyzer::CreateHist()
   H_thrq      = new TH1F("H_thrq", "In-Plane Angle, #theta_{rq}",                    thrq_nbins, thrq_xmin, thrq_xmax);
   H_phxq      = new TH1F("H_phxq", "Out-of-Plane Angle, #phi_{xq}",                    phxq_nbins, phxq_xmin, phxq_xmax);
   H_phrq      = new TH1F("H_phrq", "Out-of-Plane Angle, #phi_{rq}",                    phrq_nbins, phrq_xmin, phrq_xmax);
-  H_beta_had  = new TH1F("H_beta_had",  "Hadron #beta",                             beta_nbins, beta_xmin, beta_xmax); 			     		 				    
+  H_beta_had  = new TH1F("H_beta_had",  "Hadron #beta",                             beta_nbins, beta_xmin, beta_xmax); 			     	           
 
   // 2d kinematics
-   H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
-   H_kf_vs_the  = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; #theta_{e} [deg]; k_{f} [GeV/c]", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
-   H_beta_vs_kf = new TH2F("H_beta_vs_kf", " #beta_{e} vs. e^{-} Momentum; k_{f} [GeV/c]; #beta_{e}", kf_nbins, kf_xmin, kf_xmax, beta_nbins, beta_xmin, beta_xmax);      
-   H_beta_vs_pf = new TH2F("H_beta_vs_pf", " #beta_{h} vs. Hadron Momentum; p_{f} [GeV/c]; #beta_{h}", pf_nbins, pf_xmin, pf_xmax, beta_nbins, beta_xmin, beta_xmax);      
-
+  H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
+  H_kf_vs_the  = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; #theta_{e} [deg]; k_{f} [GeV/c]", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
+  H_beta_vs_kf = new TH2F("H_beta_vs_kf", " #beta_{e} vs. e^{-} Momentum; k_{f} [GeV/c]; #beta_{e}", kf_nbins, kf_xmin, kf_xmax, beta_nbins, beta_xmin, beta_xmax);      
+  H_beta_vs_pf = new TH2F("H_beta_vs_pf", " #beta_{h} vs. Hadron Momentum; p_{f} [GeV/c]; #beta_{h}", pf_nbins, pf_xmin, pf_xmax, beta_nbins, beta_xmin, beta_xmax);      
+  
+  // selected kin. @ Forward Detector 
+  H_W_FD        =  new TH1F("H_W_FD",        "FD: Invariant Mass, W",       W_nbins,   W_xmin,   W_xmax);
+  H_W_FD_sec1   =  new TH1F("H_W_FD_sec1",   "FD sec1: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_FD_sec2   =  new TH1F("H_W_FD_sec2",   "FD sec2: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_FD_sec3   =  new TH1F("H_W_FD_sec3",   "FD sec3: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_FD_sec4   =  new TH1F("H_W_FD_sec4",   "FD sec4: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_FD_sec5   =  new TH1F("H_W_FD_sec5",   "FD sec5: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_FD_sec6   =  new TH1F("H_W_FD_sec6",   "FD sec6: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  
+  // selected kin. @ Central Detector 
+  H_W_CD        =  new TH1F("H_W_CD",        "CD: Invariant Mass, W",       W_nbins,   W_xmin,   W_xmax);
+  H_W_CD_sec1   =  new TH1F("H_W_CD_sec1",   "CD sec1: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_CD_sec2   =  new TH1F("H_W_CD_sec2",   "CD sec2: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_CD_sec3   =  new TH1F("H_W_CD_sec3",   "CD sec3: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_CD_sec4   =  new TH1F("H_W_CD_sec4",   "CD sec4: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_CD_sec5   =  new TH1F("H_W_CD_sec5",   "CD sec5: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+  H_W_CD_sec6   =  new TH1F("H_W_CD_sec6",   "CD sec6: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
+   
+  
   //Add Kin Histos to TList
 
   // electron kinematic histos
@@ -569,11 +627,29 @@ void e4nu_analyzer::CreateHist()
   kin_HList->Add(  H_phrq     );
   kin_HList->Add(  H_beta_had );
 
-  // 2d kin
+  // 2d kinematics
   kin_HList->Add( H_the_vs_phe );
   kin_HList->Add( H_kf_vs_the  );
   kin_HList->Add( H_beta_vs_kf );
   kin_HList->Add( H_beta_vs_pf );
+
+  // selected kin. @ Forward Detector 
+  kin_HList_FD->Add( H_W_FD );
+  kin_HList_FD->Add( H_W_FD_sec1 );
+  kin_HList_FD->Add( H_W_FD_sec2 );
+  kin_HList_FD->Add( H_W_FD_sec3 );
+  kin_HList_FD->Add( H_W_FD_sec4 );
+  kin_HList_FD->Add( H_W_FD_sec5 );
+  kin_HList_FD->Add( H_W_FD_sec6 );
+
+  // selected kin. @ Central Detector 
+  kin_HList_CD->Add( H_W_CD );
+  kin_HList_CD->Add( H_W_CD_sec1 );
+  kin_HList_CD->Add( H_W_CD_sec2 );
+  kin_HList_CD->Add( H_W_CD_sec3 );
+  kin_HList_CD->Add( H_W_CD_sec4 );
+  kin_HList_CD->Add( H_W_CD_sec5 );
+  kin_HList_CD->Add( H_W_CD_sec6 );
   
 }
 
@@ -880,33 +956,33 @@ void e4nu_analyzer::EventLoop()
 
 	//Forward Detector
 	if(electrons[0]->getRegion()==2000){
-	  /*
-	  H_W_FD->Fill();
-	  if( electrons[0]->getSector()==0 ) {H_W_FD_sec1;}
-	  if( electrons[0]->getSector()==1 ) {H_W_FD_sec2;}
-	  if( electrons[0]->getSector()==2 ) {H_W_FD_sec3;}
-	  if( electrons[0]->getSector()==3 ) {H_W_FD_sec4;}
-	  if( electrons[0]->getSector()==4 ) {H_W_FD_sec5;}
-	  if( electrons[0]->getSector()==5 ) {H_W_FD_sec6;}
+	  
+	  H_W_FD->Fill(W);
+	  if( electrons[0]->getSector()==0 ) {H_W_FD_sec1->Fill(W);}
+	  if( electrons[0]->getSector()==1 ) {H_W_FD_sec2->Fill(W);}
+	  if( electrons[0]->getSector()==2 ) {H_W_FD_sec3->Fill(W);}
+	  if( electrons[0]->getSector()==3 ) {H_W_FD_sec4->Fill(W);}
+	  if( electrons[0]->getSector()==4 ) {H_W_FD_sec5->Fill(W);}
+	  if( electrons[0]->getSector()==5 ) {H_W_FD_sec6->Fill(W);}
 
-	  if(protons[0]->getRegion()==2000){
-	    H_MM_FD->Fill();
-	  }
-	  */
+	  //if(protons[0]->getRegion()==2000){
+	  // H_MM_FD->Fill();
+	  //}
+	  
 	}
 	//Central Detector
 	else if(electrons[0]->getRegion()==4000){
-	  /*
+	  
 	  H_W_CD->Fill();
-	  if( electrons[0]->getSector()==0 ) {H_W_CD_sec1;}
-	  if( electrons[0]->getSector()==1 ) {H_W_CD_sec2;}
-	  if( electrons[0]->getSector()==2 ) {H_W_CD_sec3;}
-	  if( electrons[0]->getSector()==3 ) {H_W_CD_sec4;}
-	  if( electrons[0]->getSector()==4 ) {H_W_CD_sec5;}
-	  if( electrons[0]->getSector()==5 ) {H_W_CD_sec6;}
+	  if( electrons[0]->getSector()==0 ) {H_W_CD_sec1->Fill(W);}
+	  if( electrons[0]->getSector()==1 ) {H_W_CD_sec2->Fill(W);}
+	  if( electrons[0]->getSector()==2 ) {H_W_CD_sec3->Fill(W);}
+	  if( electrons[0]->getSector()==3 ) {H_W_CD_sec4->Fill(W);}
+	  if( electrons[0]->getSector()==4 ) {H_W_CD_sec5->Fill(W);}
+	  if( electrons[0]->getSector()==5 ) {H_W_CD_sec6->Fill(W);}
 	}
-	  */
-	} // end final state particle requirement
+	  
+      } // end final state particle requirement
 
       
       
@@ -945,13 +1021,18 @@ void e4nu_analyzer::WriteHist()
 
   //Make directories to store histograms based on category
   outROOT->mkdir("kin_plots");
+  outROOT->mkdir("kin_plots_FD");
+  outROOT->mkdir("kin_plots_CD");
       
-  outROOT->cd();
-
   //Write Kinematics histos to kin_plots directory
   outROOT->cd("kin_plots");
   kin_HList->Write();
 
+  outROOT->cd("kin_plots_FD");
+  kin_HList_FD->Write();
+
+  outROOT->cd("kin_plots_CD");
+  kin_HList_CD->Write();
   
   outROOT->Close();
 }

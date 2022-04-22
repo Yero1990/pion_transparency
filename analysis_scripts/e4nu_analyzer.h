@@ -342,10 +342,28 @@ class e4nu_analyzer
   TH2F *H_beta_vs_kf;
   TH2F *H_beta_vs_pf;
 
+  // selected kin. @ Forward Detector 
+  TH1F *H_W_FD;
+  TH1F *H_W_FD_sec1;
+  TH1F *H_W_FD_sec2;
+  TH1F *H_W_FD_sec3;
+  TH1F *H_W_FD_sec4;
+  TH1F *H_W_FD_sec5;
+  TH1F *H_W_FD_sec6;
+  
+  // selected kin. @ Central Detector 
+  TH1F *H_W_CD;
+  TH1F *H_W_CD_sec1;
+  TH1F *H_W_CD_sec2;
+  TH1F *H_W_CD_sec3;
+  TH1F *H_W_CD_sec4;
+  TH1F *H_W_CD_sec5;
+  TH1F *H_W_CD_sec6;
   
   //Create Categorical TLists to store histograms based on caterogy
   TList *kin_HList;    //store kinematical histograms (i.e., Q2, W, th_e, etc.)
-  
+  TList *kin_HList_FD; //store kinematical histograms ONLY detected in FD (i.e., Q2, W, th_e, etc.)
+  TList *kin_HList_CD; //store kinematical histograms ONLY detected in CD (i.e., Q2, W, th_e, etc.)
   
   
 };
