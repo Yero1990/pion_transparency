@@ -954,9 +954,10 @@ void e4nu_analyzer::EventLoop()
 
 	// Fill certain kin. variables per region (either detected in Forward or Central Detector, FD - 2000, CD - 4000)
 
+	cout << "electrons[0]->getRegion() --> " << electrons[0]->getRegion() << endl;
 	//Forward Detector
 	if(electrons[0]->getRegion()==2000){
-	  
+	  cout <<  "electrons[0]->getSector() --> " <<  electrons[0]->getSector() << endl;
 	  H_W_FD->Fill(W);
 	  if( electrons[0]->getSector()==0 ) {H_W_FD_sec1->Fill(W);}
 	  if( electrons[0]->getSector()==1 ) {H_W_FD_sec2->Fill(W);}
