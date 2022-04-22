@@ -50,7 +50,7 @@ using namespace std;
 
 //_______________________________________________________________________________
 e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", TString tgt="", TString det_h="" )
-  : ifname(inHIPO_fname), ofname(outROOT_fname), target(tgt), detected_hadron(det_h)
+  : ifname(inHIPO_fname), ofname(outROOT_fname), target(tgt), det_had(det_h)
 {
   
   
@@ -285,7 +285,7 @@ void e4nu_analyzer::SetParticleMass()
   if(target=="LH2"){ Mt = MP; }
 
   // set detected primary hadron mass A(e,e'p)X
-  if(detected_hadron=="proton") { Mh = MP; }
+  if(det_had=="proton") { Mh = MP; }
   
 }
 
@@ -493,58 +493,58 @@ void e4nu_analyzer::CreateHist()
   kin_HList_CD  = new TList();
   
   // electron
-  H_kf_vx      = new TH1F("H_kf_vx",  "Final e^{-} x-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
-  H_kf_vy      = new TH1F("H_kf_vy",  "Final e^{-} y-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
-  H_kf_vz      = new TH1F("H_kf_vz",  "Final e^{-} z-Vertex ",                kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax );
-  H_kf_vt      = new TH1F("H_kf_vt",  "Final e^{-} time @ Vertex ",           kf_vtime_nbins, kf_vtime_xmin, kf_vtime_xmax );
-  H_kf      = new TH1F("H_kf",  "Final e^{-} Momentum",                       kf_nbins,  kf_xmin,  kf_xmax );
-  H_kfx     = new TH1F("H_kfx", "Final e^{-} Momentum (x-comp)",              kfx_nbins, kfx_xmin, kfx_xmax );
-  H_kfy     = new TH1F("H_kfy", "Final e^{-} Momentum (y-comp)",              kfy_nbins, kfy_xmin, kfy_xmax );			    
-  H_kfz     = new TH1F("H_kfz", "Final e^{-} Momentum (z-comp)",              kfz_nbins, kfz_xmin, kfz_xmax );
-  H_q       = new TH1F("H_q",   "3-Momentum Transfer, |#vec{q}|",             q_nbins,   q_xmin,   q_xmax);		    
-  H_qx      = new TH1F("H_qx",  "|#vec{q}_{x}|",                              qx_nbins,  qx_xmin,  qx_xmax);				    
-  H_qy      = new TH1F("H_qy",  "|#vec{q}_{y}|",                              qy_nbins,  qy_xmin,  qy_xmax);				    
-  H_qz      = new TH1F("H_qz",  "|#vec{q}_{z}|",                              qz_nbins,  qz_xmin,  qz_xmax);
-  H_nu      = new TH1F("H_nu",  "Energy Transfer, #nu",                       nu_nbins,  nu_xmin,  nu_xmax);
-  H_Q2      = new TH1F("H_Q2",  "4-Momentum Transfer, Q^{2}",                 Q2_nbins,  Q2_xmin,  Q2_xmax); 		    
-  H_xbj     = new TH1F("H_xbj", "x-Bjorken",                                  xbj_nbins, xbj_xmin, xbj_xmax);
-  H_the     = new TH1F("H_the", "Electron In-Plane Scattering Angle, #theta_{e}",      the_nbins, the_xmin, the_xmax);
-  H_phe     = new TH1F("H_phe", "Electron Out-Of-Plane Scattering Angle, #phi_{e}",      phe_nbins, phe_xmin, phe_xmax);
-  H_thq     = new TH1F("H_thq", "In-Plane Angle w.r.t +z(lab), #theta_{q}",   thq_nbins, thq_xmin, thq_xmax);     
-  H_phq     = new TH1F("H_phq", "Out-of-Plane Angle w.r.t +z(lab), #phi_{q}", phq_nbins, phq_xmin, phq_xmax);
-  H_W       = new TH1F("H_W",   "Invariant Mass, W",                          W_nbins,   W_xmin,   W_xmax); 				    
-  H_W2      = new TH1F("H_W2",  "Invariant Mass, W^{2}",                      W2_nbins,  W2_xmin,  W2_xmax);   
-  H_beta_elec = new TH1F("H_beta_elec",  "e^{-} #beta",                       beta_nbins, beta_xmin, beta_xmax);  
+  H_kf_vx   = new TH1F("H_kf_vx",       "e^{-} x-vertex ",                                    kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax  );
+  H_kf_vy   = new TH1F("H_kf_vy",       "e^{-} y-vertex ",                                    kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax  );
+  H_kf_vz   = new TH1F("H_kf_vz",       "e^{-} z-vertex ",                                    kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax  );
+  H_kf_vt   = new TH1F("H_kf_vt",       "e^{-} time @ Vertex ",                               kf_vtime_nbins, kf_vtime_xmin, kf_vtime_xmax );
+  H_kf      = new TH1F("H_kf",          "e^{-} momentum, |#vec{k}_{f}|",                      kf_nbins,  kf_xmin,  kf_xmax  );
+  H_kfx     = new TH1F("H_kfx",         "|#vec{k}_{f,x}|",                                    kfx_nbins, kfx_xmin, kfx_xmax );
+  H_kfy     = new TH1F("H_kfy",         "|#vec{k}_{f,y}|",                                    kfy_nbins, kfy_xmin, kfy_xmax );			    
+  H_kfz     = new TH1F("H_kfz",         "|#vec{k}_{f,z}|",                                    kfz_nbins, kfz_xmin, kfz_xmax );
+  H_q       = new TH1F("H_q",           "3-momentum transfer, |#vec{q}|",                     q_nbins,   q_xmin,   q_xmax   );		    
+  H_qx      = new TH1F("H_qx",          "|#vec{q}_{x}|",                                      qx_nbins,  qx_xmin,  qx_xmax  );				    
+  H_qy      = new TH1F("H_qy",          "|#vec{q}_{y}|",                                      qy_nbins,  qy_xmin,  qy_xmax  );				    
+  H_qz      = new TH1F("H_qz",          "|#vec{q}_{z}|",                                      qz_nbins,  qz_xmin,  qz_xmax  );
+  H_nu      = new TH1F("H_nu",          "energy transfer, #nu",                               nu_nbins,  nu_xmin,  nu_xmax  );
+  H_Q2      = new TH1F("H_Q2",          "4-momentum transfer, Q^{2}",                         Q2_nbins,  Q2_xmin,  Q2_xmax  ); 		    
+  H_xbj     = new TH1F("H_xbj",         "x-Bjorken",                                          xbj_nbins, xbj_xmin, xbj_xmax );
+  H_the     = new TH1F("H_the",         "e^{-} in-plane scat. angle, #theta_{e}",             the_nbins, the_xmin, the_xmax );
+  H_phe     = new TH1F("H_phe",         "e^{-} out-of-plane scat. angle, #phi_{e}",           phe_nbins, phe_xmin, phe_xmax );
+  H_thq     = new TH1F("H_thq",         "#vec{q} in-plane angle w.r.t +z(lab), #theta_{q}",   thq_nbins, thq_xmin, thq_xmax );     
+  H_phq     = new TH1F("H_phq",         "#vec{q} out-of-plane angle w.r.t +z(lab), #phi_{q}", phq_nbins, phq_xmin, phq_xmax );
+  H_W       = new TH1F("H_W",           "invariant mass, W",                                  W_nbins,   W_xmin,   W_xmax   ); 				    
+  H_W2      = new TH1F("H_W2",          "invariant mass, W^{2}",                              W2_nbins,  W2_xmin,  W2_xmax  );   
+  H_beta_elec = new TH1F("H_beta_elec",  "e^{-} #beta",                                       beta_nbins, beta_xmin, beta_xmax );  
   
   // hadron
-  H_pf_vx      = new TH1F("H_pf_vx",  "Final Hadron x-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
-  H_pf_vy      = new TH1F("H_pf_vy",  "Final Hadron y-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
-  H_pf_vz      = new TH1F("H_pf_vz",  "Final Hadron z-Vertex ",                pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
-  H_pf_vt      = new TH1F("H_pf_vt",  "Final Hadron time @ Vertex ",           pf_vtime_nbins, pf_vtime_xmin, pf_vtime_xmax );
-  H_pf        = new TH1F("H_pf",    "Final Hadron Momentum (detected), p_{f}",              pf_nbins, pf_xmin, pf_xmax  );
-  H_pfx       = new TH1F("H_pfx",  "Final Hadron Momentum, X-comp. p_{fx}",                    pfx_nbins, pfx_xmin, pfx_xmax );
-  H_pfy       = new TH1F("H_pfy",  "Final Hadron Momentum, Y-comp. p_{fy}",                    pfy_nbins, pfy_xmin, pfy_xmax);
-  H_pfz       = new TH1F("H_pfz",  "Final Hadron Momentum, Z-comp p_{fz}",                     pfz_nbins, pfz_xmin, pfz_xmax  );
-  H_thx       = new TH1F("H_thx",  "Final Hadron Scatteting Angle (detected), #theta_{x}",              thx_nbins, thx_xmin, thx_xmax);
-  H_MM        = new TH1F("H_MM",  "Missing Mass, M_{miss}",                       MM_nbins, MM_xmin, MM_xmax);        		    
-  H_MM2       = new TH1F("H_MM2", "Missing Mass Squared, M^{2}_{miss}",          MM2_nbins, MM2_xmin, MM2_xmax); 	    
-  H_Em        = new TH1F("H_Emiss","Missing Energy",                            Em_nbins, Em_xmin, Em_xmax);   
-  H_Em_nuc    = new TH1F("H_Em_nuc","Nuclear Missing Energy",                    Em_nbins, Em_xmin, Em_xmax);
-  H_Em_recoil = new TH1F("H_Em_recoil","Recoil Missing Energy",                Em_nbins, Em_xmin, Em_xmax); 
-  H_Pm        = new TH1F("H_Pm","Missing Momentum, P_{miss}",                    Pm_nbins, Pm_xmin, Pm_xmax); 
-  H_Pmx_lab   = new TH1F("H_Pmx_Lab","P_{miss, x} (Lab)",                    Pmx_lab_nbins, Pmx_lab_xmin, Pmx_lab_xmax);         
-  H_Pmy_lab   = new TH1F("H_Pmy_Lab","P_{miss, y} (Lab)",                    Pmy_lab_nbins, Pmy_lab_xmin, Pmy_lab_xmax);    
-  H_Pmz_lab   = new TH1F("H_Pmz_Lab","P_{miss, z} (Lab)",                    Pmz_lab_nbins, Pmz_lab_xmin, Pmz_lab_xmax);  
-  H_Pmx_q     = new TH1F("H_Pmx_q","P_{miss, xq} (w.r.t #vec{q}) ",                    Pmx_q_nbins, Pmx_q_xmin, Pmx_q_xmax);   
-  H_Pmy_q     = new TH1F("H_Pmy_q","P_{miss, yq} (w.r.t #vec{q}) ",                    Pmy_q_nbins, Pmy_q_xmin, Pmy_q_xmax); 
-  H_Pmz_q     = new TH1F("H_Pmz_q","P_{miss, zq} (along #vec{q}) ",                    Pmz_q_nbins, Pmz_q_xmin, Pmz_q_xmax); 
-  H_Tx        = new TH1F("H_Tx", "Kinetic Energy, T_{x} (detected)",                    Tx_nbins, Tx_xmin, Tx_xmax);     
-  H_Tr        = new TH1F("H_Tr", "Kinetic Energy, T_{r} (recoil)",                      Tr_nbins, Tr_xmin, Tr_xmax);  
-  H_thxq      = new TH1F("H_thxq", "In-Plane Angle, #theta_{xq}",                    thxq_nbins, thxq_xmin, thxq_xmax);
-  H_thrq      = new TH1F("H_thrq", "In-Plane Angle, #theta_{rq}",                    thrq_nbins, thrq_xmin, thrq_xmax);
-  H_phxq      = new TH1F("H_phxq", "Out-of-Plane Angle, #phi_{xq}",                    phxq_nbins, phxq_xmin, phxq_xmax);
-  H_phrq      = new TH1F("H_phrq", "Out-of-Plane Angle, #phi_{rq}",                    phrq_nbins, phrq_xmin, phrq_xmax);
-  H_beta_had  = new TH1F("H_beta_had",  "Hadron #beta",                             beta_nbins, beta_xmin, beta_xmax); 			     	           
+  H_pf_vx     = new TH1F("H_pf_vx",     Form(" %s x-vertex ",      det_had.Data()),                         pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
+  H_pf_vy     = new TH1F("H_pf_vy",     Form(" %s y-vertex ",      det_had.Data()),                         pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
+  H_pf_vz     = new TH1F("H_pf_vz",     Form(" %s z-vertex ",      det_had.Data()),                         pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
+  H_pf_vt     = new TH1F("H_pf_vt",     Form(" %s time @ vertex ", det_had.Data()),                         pf_vtime_nbins, pf_vtime_xmin, pf_vtime_xmax );
+  H_pf        = new TH1F("H_pf",        Form(" %s momentum (detected), p_{f}", det_had.Data()),             pf_nbins, pf_xmin, pf_xmax  );
+  H_pfx       = new TH1F("H_pfx",       Form(" %s momentum, X-comp. p_{fx}",   det_had.Data()),             pfx_nbins, pfx_xmin, pfx_xmax );
+  H_pfy       = new TH1F("H_pfy",       Form(" %s momentum, Y-comp. p_{fy}",   det_had.Data()),             pfy_nbins, pfy_xmin, pfy_xmax);
+  H_pfz       = new TH1F("H_pfz",       Form(" %s momentum, Z-comp. p_{fz}",   det_had.Data()),             pfz_nbins, pfz_xmin, pfz_xmax  );
+  H_thx       = new TH1F("H_thx",       Form(" %s scat. angle (detected), #theta_{x}",  det_had.Data() ),   thx_nbins, thx_xmin, thx_xmax);
+  H_MM        = new TH1F("H_MM",        "missing mass, M_{miss}",                                           MM_nbins, MM_xmin, MM_xmax);        		    
+  H_MM2       = new TH1F("H_MM2",       "missing mass Squared, M^{2}_{miss}",                               MM2_nbins, MM2_xmin, MM2_xmax); 	    
+  H_Em        = new TH1F("H_Emiss",     "missing energy",                                                   Em_nbins, Em_xmin, Em_xmax);   
+  H_Em_nuc    = new TH1F("H_Em_nuc",    "nuclear missing energy",                                           Em_nbins, Em_xmin, Em_xmax);
+  H_Em_recoil = new TH1F("H_Em_recoil", "recoil missing energy",                                            Em_nbins, Em_xmin, Em_xmax); 
+  H_Pm        = new TH1F("H_Pm",        "missing momentum, P_{m}",                                          Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_Pmx_lab   = new TH1F("H_Pmx_Lab",   "P_{m, x} (Lab)",                                                   Pmx_lab_nbins, Pmx_lab_xmin, Pmx_lab_xmax);         
+  H_Pmy_lab   = new TH1F("H_Pmy_Lab",   "P_{m, y} (Lab)",                                                   Pmy_lab_nbins, Pmy_lab_xmin, Pmy_lab_xmax);    
+  H_Pmz_lab   = new TH1F("H_Pmz_Lab",   "P_{m, z} (Lab)",                                                   Pmz_lab_nbins, Pmz_lab_xmin, Pmz_lab_xmax);  
+  H_Pmx_q     = new TH1F("H_Pmx_q",     "P_{m, xq} (w.r.t #vec{q}) ",                                       Pmx_q_nbins, Pmx_q_xmin, Pmx_q_xmax);   
+  H_Pmy_q     = new TH1F("H_Pmy_q",     "P_{m, yq} (w.r.t #vec{q}) ",                                       Pmy_q_nbins, Pmy_q_xmin, Pmy_q_xmax); 
+  H_Pmz_q     = new TH1F("H_Pmz_q",     "P_{m, zq} (along #vec{q}) ",                                       Pmz_q_nbins, Pmz_q_xmin, Pmz_q_xmax); 
+  H_Tx        = new TH1F("H_Tx",        Form(" %s kinetic energy, T_{x} (detected)", det_had.Data()),       Tx_nbins, Tx_xmin, Tx_xmax);     
+  H_Tr        = new TH1F("H_Tr",        "recoil system kinetic energy, T_{r} (recoil)",                     Tr_nbins, Tr_xmin, Tr_xmax);  
+  H_thxq      = new TH1F("H_thxq",      Form(" %s in-plane angle, #theta_{xq}", det_had.Data()),            thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq      = new TH1F("H_thrq",      "recoil system in-plane angle, #theta_{rq}",                        thrq_nbins, thrq_xmin, thrq_xmax);
+  H_phxq      = new TH1F("H_phxq",      Form(" %s out-of-plane angle, #phi_{xq}", det_had.Data()),          phxq_nbins, phxq_xmin, phxq_xmax);
+  H_phrq      = new TH1F("H_phrq",      "recoil system out-of-plane angle, #phi_{rq}",                      phrq_nbins, phrq_xmin, phrq_xmax);
+  H_beta_had  = new TH1F("H_beta_had",  Form("%s #beta", det_had.Data()),                                   beta_nbins, beta_xmin, beta_xmax); 			     	           
 
   // 2d kinematics
   H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
@@ -745,20 +745,110 @@ void e4nu_analyzer::EventLoop()
       
       // get std::vector array of final state particles for the reaction of interest
       // if there are multiple of the same particle, e.g. 3 protons, but only want 1 proton,
-      // then require protons.size()==1 later on.
+      // then require protons.size()>=1 later on.
       auto electrons = c12->getByID(11);
       auto protons   = c12->getByID(2212);
+      auto neutrons  = c12->getByID(2112);
+      auto pip       = c12->getByID(211);  // pion +
+      auto pim       = c12->getByID(-211); // pion -
+      auto pi0       = c12->getByID(111);  // pion +
 
 
-      
+      // define boolean flag for reaction of interest
+      Bool_t Aeep   = false;   // single proton knockout, (e,e'p)
+      Bool_t Aeepip = false;  // pion+ electro-production (e,e'pi+) : ep -> e'pi+ (X) : virtual photon strikes quark in nucleon, producing a pi+ + (continuum of "missing" particles)
+      Bool_t Aeepim = false;  // pion- electro-production (e,e'pi-) : ep -> e'pi- (X) : virtual photon strikes quark in neutron, producing a pi- + (continuum of "missing" particles)
+
       //======================================================
       //
-      // select final state particle of interest to analyze
+      // select final state particles of interest to analyze
       //
       //======================================================
       
-      // (e,e'p)
-      if ( electrons.size()==1 && protons.size()>=1 && particles.size()>=2 ){
+      // single e-proton knockout, A(e,e'p), require exactly 1 electron, at least one proton and at least 2 particles in final state 
+      Aeep   = electrons.size()==1 && protons.size()>=1 && particles.size()>=2;
+      
+      // pion+ electro-production A(e,e'pi+) : eN -> e'pi+ (X) :  virtual photon strikes quark in nucleon, producing a pi+ + (continuum of "missing" particles)
+      Aeepip = electrons.size()==1 && pip.size()>=1 && particles.size()>=2;
+
+      // pion- electro-production A(e,e'pi-) : eN -> e'pi+ (X) :  virtual photon strikes quark in nucleon, producing a pi- + (continuum of "missing" particles)
+      Aeepim = electrons.size()==1 && pim.size()>=1 && particles.size()>=2;
+
+      Bool_t reaction_type = false;
+
+      if(det_had=="proton"){
+
+	reaction_type = Aeep;
+
+	// knocked-out protons vertex (i.e., interaction point location)
+	pf_vx = protons[0]->par()->getVx();
+	pf_vy = protons[0]->par()->getVy();
+	pf_vz = protons[0]->par()->getVz();
+	pf_vt = protons[0]->par()->getVt();
+	
+	// knocked-out protons 3-momentum
+	pf_x = protons[0]->par()->getPx(); 
+	pf_y = protons[0]->par()->getPy();
+	pf_z = protons[0]->par()->getPz(); 
+	pf   = protons[0]->par()->getP();
+
+	// knocked-out protons beta
+	h_beta = protons[0]->par()->getBeta();
+
+	// detected particle in-plane angle
+	th_x = protons[0]->getTheta()*TMath::RadToDeg();
+
+      }
+      
+      else if(det_had=="pi+"){
+	
+	reaction_type = Aeepip;
+	
+	// electro-produced pions+ vertex (i.e., interaction point location)
+	pf_vx = pip[0]->par()->getVx();
+	pf_vy = pip[0]->par()->getVy();
+	pf_vz = pip[0]->par()->getVz();
+	pf_vt = pip[0]->par()->getVt();
+	
+	// electro-produced pions+ 3-momentum
+	pf_x = pip[0]->par()->getPx(); 
+	pf_y = pip[0]->par()->getPy();
+	pf_z = pip[0]->par()->getPz(); 
+	pf   = pip[0]->par()->getP();
+
+	// knocked-out pions+ beta
+	h_beta = pip[0]->par()->getBeta();
+
+	// detected particle in-plane angle
+	th_x = pip[0]->getTheta()*TMath::RadToDeg();
+
+      }
+      
+      else if(det_had=="pi-"){
+	
+	reaction_type = Aeepim;
+
+	// electro-produced pions- vertex (i.e., interaction point location)
+	pf_vx = pim[0]->par()->getVx();
+	pf_vy = pim[0]->par()->getVy();
+	pf_vz = pim[0]->par()->getVz();
+	pf_vt = pim[0]->par()->getVt();
+	
+	// electro-produced pions- 3-momentum
+	pf_x = pim[0]->par()->getPx(); 
+	pf_y = pim[0]->par()->getPy();
+	pf_z = pim[0]->par()->getPz(); 
+	pf   = pim[0]->par()->getP();
+
+	// knocked-out pions- beta
+	h_beta = pim[0]->par()->getBeta();
+
+	// detected particle in-plane angle
+	th_x = pim[0]->getTheta()*TMath::RadToDeg();
+	
+      }
+      
+      if ( reaction_type ){
 	
 
 	//NOTE: if there are multiple protons, the proton with highest momentum is the most
@@ -788,7 +878,7 @@ void e4nu_analyzer::EventLoop()
 	*/
 
 	
-	// --- get vertex/momentum components of final state particles ---
+	// --- get vertex/momentum components of scattered electron ---
 
 	// scattered electrons vertex (i.e., interaction point location)
 	kf_vx = electrons[0]->par()->getVx();
@@ -803,23 +893,7 @@ void e4nu_analyzer::EventLoop()
 	kf   = electrons[0]->par()->getP();
 
 	// scattered electron beta
-	e_beta = electrons[0]->par()->getBeta();
-	
-	// knocked-out hadron vertex (i.e., interaction point location)
-	pf_vx = protons[1]->par()->getVx();
-	pf_vy = protons[1]->par()->getVy();
-	pf_vz = protons[1]->par()->getVz();
-	pf_vt = protons[1]->par()->getVt();
-	
-	// knocked-out protons 3-momentum
-	pf_x = protons[1]->par()->getPx(); 
-	pf_y = protons[1]->par()->getPy();
-	pf_z = protons[1]->par()->getPz(); 
-	pf   = protons[1]->par()->getP();
-
-	// knocked-out protons beta
-	h_beta = protons[1]->par()->getBeta();
-
+	e_beta = electrons[0]->par()->getBeta();	
 	
 	// set 4-momenta of beam, target, scattered electron and primary hadron detected 
 	p4_beam.SetXYZM(0., 0., Eb, me);
@@ -852,9 +926,6 @@ void e4nu_analyzer::EventLoop()
 
 	
 	// calculate hadron (and "missing" particles) kinematics
-
-	// detected particle in-plane angle
-	th_x = protons[0]->getTheta()*TMath::RadToDeg();
 
 	// 4-momentum of undetected recoil system
 	p4_recoil = p4_q + p4_target - p4_hadron;  

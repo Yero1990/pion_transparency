@@ -33,7 +33,7 @@ class e4nu_analyzer
   const Double_t dtr = pi / 180.;
 
   // init parms
-  TString ifname, ofname, target, detected_hadron;
+  TString ifname, ofname, target, det_had;
 
   // declare data TFile / ROOTTree pointers
   TFile *outROOT;
