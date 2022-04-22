@@ -750,6 +750,27 @@ void e4nu_analyzer::EventLoop()
       auto protons   = c12->getByID(2212);
 
 
+      void print_vec( std::vector <double> const &a ) {
+	std::cout << "The vector elements are : ";
+	
+	for(int i=0; i < a.size(); i++)
+	  std::cout << a.at(i) << ' ';
+      }
+      
+      vector<double> pvec;
+      
+      for (int i=0; i<protons.size(); i++){
+	pvec.push_back( protons[i]->par()->getP() );
+      }
+      
+      // get maximum momentum value
+      double pvec_max =  *max_element( pvec.begin(), pvec.end() );
+      double idx = max_element(pvec.begin(),pvec.end()) - pvec.begin();
+
+      print_vec(pvec);
+      cout << "pvec_max = " << pvec_max << endl;
+      cout << "pvec_max idx = " << idx << endl;
+      
       //======================================================
       //
       // select final state particle of interest to analyze
@@ -954,17 +975,17 @@ void e4nu_analyzer::EventLoop()
 
 	// Fill certain kin. variables per region (either detected in Forward or Central Detector, FD - 2000, CD - 4000)
 
-	cout << "electrons[0]->getRegion() --> " << electrons[0]->getRegion() << endl;
+	//cout << "electrons[0]->getRegion() --> " << electrons[0]->getRegion() << endl;
 	//Forward Detector
 	if(electrons[0]->getRegion()==2000){
-	  cout <<  "electrons[0]->getSector() --> " <<  electrons[0]->getSector() << endl;
+	  //cout <<  "electrons[0]->getSector() --> " <<  electrons[0]->getSector() << endl;
 	  H_W_FD->Fill(W);
-	  if( electrons[0]->getSector()==0 ) {H_W_FD_sec1->Fill(W);}
-	  if( electrons[0]->getSector()==1 ) {H_W_FD_sec2->Fill(W);}
-	  if( electrons[0]->getSector()==2 ) {H_W_FD_sec3->Fill(W);}
-	  if( electrons[0]->getSector()==3 ) {H_W_FD_sec4->Fill(W);}
-	  if( electrons[0]->getSector()==4 ) {H_W_FD_sec5->Fill(W);}
-	  if( electrons[0]->getSector()==5 ) {H_W_FD_sec6->Fill(W);}
+	  if( electrons[0]->getSector()==1 ) {H_W_FD_sec1->Fill(W);}
+	  if( electrons[0]->getSector()==2 ) {H_W_FD_sec2->Fill(W);}
+	  if( electrons[0]->getSector()==3 ) {H_W_FD_sec3->Fill(W);}
+	  if( electrons[0]->getSector()==4 ) {H_W_FD_sec4->Fill(W);}
+	  if( electrons[0]->getSector()==5 ) {H_W_FD_sec5->Fill(W);}
+	  if( electrons[0]->getSector()==6 ) {H_W_FD_sec6->Fill(W);}
 
 	  //if(protons[0]->getRegion()==2000){
 	  // H_MM_FD->Fill();
@@ -975,12 +996,12 @@ void e4nu_analyzer::EventLoop()
 	else if(electrons[0]->getRegion()==4000){
 	  
 	  H_W_CD->Fill(W);
-	  if( electrons[0]->getSector()==0 ) {H_W_CD_sec1->Fill(W);}
-	  if( electrons[0]->getSector()==1 ) {H_W_CD_sec2->Fill(W);}
-	  if( electrons[0]->getSector()==2 ) {H_W_CD_sec3->Fill(W);}
-	  if( electrons[0]->getSector()==3 ) {H_W_CD_sec4->Fill(W);}
-	  if( electrons[0]->getSector()==4 ) {H_W_CD_sec5->Fill(W);}
-	  if( electrons[0]->getSector()==5 ) {H_W_CD_sec6->Fill(W);}
+	  if( electrons[0]->getSector()==1 ) {H_W_CD_sec1->Fill(W);}
+	  if( electrons[0]->getSector()==2 ) {H_W_CD_sec2->Fill(W);}
+	  if( electrons[0]->getSector()==3 ) {H_W_CD_sec3->Fill(W);}
+	  if( electrons[0]->getSector()==4 ) {H_W_CD_sec4->Fill(W);}
+	  if( electrons[0]->getSector()==5 ) {H_W_CD_sec5->Fill(W);}
+	  if( electrons[0]->getSector()==6 ) {H_W_CD_sec6->Fill(W);}
 	}
 	  
       } // end final state particle requirement
