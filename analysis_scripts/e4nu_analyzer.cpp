@@ -708,9 +708,9 @@ void e4nu_analyzer::EventLoop()
   while(chain.Next())
     {
       
-      //cout << "===========" << endl;
-      //cout << "event #: " << evt_cnt << endl;
-      //cout << "===========" << endl;
+      cout << "===========" << endl;
+      cout << "event #: " << evt_cnt << endl;
+      cout << "===========" << endl;
 
       // get std::vector array of all final state particles per event
       auto particles = c12->getDetParticles();
@@ -751,25 +751,6 @@ void e4nu_analyzer::EventLoop()
 
 
       
-      vector<double> pvec;
-      
-      for (int i=0; i<protons.size(); i++){
-	pvec.push_back( protons[i]->par()->getP() );
-      }
-      
-      // get maximum momentum value
-      double pvec_max =  *max_element( pvec.begin(), pvec.end() );
-      double idx = max_element(pvec.begin(),pvec.end()) - pvec.begin();
-
-      std::cout << "The vector elements are : ";
-      
-      for(int i=0; i < pvec.size(); i++){
-	std::cout << pvec.at(i) << ' ';
-      }
-      
-      cout << "pvec_max = " << pvec_max << endl;
-      cout << "pvec_max idx = " << idx << endl;
-      
       //======================================================
       //
       // select final state particle of interest to analyze
@@ -783,6 +764,26 @@ void e4nu_analyzer::EventLoop()
 	//NOTE: if there are multiple protons, the proton with highest momentum is the most
 	// likely to have been directly hit by the virtual photon, so in order to get the maximum, one can do:
 	//double leading_proton = *max_element(protons_momentum.begin(), protons_momentum.end());, where protons_momentum [] is an array
+
+	std::vector<double> pvec;
+	for (int i=0; i<protons.size(); i++){
+	  pvec.push_back( protons[i]->par()->getP() );
+	}
+	
+	// get maximum momentum value
+	double pvec_max =  *max_element( pvec.begin(), pvec.end() );
+	double idx = max_element(pvec.begin(),pvec.end()) - pvec.begin();
+	 
+	std::cout << "The vector elements are : ";
+	
+	for(int i=0; i < pvec.size(); i++){
+	  std::cout << pvec.at(i) << ' ';
+	}
+	
+	cout << "pvec_max = " << pvec_max << endl;
+	cout << "pvec_max idx = " << idx << endl;
+      
+
 	
 	// --- get vertex/momentum components of final state particles ---
 
