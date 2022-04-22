@@ -708,9 +708,9 @@ void e4nu_analyzer::EventLoop()
   while(chain.Next())
     {
       
-      cout << "===========" << endl;
-      cout << "event #: " << evt_cnt << endl;
-      cout << "===========" << endl;
+      //cout << "===========" << endl;
+      //cout << "event #: " << evt_cnt << endl;
+      //cout << "===========" << endl;
 
       // get std::vector array of all final state particles per event
       auto particles = c12->getDetParticles();
@@ -764,7 +764,10 @@ void e4nu_analyzer::EventLoop()
 	//NOTE: if there are multiple protons, the proton with highest momentum is the most
 	// likely to have been directly hit by the virtual photon, so in order to get the maximum, one can do:
 	//double leading_proton = *max_element(protons_momentum.begin(), protons_momentum.end());, where protons_momentum [] is an array
+	// NOTE2:  I found that actually, for an arrat of protons, the array is organized from higher to lower momentum, so protons[0]->par()->getP() will be the leading
+	// and protons[1]->par()->getP() will be the second, ...
 
+	/*
 	std::vector<double> pvec;
 	for (int i=0; i<protons.size(); i++){
 	  pvec.push_back( protons[i]->par()->getP() );
@@ -782,7 +785,7 @@ void e4nu_analyzer::EventLoop()
 	
 	cout << "pvec_max = " << pvec_max << endl;
 	cout << "pvec_max idx = " << idx << endl;
-      
+	*/
 
 	
 	// --- get vertex/momentum components of final state particles ---
@@ -803,19 +806,19 @@ void e4nu_analyzer::EventLoop()
 	e_beta = electrons[0]->par()->getBeta();
 	
 	// knocked-out hadron vertex (i.e., interaction point location)
-	pf_vx = protons[0]->par()->getVx();
-	pf_vy = protons[0]->par()->getVy();
-	pf_vz = protons[0]->par()->getVz();
-	pf_vt = protons[0]->par()->getVt();
+	pf_vx = protons[1]->par()->getVx();
+	pf_vy = protons[1]->par()->getVy();
+	pf_vz = protons[1]->par()->getVz();
+	pf_vt = protons[1]->par()->getVt();
 	
 	// knocked-out protons 3-momentum
-	pf_x = protons[0]->par()->getPx(); 
-	pf_y = protons[0]->par()->getPy();
-	pf_z = protons[0]->par()->getPz(); 
-	pf   = protons[0]->par()->getP();
+	pf_x = protons[1]->par()->getPx(); 
+	pf_y = protons[1]->par()->getPy();
+	pf_z = protons[1]->par()->getPz(); 
+	pf   = protons[1]->par()->getP();
 
 	// knocked-out protons beta
-	h_beta = protons[0]->par()->getBeta();
+	h_beta = protons[1]->par()->getBeta();
 
 	
 	// set 4-momenta of beam, target, scattered electron and primary hadron detected 
