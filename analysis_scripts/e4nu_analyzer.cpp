@@ -708,9 +708,9 @@ void e4nu_analyzer::EventLoop()
   while(chain.Next())
     {
       
-      cout << "===========" << endl;
-      cout << "event #: " << evt_cnt << endl;
-      cout << "===========" << endl;
+      //cout << "===========" << endl;
+      //cout << "event #: " << evt_cnt << endl;
+      //cout << "===========" << endl;
 
       // get std::vector array of all final state particles per event
       auto particles = c12->getDetParticles();
@@ -731,11 +731,11 @@ void e4nu_analyzer::EventLoop()
 	  br_pid = p->par()->getPid();	  
 	  br_chi2pid = p->par()->getChi2Pid();
 
-	  cout << "pid: " << br_pid << endl;
-	  cout << " region: " << p->getRegion() << endl;
+	  //cout << "pid: " << br_pid << endl;
+	  //cout << " region: " << p->getRegion() << endl;
 	  //cout << "hadron region: " << p->getRegion() << endl;
 	  
-	  cout << " sector: " << p->getSector() << endl;
+	  //cout << " sector: " << p->getSector() << endl;
 	  //cout << "hadron sector: " << p->getSector() << endl;
 	
 	}
@@ -1005,10 +1005,17 @@ void e4nu_analyzer::EventLoop()
 	}
       */
 	 
+
+      if (evt_cnt % 1000 == 0){  
+	cout << "Events Analyzed: " << std::setprecision(2) << double(evt_cnt) << std::flush << "\r";
+      }
+
       // increment event number
       evt_cnt++;
 
+      
     }
+  
 }
 
 //_______________________________________________________________________________
