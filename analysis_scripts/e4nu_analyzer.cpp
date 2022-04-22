@@ -973,7 +973,7 @@ void e4nu_analyzer::EventLoop()
 	//Central Detector
 	else if(electrons[0]->getRegion()==4000){
 	  
-	  H_W_CD->Fill();
+	  H_W_CD->Fill(W);
 	  if( electrons[0]->getSector()==0 ) {H_W_CD_sec1->Fill(W);}
 	  if( electrons[0]->getSector()==1 ) {H_W_CD_sec2->Fill(W);}
 	  if( electrons[0]->getSector()==2 ) {H_W_CD_sec3->Fill(W);}
