@@ -750,12 +750,6 @@ void e4nu_analyzer::EventLoop()
       auto protons   = c12->getByID(2212);
 
 
-      void print_vec( std::vector <double> const &a ) {
-	std::cout << "The vector elements are : ";
-	
-	for(int i=0; i < a.size(); i++)
-	  std::cout << a.at(i) << ' ';
-      }
       
       vector<double> pvec;
       
@@ -767,7 +761,12 @@ void e4nu_analyzer::EventLoop()
       double pvec_max =  *max_element( pvec.begin(), pvec.end() );
       double idx = max_element(pvec.begin(),pvec.end()) - pvec.begin();
 
-      print_vec(pvec);
+      std::cout << "The vector elements are : ";
+      
+      for(int i=0; i < pvec.size(); i++){
+	std::cout << pvec.at(i) << ' ';
+      }
+      
       cout << "pvec_max = " << pvec_max << endl;
       cout << "pvec_max idx = " << idx << endl;
       
