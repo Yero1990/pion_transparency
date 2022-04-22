@@ -780,72 +780,75 @@ void e4nu_analyzer::EventLoop()
 
 	reaction_type = Aeep;
 
-	// knocked-out protons vertex (i.e., interaction point location)
-	pf_vx = protons[0]->par()->getVx();
-	pf_vy = protons[0]->par()->getVy();
-	pf_vz = protons[0]->par()->getVz();
-	pf_vt = protons[0]->par()->getVt();
-	
-	// knocked-out protons 3-momentum
-	pf_x = protons[0]->par()->getPx(); 
-	pf_y = protons[0]->par()->getPy();
-	pf_z = protons[0]->par()->getPz(); 
-	pf   = protons[0]->par()->getP();
-
-	// knocked-out protons beta
-	h_beta = protons[0]->par()->getBeta();
-
-	// detected particle in-plane angle
-	th_x = protons[0]->getTheta()*TMath::RadToDeg();
-
+	if(reaction_type){
+	  // knocked-out protons vertex (i.e., interaction point location)
+	  pf_vx = protons[0]->par()->getVx();
+	  pf_vy = protons[0]->par()->getVy();
+	  pf_vz = protons[0]->par()->getVz();
+	  pf_vt = protons[0]->par()->getVt();
+	  
+	  // knocked-out protons 3-momentum
+	  pf_x = protons[0]->par()->getPx(); 
+	  pf_y = protons[0]->par()->getPy();
+	  pf_z = protons[0]->par()->getPz(); 
+	  pf   = protons[0]->par()->getP();
+	  
+	  // knocked-out protons beta
+	  h_beta = protons[0]->par()->getBeta();
+	  
+	  // detected particle in-plane angle
+	  th_x = protons[0]->getTheta()*TMath::RadToDeg();
+	}
       }
       
       else if(det_had=="pi+"){
 	
 	reaction_type = Aeepip;
-	
-	// electro-produced pions+ vertex (i.e., interaction point location)
-	pf_vx = pip[0]->par()->getVx();
-	pf_vy = pip[0]->par()->getVy();
-	pf_vz = pip[0]->par()->getVz();
-	pf_vt = pip[0]->par()->getVt();
-	
-	// electro-produced pions+ 3-momentum
-	pf_x = pip[0]->par()->getPx(); 
-	pf_y = pip[0]->par()->getPy();
-	pf_z = pip[0]->par()->getPz(); 
-	pf   = pip[0]->par()->getP();
 
-	// knocked-out pions+ beta
-	h_beta = pip[0]->par()->getBeta();
-
-	// detected particle in-plane angle
-	th_x = pip[0]->getTheta()*TMath::RadToDeg();
-
+	if(reaction_type){
+	  // electro-produced pions+ vertex (i.e., interaction point location)
+	  pf_vx = pip[0]->par()->getVx();
+	  pf_vy = pip[0]->par()->getVy();
+	  pf_vz = pip[0]->par()->getVz();
+	  pf_vt = pip[0]->par()->getVt();
+	  
+	  // electro-produced pions+ 3-momentum
+	  pf_x = pip[0]->par()->getPx(); 
+	  pf_y = pip[0]->par()->getPy();
+	  pf_z = pip[0]->par()->getPz(); 
+	  pf   = pip[0]->par()->getP();
+	  
+	  // knocked-out pions+ beta
+	  h_beta = pip[0]->par()->getBeta();
+	  
+	  // detected particle in-plane angle
+	  th_x = pip[0]->getTheta()*TMath::RadToDeg();
+	}
       }
       
       else if(det_had=="pi-"){
 	
 	reaction_type = Aeepim;
 
-	// electro-produced pions- vertex (i.e., interaction point location)
-	pf_vx = pim[0]->par()->getVx();
-	pf_vy = pim[0]->par()->getVy();
-	pf_vz = pim[0]->par()->getVz();
-	pf_vt = pim[0]->par()->getVt();
-	
-	// electro-produced pions- 3-momentum
-	pf_x = pim[0]->par()->getPx(); 
-	pf_y = pim[0]->par()->getPy();
-	pf_z = pim[0]->par()->getPz(); 
-	pf   = pim[0]->par()->getP();
-
-	// knocked-out pions- beta
-	h_beta = pim[0]->par()->getBeta();
-
-	// detected particle in-plane angle
-	th_x = pim[0]->getTheta()*TMath::RadToDeg();
-	
+	if(reaction_type){
+	  // electro-produced pions- vertex (i.e., interaction point location)
+	  pf_vx = pim[0]->par()->getVx();
+	  pf_vy = pim[0]->par()->getVy();
+	  pf_vz = pim[0]->par()->getVz();
+	  pf_vt = pim[0]->par()->getVt();
+	  
+	  // electro-produced pions- 3-momentum
+	  pf_x = pim[0]->par()->getPx(); 
+	  pf_y = pim[0]->par()->getPy();
+	  pf_z = pim[0]->par()->getPz(); 
+	  pf   = pim[0]->par()->getP();
+	  
+	  // knocked-out pions- beta
+	  h_beta = pim[0]->par()->getBeta();
+	  
+	  // detected particle in-plane angle
+	  th_x = pim[0]->getTheta()*TMath::RadToDeg();
+	}
       }
       
       if ( reaction_type ){
