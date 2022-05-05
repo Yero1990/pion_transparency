@@ -79,6 +79,17 @@ class e4nu_analyzer
   // declare histogram bining variables
 
   //-----------------------------
+  // PID  Histograms Bins
+  //-----------------------------
+  Double_t chi2_nbins;
+  Double_t chi2_xmin;
+  Double_t chi2_xmax;
+  
+  Double_t beta_nbins;
+  Double_t beta_xmin;
+  Double_t beta_xmax;
+  
+  //-----------------------------
   //Kinematics Histograms Bins
   //-----------------------------
   
@@ -158,10 +169,6 @@ class e4nu_analyzer
   Double_t W2_nbins;
   Double_t W2_xmin;
   Double_t W2_xmax;
-
-  Double_t beta_nbins;
-  Double_t beta_xmin;
-  Double_t beta_xmax;
 
   // hadron
   Double_t pf_vert_nbins;   
@@ -261,7 +268,13 @@ class e4nu_analyzer
   // declare generic mass variables
   Double_t Mt;  // mass of target
   Double_t Mh;  // mass of detected particle X
-   
+
+  // declare pid variables
+  Double_t e_beta;
+  Double_t h_beta;
+  Double_t h_chi2pid;
+  Double_t e_chi2pid;
+  
   // declare electron kinematic variables
   Double_t Eb;
   Double_t kf_vx, kf_vy, kf_vz, kf_vt; // e- vertex, time [cm], [ns]
@@ -274,7 +287,7 @@ class e4nu_analyzer
   Double_t ph_e;
   Double_t th_q, ph_q;
   Double_t W, W2;
-  Double_t e_beta;
+ 
   
   // declare hadron kinematic variables
   Double_t pf_vx, pf_vy, pf_vz, pf_vt; // hadron vertex, time [cm], [ns]
@@ -291,10 +304,29 @@ class e4nu_analyzer
   Double_t th_rq;                 //In-plane angle between the recoil system and q [rad]  
   Double_t ph_xq;                 //Out-of-plane angle between detected particle and q [rad]   
   Double_t ph_rq;                 //Out-of-plane anfle between recoil system and q [rad]
-  Double_t h_beta;
+ 
 
   // --- declare histograms ---
-
+  
+  //--------------------
+  // Acceptance Histos
+  //--------------------
+  TH2F *H_the_vs_phe;
+  
+  //--------------------
+  // Particle ID Histos
+  //--------------------
+  TH1F *H_chi2pid_elec;
+  TH1F *H_chi2pid_had;
+  TH1F *H_beta_elec;
+  TH1F *H_beta_had;
+  TH2F *H_beta_vs_kf;
+  TH2F *H_beta_vs_pf;
+  
+  //--------------------
+  // Kinematics Histos
+  //-------------------
+  
   // electron
   TH1F *H_kf_vx;
   TH1F *H_kf_vy;
@@ -317,7 +349,7 @@ class e4nu_analyzer
   TH1F *H_phq;  
   TH1F *H_W;      
   TH1F *H_W2;     
-  TH1F *H_beta_elec;
+  
   
   // hadron
   TH1F *H_pf_vx;
@@ -347,13 +379,11 @@ class e4nu_analyzer
   TH1F *H_thrq;	  
   TH1F *H_phxq;	  
   TH1F *H_phrq;	  
-  TH1F *H_beta_had;
+  
 
   // 2d kinematics
-  TH2F *H_the_vs_phe;
   TH2F *H_kf_vs_the;
-  TH2F *H_beta_vs_kf;
-  TH2F *H_beta_vs_pf;
+  
 
   // selected kin. @ Forward Detector 
   TH1F *H_W_FD;
@@ -366,7 +396,10 @@ class e4nu_analyzer
 
   
   //Create Categorical TLists to store histograms based on caterogy
-  TList *kin_HList;    //store kinematical histograms (i.e., Q2, W, th_e, etc.)
+  TList *accp_HList;    // acceptance histogram list
+  TList *pid_HList;     // store PID histograms (i.e., Beta vs. P, etc.)
+  TList *kin_HList;     // store kinematical histograms (i.e., Q2, W, th_e, etc.)
+
   TList *kin_HList_FD; //store kinematical histograms ONLY detected in FD (i.e., Q2, W, th_e, etc.)
   
   

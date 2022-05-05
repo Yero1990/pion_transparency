@@ -3,6 +3,21 @@
 *********************************************
 
 
+
+#=============================
+# PID Histogram Bins
+#=============================
+
+#chi2pid
+chi2_nbins = 100
+chi2_xmin = -5
+chi2_xmax = 5
+
+# beta
+beta_nbins = 100
+beta_xmin = 0.01
+beta_xmax = 1.5
+
 #=============================
 # Kinematics Histograms Bins
 #=============================
@@ -109,10 +124,7 @@ W2_nbins = 100
 W2_xmin = 0.1 
 W2_xmax = 3.5
 
-# beta
-beta_nbins = 100
-beta_xmin = 0.01
-beta_xmax = 1.5
+
 
 #--------------------------------------
 #-----Detected Hadron Kinematics   ----

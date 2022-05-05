@@ -84,11 +84,32 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   data_tree = NULL;
 
   //Initialize TList Pointers
+  accp_HList = NULL;
+  pid_HList = NULL;
   kin_HList = NULL;
   kin_HList_FD = NULL;
   
   // --- initialize histogram pointers ----
 
+  //--------------------
+  // Acceptance Histos
+  //--------------------
+  H_the_vs_phe = NULL;
+  
+  //--------------------
+  // Particle ID Histos
+  //--------------------
+  H_chi2pid_elec = NULL;
+  H_chi2pid_had = NULL;
+  H_beta_elec = NULL;
+  H_beta_had   = NULL;
+  H_beta_vs_kf = NULL;
+  H_beta_vs_pf = NULL;
+  
+  //--------------------
+  // Kinematics Histos
+  //-------------------
+  
   // electron kinematics
   H_kf_vx = NULL;
   H_kf_vy = NULL;
@@ -111,7 +132,7 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_phq	 =  NULL;  
   H_W    =  NULL; 
   H_W2   =  NULL; 
-  H_beta_elec = NULL;
+  
   
   // hadron kinematics
   H_pf_vx = NULL;
@@ -141,13 +162,10 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_thrq       = NULL;	
   H_phxq       = NULL;	
   H_phrq       = NULL;
-  H_beta_had   = NULL;
-
+ 
   // 2D kinematics
-  H_the_vs_phe = NULL;
   H_kf_vs_the  = NULL;
-  H_beta_vs_kf = NULL;
-  H_beta_vs_pf = NULL;
+ 
 
   // selected kin. @ Forward Detector 
   H_W_FD        = NULL;
@@ -174,10 +192,32 @@ e4nu_analyzer::~e4nu_analyzer()
     delete data_tree; data_tree = NULL;
 
     //Delete TList Pointers
-    delete kin_HList; kin_HList = NULL;
-  
+    delete accp_HList; accp_HList = NULL;
+    delete pid_HList;  pid_HList  = NULL;
+    delete kin_HList;  kin_HList  = NULL;
+
+    delete kin_HList_FD;  kin_HList_FD  = NULL;
+
     // --- delete histogram pointers ---
 
+    //--------------------
+    // Acceptance Histos
+    //--------------------
+    delete H_the_vs_phe; H_the_vs_phe = NULL;
+    
+    //--------------------
+    // Particle ID Histos
+    //--------------------
+    delete H_chi2pid_elec; H_chi2pid_elec = NULL;
+    delete H_chi2pid_had; H_chi2pid_had = NULL;
+    delete H_beta_elec; H_beta_elec = NULL;
+    delete H_beta_had; H_beta_had = NULL;
+    delete H_beta_vs_kf; H_beta_vs_kf = NULL;
+    delete H_beta_vs_pf; H_beta_vs_pf = NULL;
+    
+    //--------------------
+    // Kinematics Histos
+    //-------------------
     // electron
     delete H_kf_vx ; H_kf_vx = NULL;
     delete H_kf_vy ; H_kf_vy = NULL;
@@ -201,7 +241,7 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_phq ;  H_phq  =  NULL; 
     delete H_W   ;  H_W    =  NULL; 
     delete H_W2  ;  H_W2   =  NULL;     
-    delete H_beta_elec; H_beta_elec = NULL;
+    
     // hadron
     delete H_pf_vx ; H_pf_vx = NULL;
     delete H_pf_vy ; H_pf_vy = NULL;
@@ -230,13 +270,12 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_thrq;	   H_thrq       = NULL;	
     delete H_phxq;	   H_phxq       = NULL;	
     delete H_phrq;	   H_phrq       = NULL;	
-    delete H_beta_had; H_beta_had = NULL;
+    
 
     // 2D kinematics
-    delete H_the_vs_phe; H_the_vs_phe = NULL;
+   
     delete H_kf_vs_the;  H_kf_vs_the  = NULL;
-    delete H_beta_vs_kf; H_beta_vs_kf = NULL;
-    delete H_beta_vs_pf; H_beta_vs_pf = NULL;
+   
 
     // selected kin. @ Forward Detector 
     delete H_W_FD;      H_W_FD       = NULL;
@@ -509,8 +548,30 @@ void e4nu_analyzer::CreateHist()
   SetHistBins();
 
   //Create TLists to store categorical histograms
+  accp_HList  = new TList();
+  pid_HList  = new TList();
   kin_HList  = new TList();
   kin_HList_FD  = new TList();
+
+  //--------------------
+  // Acceptance Histos
+  //--------------------
+  H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
+
+  //--------------------
+  // Particle ID Histos
+  //--------------------
+  H_chi2pid_elec = new TH1F("H_chi2pid_elec", "e^{-} #chi^{2} PID", chi2_nbins, chi2_xmin, chi2_xmax);
+  H_chi2pid_had = new TH1F("H_chi2pid_had", Form("%s #chi^{2} PID", det_had.Data()), chi2_nbins, chi2_xmin, chi2_xmax);
+
+  H_beta_elec = new TH1F("H_beta_elec",  "e^{-} #beta",                                                     beta_nbins, beta_xmin, beta_xmax);  
+  H_beta_had  = new TH1F("H_beta_had",  Form("%s #beta", det_had.Data()),                                   beta_nbins, beta_xmin, beta_xmax); 			     	           
+  H_beta_vs_kf = new TH2F("H_beta_vs_kf", " #beta_{e} vs. e^{-} Momentum; k_{f} [GeV/c]; #beta_{e}", kf_nbins, kf_xmin, kf_xmax, beta_nbins, beta_xmin, beta_xmax);      
+  H_beta_vs_pf = new TH2F("H_beta_vs_pf", " #beta_{h} vs. Hadron Momentum; p_{f} [GeV/c]; #beta_{h}", pf_nbins, pf_xmin, pf_xmax, beta_nbins, beta_xmin, beta_xmax);
+  
+  //--------------------
+  // Kinematics Histos
+  //-------------------
   
   // electron
   H_kf_vx   = new TH1F("H_kf_vx",       "e^{-} x-vertex ",                                    kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax  );
@@ -534,7 +595,6 @@ void e4nu_analyzer::CreateHist()
   H_phq     = new TH1F("H_phq",         "#vec{q} out-of-plane angle w.r.t +z(lab), #phi_{q}", phq_nbins, phq_xmin, phq_xmax );
   H_W       = new TH1F("H_W",           "invariant mass, W",                                  W_nbins,   W_xmin,   W_xmax   ); 				    
   H_W2      = new TH1F("H_W2",          "invariant mass, W^{2}",                              W2_nbins,  W2_xmin,  W2_xmax  );   
-  H_beta_elec = new TH1F("H_beta_elec",  "e^{-} #beta",                                       beta_nbins, beta_xmin, beta_xmax );  
   
   // hadron
   H_pf_vx     = new TH1F("H_pf_vx",     Form(" %s x-vertex ",      det_had.Data()),                         pf_vert_nbins,  pf_vert_xmin,  pf_vert_xmax );
@@ -564,13 +624,10 @@ void e4nu_analyzer::CreateHist()
   H_thrq      = new TH1F("H_thrq",      "recoil system in-plane angle, #theta_{rq}",                        thrq_nbins, thrq_xmin, thrq_xmax);
   H_phxq      = new TH1F("H_phxq",      Form(" %s out-of-plane angle, #phi_{xq}", det_had.Data()),          phxq_nbins, phxq_xmin, phxq_xmax);
   H_phrq      = new TH1F("H_phrq",      "recoil system out-of-plane angle, #phi_{rq}",                      phrq_nbins, phrq_xmin, phrq_xmax);
-  H_beta_had  = new TH1F("H_beta_had",  Form("%s #beta", det_had.Data()),                                   beta_nbins, beta_xmin, beta_xmax); 			     	           
 
   // 2d kinematics
-  H_the_vs_phe = new TH2F("H_the_vs_phe", "e^{-} #theta_{e} vs. # phi_{e}; #phi_{e} [deg]; #theta_{e} [deg]", phe_nbins, phe_xmin, phe_xmax, the_nbins, the_xmin, the_xmax);      
   H_kf_vs_the  = new TH2F("H_kf_vs_the", "e^{-} Momentum vs. #theta_{e}; #theta_{e} [deg]; k_{f} [GeV/c]", the_nbins, the_xmin, the_xmax, kf_nbins, kf_xmin, kf_xmax);      
-  H_beta_vs_kf = new TH2F("H_beta_vs_kf", " #beta_{e} vs. e^{-} Momentum; k_{f} [GeV/c]; #beta_{e}", kf_nbins, kf_xmin, kf_xmax, beta_nbins, beta_xmin, beta_xmax);      
-  H_beta_vs_pf = new TH2F("H_beta_vs_pf", " #beta_{h} vs. Hadron Momentum; p_{f} [GeV/c]; #beta_{h}", pf_nbins, pf_xmin, pf_xmax, beta_nbins, beta_xmin, beta_xmax);      
+
   
   // selected kin. @ Forward Detector 
   H_W_FD        =  new TH1F("H_W_FD",        "FD: Invariant Mass, W",       W_nbins,   W_xmin,   W_xmax);
@@ -581,8 +638,27 @@ void e4nu_analyzer::CreateHist()
   H_W_FD_sec5   =  new TH1F("H_W_FD_sec5",   "FD sec5: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
   H_W_FD_sec6   =  new TH1F("H_W_FD_sec6",   "FD sec6: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
 
-  //Add Kin Histos to TList
 
+  
+  // Add Histos to TList
+
+  //--------------------
+  // Acceptance Histos
+  //--------------------
+  kin_HList->Add( H_the_vs_phe );
+  
+  //--------------------
+  // Particle ID Histos
+  //--------------------
+  kin_HList->Add( H_beta_elec);
+  kin_HList->Add(  H_beta_had );
+  kin_HList->Add( H_beta_vs_kf );
+  kin_HList->Add( H_beta_vs_pf );
+  
+  //--------------------
+  // Kinematics Histos
+  //-------------------
+  
   // electron kinematic histos
   kin_HList->Add( H_kf_vx);
   kin_HList->Add( H_kf_vy);
@@ -605,7 +681,7 @@ void e4nu_analyzer::CreateHist()
   kin_HList->Add( H_phq  );
   kin_HList->Add( H_W    );
   kin_HList->Add( H_W2   );
-  kin_HList->Add( H_beta_elec);
+  
   
   // hadron kinematic histos
   kin_HList->Add(  H_pf_vx    );
@@ -635,13 +711,11 @@ void e4nu_analyzer::CreateHist()
   kin_HList->Add(  H_thrq     );
   kin_HList->Add(  H_phxq     );
   kin_HList->Add(  H_phrq     );
-  kin_HList->Add(  H_beta_had );
-
+ 
   // 2d kinematics
-  kin_HList->Add( H_the_vs_phe );
+
   kin_HList->Add( H_kf_vs_the  );
-  kin_HList->Add( H_beta_vs_kf );
-  kin_HList->Add( H_beta_vs_pf );
+ 
 
   // selected kin. @ Forward Detector 
   kin_HList_FD->Add( H_W_FD );
@@ -801,6 +875,7 @@ void e4nu_analyzer::EventLoop()
 	  
 	  // knocked-out protons beta
 	  h_beta = protons[0]->par()->getBeta();
+	  h_chi2pid = protons[0]->par()->getChi2Pid();
 	  
 	  // detected particle in-plane angle
 	  th_x = protons[0]->getTheta()*TMath::RadToDeg();
@@ -826,7 +901,8 @@ void e4nu_analyzer::EventLoop()
 	  
 	  // knocked-out pions+ beta
 	  h_beta = pip[0]->par()->getBeta();
-	  
+	  h_chi2pid = pip[0]->par()->getChi2Pid();
+	   
 	  // detected particle in-plane angle
 	  th_x = pip[0]->getTheta()*TMath::RadToDeg();
 	}
@@ -851,7 +927,8 @@ void e4nu_analyzer::EventLoop()
 	  
 	  // knocked-out pions- beta
 	  h_beta = pim[0]->par()->getBeta();
-	  
+	  h_chi2pid = pim[0]->par()->getChi2Pid();
+	   
 	  // detected particle in-plane angle
 	  th_x = pim[0]->getTheta()*TMath::RadToDeg();
 	}
@@ -876,7 +953,8 @@ void e4nu_analyzer::EventLoop()
 	  
 	  // knocked-out pions- beta
 	  h_beta = pi0[0]->par()->getBeta();
-	  
+	  h_chi2pid = pi0[0]->par()->getChi2Pid();
+	   
 	  // detected particle in-plane angle
 	  th_x = pi0[0]->getTheta()*TMath::RadToDeg();
 	}
@@ -929,7 +1007,8 @@ void e4nu_analyzer::EventLoop()
 
 	// scattered electron beta
 	e_beta = electrons[0]->par()->getBeta();	
-	
+	e_chi2pid = electrons[0]->par()->getChi2Pid();
+	 
 	// set 4-momenta of beam, target, scattered electron and primary hadron detected 
 	p4_beam.SetXYZM(0., 0., Eb, me);
 	p4_target.SetXYZM(0.,0.,0., Mt);
@@ -1019,8 +1098,26 @@ void e4nu_analyzer::EventLoop()
 	
 	
 	
-	// Fill Histograms 
-
+	// Fill Histograms
+	
+	//--------------------
+	// Acceptance Histos
+	//--------------------
+	H_the_vs_phe ->Fill(ph_e, th_e);
+	
+	//--------------------
+	// Particle ID Histos
+	//--------------------
+	H_chi2pid_elec->Fill(e_chi2pid);
+	H_chi2pid_had->Fill(h_chi2pid);
+	H_beta_elec->Fill(e_beta);
+	H_beta_had->Fill(h_beta);
+	H_beta_vs_kf ->Fill(kf, e_beta);
+	H_beta_vs_pf ->Fill(pf, h_beta);
+	
+	//--------------------
+	// Kinematics Histos
+	//-------------------
 	
 	// electron kinematics
 	H_kf_vx  ->Fill(kf_vx);
@@ -1044,7 +1141,7 @@ void e4nu_analyzer::EventLoop()
 	H_phq ->Fill(ph_q);	
 	H_W   ->Fill(W);   
 	H_W2  ->Fill(W2);  	
-	H_beta_elec->Fill(e_beta);
+
 	
 	// hadron kinematics
 	H_pf_vx  ->Fill(pf_vx);
@@ -1074,14 +1171,10 @@ void e4nu_analyzer::EventLoop()
 	H_thrq      ->Fill(th_rq);	  
 	H_phxq      ->Fill(ph_xq);	  
 	H_phrq      ->Fill(ph_rq);
-	H_beta_had->Fill(h_beta);
+	
 
 	// 2d kinematics
-	H_the_vs_phe ->Fill(ph_e, th_e);
 	H_kf_vs_the ->Fill(th_e, kf);
-	H_beta_vs_kf ->Fill(kf, e_beta);
-	H_beta_vs_pf ->Fill(pf, h_beta);
-
 
 	// Fill certain kin. variables per region (either detected in Forward or Central Detector, FD - 2000, CD - 4000)
 
@@ -1133,10 +1226,18 @@ void e4nu_analyzer::WriteHist()
   outROOT = new TFile(ofname.Data(), "RECREATE");
 
   //Make directories to store histograms based on category
+  outROOT->mkdir("accp_plots");
+  outROOT->mkdir("pid_plots");
   outROOT->mkdir("kin_plots");
   outROOT->mkdir("kin_plots_FD");
       
   //Write Kinematics histos to kin_plots directory
+  outROOT->cd("accp_plots");
+  accp_HList->Write();
+
+  outROOT->cd("pid_plots");
+  pid_HList->Write();
+  
   outROOT->cd("kin_plots");
   kin_HList->Write();
 
