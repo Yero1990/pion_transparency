@@ -354,11 +354,23 @@ void e4nu_analyzer::SetHistBins()
 {
   cout << "Start e4nu_analyzer::SetHistBins() ... " << endl;
   
+  TString input_HBinFileName = "histo_bins.inp";
+  
+  //-------------------------
+  // PID Histograms Binning
+  //-------------------------
+  
+  chi2_nbins    = stod(split(FindString("chi2_nbins",  input_HBinFileName.Data())[0], '=')[1]);
+  chi2_xmin     = stod(split(FindString("chi2_xmin",  input_HBinFileName.Data())[0], '=')[1]);  
+  chi2_xmax     = stod(split(FindString("chi2_xmax",  input_HBinFileName.Data())[0], '=')[1]);  
+
+  beta_nbins    = stod(split(FindString("beta_nbins",  input_HBinFileName.Data())[0], '=')[1]);                                                                                                 
+  beta_xmin     = stod(split(FindString("beta_xmin",  input_HBinFileName.Data())[0], '=')[1]);                                                                                                     
+  beta_xmax     = stod(split(FindString("beta_xmax",  input_HBinFileName.Data())[0], '=')[1]);
+
   //---------------------------------
   // Kinematics Histograms Binning
   //---------------------------------
-
-  TString input_HBinFileName = "histo_bins.inp";
 
   // detected electron
   kf_vert_nbins	= stod(split(FindString("kf_vert_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
@@ -437,9 +449,6 @@ void e4nu_analyzer::SetHistBins()
   W2_xmin      	= stod(split(FindString("W2_xmin",  input_HBinFileName.Data())[0], '=')[1]);
   W2_xmax      	= stod(split(FindString("W2_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
-  beta_nbins    = stod(split(FindString("beta_nbins",  input_HBinFileName.Data())[0], '=')[1]);
-  beta_xmin     = stod(split(FindString("beta_xmin",  input_HBinFileName.Data())[0], '=')[1]);
-  beta_xmax     = stod(split(FindString("beta_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
   // detected hadron kinematics (and also recoil system)
   pf_vert_nbins	= stod(split(FindString("pf_vert_nbins",  	input_HBinFileName.Data())[0], '=')[1]);  
@@ -645,15 +654,17 @@ void e4nu_analyzer::CreateHist()
   //--------------------
   // Acceptance Histos
   //--------------------
-  kin_HList->Add( H_the_vs_phe );
+  accp_HList->Add( H_the_vs_phe );
   
   //--------------------
   // Particle ID Histos
   //--------------------
-  kin_HList->Add( H_beta_elec);
-  kin_HList->Add(  H_beta_had );
-  kin_HList->Add( H_beta_vs_kf );
-  kin_HList->Add( H_beta_vs_pf );
+  pid_HList->Add( H_chi2pid_elec);
+  pid_HList->Add( H_chi2pid_had);  
+  pid_HList->Add( H_beta_elec);
+  pid_HList->Add( H_beta_had );
+  pid_HList->Add( H_beta_vs_kf );
+  pid_HList->Add( H_beta_vs_pf );
   
   //--------------------
   // Kinematics Histos
