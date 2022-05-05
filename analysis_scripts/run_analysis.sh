@@ -2,9 +2,12 @@
 
 inFile="/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.000*.hipo";
 outFile="rgm_LH2_015024.root"
+
 target="LH2"
 detected_hadron="proton"  # user can input: "proton", "pi+", "pi-"
 
-CMD="clas12root -b \"e4nu_main.cpp(\\\"${inFile}\\\",\\\"${outFile}\\\", \\\"${target}\\\", \\\"${detected_hadron}\\\")\" "
+CMD_Heep="clas12root -b \"e4nu_main.cpp(\\\"${inFile}\\\",\\\"${outFile}\\\", \\\"H\\\", \\\"p\\\")\" "
+
+
 echo "executing command: $CMD" 
 eval ${CMD}

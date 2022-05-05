@@ -40,11 +40,24 @@ class e4nu_analyzer
   TTree *data_tree;
   Long64_t nentries;
 
-  // declare particle masses
+  // declare detected particle masses
   Double_t me;
   Double_t MP;
   Double_t MN;
+  Double_t MPip;
+  Double_t MPim;
+  Double_t MPi0;
+  Double_t MKp;
+  Double_t MKm;
+  
+  // declare target particle masses
   Double_t MD;
+  Double_t MHe4;
+  Double_t MC12;
+  Double_t MCa40;
+  Double_t MCa48;
+  Double_t MAr40;
+  Double_t MSn120;
   
   // declare generic branch variables
   Double_t br_vx, br_vy, br_vz, br_vt;  // generic final state particle vertex components, time
@@ -350,20 +363,11 @@ class e4nu_analyzer
   TH1F *H_W_FD_sec4;
   TH1F *H_W_FD_sec5;
   TH1F *H_W_FD_sec6;
-  
-  // selected kin. @ Central Detector 
-  TH1F *H_W_CD;
-  TH1F *H_W_CD_sec1;
-  TH1F *H_W_CD_sec2;
-  TH1F *H_W_CD_sec3;
-  TH1F *H_W_CD_sec4;
-  TH1F *H_W_CD_sec5;
-  TH1F *H_W_CD_sec6;
+
   
   //Create Categorical TLists to store histograms based on caterogy
   TList *kin_HList;    //store kinematical histograms (i.e., Q2, W, th_e, etc.)
   TList *kin_HList_FD; //store kinematical histograms ONLY detected in FD (i.e., Q2, W, th_e, etc.)
-  TList *kin_HList_CD; //store kinematical histograms ONLY detected in CD (i.e., Q2, W, th_e, etc.)
   
   
 };

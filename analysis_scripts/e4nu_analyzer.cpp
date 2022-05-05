@@ -258,14 +258,7 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_W_FD_sec5; H_W_FD_sec5  = NULL;
     delete H_W_FD_sec6; H_W_FD_sec6  = NULL;
     
-    // selected kin. @ Central Detector 
-    delete H_W_CD;      H_W_CD       = NULL;
-    delete H_W_CD_sec1; H_W_CD_sec1  = NULL;
-    delete H_W_CD_sec2; H_W_CD_sec2  = NULL;
-    delete H_W_CD_sec3; H_W_CD_sec3  = NULL;
-    delete H_W_CD_sec4; H_W_CD_sec4  = NULL;
-    delete H_W_CD_sec5; H_W_CD_sec5  = NULL;
-    delete H_W_CD_sec6; H_W_CD_sec6  = NULL;
+
   
 }
 
@@ -275,17 +268,56 @@ void e4nu_analyzer::SetParticleMass()
   
   cout << "Start e4nu_analyzer::SetParticleMass() ... " << endl;
 
-  // load particle database from PDG to get particle mass
+  // load particle database from PDG to get particle mass (GeV)
   auto db=TDatabasePDG::Instance();
-  
-  MP = db->GetParticle(2212)->Mass();  
-  me = db->GetParticle(11)->Mass();
+  Double_t amu2GeV = 0.931494  // GeV
+    
+  // detected leptons / hadrons (some of these might not be used at all)
+  me   = db->GetParticle(11)->Mass();    // electron
+  MP   = db->GetParticle(2212)->Mass();  // proton
+  MN   = db->GetParticle(2112)->Mass();  // neutron
+  MPip = db->GetParticle()->Mass(211);   // pi+
+  MPim = db->GetParticle()->Mass(-211);  // pi-
+  MPi0 = db->GetParticle()->Mass(111);   // pi0
+  MKp  = db->GetParticle()->Mass(321);   // K+
+  MKm  = db->GetParticle()->Mass(-321);  // K-
+
+  // target mass (amu -> GeV) (obtained from NIST: https://www.nist.gov/pml/atomic-weights-and-isotopic-compositions-relative-atomic-masses)
+  MD     = 2.01410177812 * amu2GeV ;
+  MHe4   = 4.00260325413 * amu2GeV ;
+  MC12   = 12.0000000    * amu2GeV ;
+  MCa40  = 39.962590863  * amu2GeV ;
+  MCa48  = 47.95252276   * amu2GeV ;
+  MAr40  = 39.9623831237 * amu2GeV ; 
+  MSn120 = 119.90220163  * amu2GeV ;
 
   // set target mass
-  if(target=="LH2"){ Mt = MP; }
+  if      (target=="H")     { Mt = MP     ;} 
+  else if (target=="D")     { Mt = MD     ;}
+  else if (target=="He4")   { Mt = MHe4   ;}
+  else if (target=="C12")   { Mt = MC12   ;}
+  else if (target=="Ca40")  { Mt = MCa40  ;}
+  else if (target=="Ca48")  { Mt = MCa48  ;}
+  else if (target=="Ar40")  { Mt = MAr40  ;}
+  else if (target=="Sn120") { Mt = MSn120 ;}
+  else {
+    cout << "Please enter one of the targets: \n "
+      "H, D, He4, C12, Ca40, Ca48, Ar40, Sn120 " << endl;
+    exit(0);
+  }
+  
+  // set detected (X) primary hadron mass A(e,e'X)r
+  if(det_had=="p") { Mh = MP; }
+  else if(det_had=="pi+")    { Mh = MPip; }
+  else if(det_had=="pi-")    { Mh = MPim; }
+  else if(det_had=="pi0")    { Mh = MPi0; }
+  else {
+    cout << "Please enter detected hadron: \n "
+      "p, pi+, pi-, pi0 " << endl;
+    exit(0);
+  }
 
-  // set detected primary hadron mass A(e,e'p)X
-  if(det_had=="proton") { Mh = MP; }
+  cout << Form("Analyzing Reaction: %s(e,e'%s)", target.Data(), det_had.Data()) << endl;
   
 }
 
@@ -490,7 +522,6 @@ void e4nu_analyzer::CreateHist()
   //Create TLists to store categorical histograms
   kin_HList  = new TList();
   kin_HList_FD  = new TList();
-  kin_HList_CD  = new TList();
   
   // electron
   H_kf_vx   = new TH1F("H_kf_vx",       "e^{-} x-vertex ",                                    kf_vert_nbins,  kf_vert_xmin,  kf_vert_xmax  );
@@ -560,17 +591,7 @@ void e4nu_analyzer::CreateHist()
   H_W_FD_sec4   =  new TH1F("H_W_FD_sec4",   "FD sec4: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
   H_W_FD_sec5   =  new TH1F("H_W_FD_sec5",   "FD sec5: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
   H_W_FD_sec6   =  new TH1F("H_W_FD_sec6",   "FD sec6: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
-  
-  // selected kin. @ Central Detector 
-  H_W_CD        =  new TH1F("H_W_CD",        "CD: Invariant Mass, W",       W_nbins,   W_xmin,   W_xmax);
-  H_W_CD_sec1   =  new TH1F("H_W_CD_sec1",   "CD sec1: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
-  H_W_CD_sec2   =  new TH1F("H_W_CD_sec2",   "CD sec2: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
-  H_W_CD_sec3   =  new TH1F("H_W_CD_sec3",   "CD sec3: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
-  H_W_CD_sec4   =  new TH1F("H_W_CD_sec4",   "CD sec4: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
-  H_W_CD_sec5   =  new TH1F("H_W_CD_sec5",   "CD sec5: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
-  H_W_CD_sec6   =  new TH1F("H_W_CD_sec6",   "CD sec6: Invariant Mass, W",  W_nbins,   W_xmin,   W_xmax);
-   
-  
+
   //Add Kin Histos to TList
 
   // electron kinematic histos
@@ -642,14 +663,6 @@ void e4nu_analyzer::CreateHist()
   kin_HList_FD->Add( H_W_FD_sec5 );
   kin_HList_FD->Add( H_W_FD_sec6 );
 
-  // selected kin. @ Central Detector 
-  kin_HList_CD->Add( H_W_CD );
-  kin_HList_CD->Add( H_W_CD_sec1 );
-  kin_HList_CD->Add( H_W_CD_sec2 );
-  kin_HList_CD->Add( H_W_CD_sec3 );
-  kin_HList_CD->Add( H_W_CD_sec4 );
-  kin_HList_CD->Add( H_W_CD_sec5 );
-  kin_HList_CD->Add( H_W_CD_sec6 );
   
 }
 
@@ -751,13 +764,14 @@ void e4nu_analyzer::EventLoop()
       auto neutrons  = c12->getByID(2112);
       auto pip       = c12->getByID(211);  // pion +
       auto pim       = c12->getByID(-211); // pion -
-      auto pi0       = c12->getByID(111);  // pion +
+      auto pi0       = c12->getByID(111);  // pion 0
 
 
       // define boolean flag for reaction of interest
       Bool_t Aeep   = false;   // single proton knockout, (e,e'p)
-      Bool_t Aeepip = false;  // pion+ electro-production (e,e'pi+) : ep -> e'pi+ (X) : virtual photon strikes quark in nucleon, producing a pi+ + (continuum of "missing" particles)
-      Bool_t Aeepim = false;  // pion- electro-production (e,e'pi-) : ep -> e'pi- (X) : virtual photon strikes quark in neutron, producing a pi- + (continuum of "missing" particles)
+      Bool_t Aeepip = false;  // pion+ electro-production (e,e'pi+) : ep -> e'pi+ (X) : virtual photon strikes quark in nucleon, producing a pi+  + (continuum of "missing" particles)
+      Bool_t Aeepim = false;  // pion- electro-production (e,e'pi-) : ep -> e'pi- (X) : virtual photon strikes quark in neutron, producing a pi-  +  (continuum of "missing" particles)
+      Bool_t Aeepi0 = false;  // pion- electro-production (e,e'pi0) : ep -> e'pi0 (X) : virtual photon strikes quark in neutron, producing a pi0  +  (continuum of "missing" particles)
 
       //======================================================
       //
@@ -773,6 +787,9 @@ void e4nu_analyzer::EventLoop()
 
       // pion- electro-production A(e,e'pi-) : eN -> e'pi+ (X) :  virtual photon strikes quark in nucleon, producing a pi- + (continuum of "missing" particles)
       Aeepim = electrons.size()==1 && pim.size()>=1 && particles.size()>=2;
+
+      // pion- electro-production A(e,e'pi0) : eN -> e'pi0 (X) :  virtual photon strikes quark in nucleon, producing a pi0 + (continuum of "missing" particles)
+      Aeepi0 = electrons.size()==1 && pi0.size()>=1 && particles.size()>=2;
 
       Bool_t reaction_type = false;
 
@@ -850,6 +867,32 @@ void e4nu_analyzer::EventLoop()
 	  th_x = pim[0]->getTheta()*TMath::RadToDeg();
 	}
       }
+
+      else if(det_had=="pi0"){
+	
+	reaction_type = Aeepim;
+	
+	if(reaction_type){
+	  // electro-produced pions- vertex (i.e., interaction point location)
+	  pf_vx = pi0[0]->par()->getVx();
+	  pf_vy = pi0[0]->par()->getVy();
+	  pf_vz = pi0[0]->par()->getVz();
+	  pf_vt = pi0[0]->par()->getVt();
+	  
+	  // electro-produced pions- 3-momentum
+	  pf_x = pi0[0]->par()->getPx(); 
+	  pf_y = pi0[0]->par()->getPy();
+	  pf_z = pi0[0]->par()->getPz(); 
+	  pf   = pi0[0]->par()->getP();
+	  
+	  // knocked-out pions- beta
+	  h_beta = pi0[0]->par()->getBeta();
+	  
+	  // detected particle in-plane angle
+	  th_x = pi0[0]->getTheta()*TMath::RadToDeg();
+	}
+      }
+      
       
       if ( reaction_type ){
 	
@@ -857,7 +900,7 @@ void e4nu_analyzer::EventLoop()
 	//NOTE: if there are multiple protons, the proton with highest momentum is the most
 	// likely to have been directly hit by the virtual photon, so in order to get the maximum, one can do:
 	//double leading_proton = *max_element(protons_momentum.begin(), protons_momentum.end());, where protons_momentum [] is an array
-	// NOTE2:  I found that actually, for an arrat of protons, the array is organized from higher to lower momentum, so protons[0]->par()->getP() will be the leading
+	// NOTE2:  I found that actually, for an array of protons, the array is organized from higher to lower momentum, so protons[0]->par()->getP() will be the leading
 	// and protons[1]->par()->getP() will be the second, ...
 
 	/*
@@ -976,12 +1019,12 @@ void e4nu_analyzer::EventLoop()
 	//  MM = sqrt(MM2); // INVARIANT MASS
 	//}
 
-	// calculate kinetic energues of detected and recoil system
+	// calculate kinetic energues of detected (x) and recoil (r) system
 	Tx =  p4_hadron.E() - p4_hadron.M();
 	Tr =  p4_recoil.E() - p4_recoil.M();
 	
 	// missing energy calculations
-	Em_nuc    = nu - Tx - Tr;
+	Em_nuc    = nu - Tx - Tr;  // does not apply for hydrogen elastics
 	Em        = nu + p4_target.M() - p4_hadron.E();
 	Em_recoil = p4_recoil.E();
 	
@@ -989,6 +1032,7 @@ void e4nu_analyzer::EventLoop()
 	
 	// Fill Histograms 
 
+	
 	// electron kinematics
 	H_kf_vx  ->Fill(kf_vx);
 	H_kf_vy  ->Fill(kf_vy);
@@ -1064,23 +1108,9 @@ void e4nu_analyzer::EventLoop()
 	  if( electrons[0]->getSector()==5 ) {H_W_FD_sec5->Fill(W);}
 	  if( electrons[0]->getSector()==6 ) {H_W_FD_sec6->Fill(W);}
 
-	  //if(protons[0]->getRegion()==2000){
-	  // H_MM_FD->Fill();
-	  //}
 	  
 	}
-	//Central Detector
-	else if(electrons[0]->getRegion()==4000){
-	  
-	  H_W_CD->Fill(W);
-	  if( electrons[0]->getSector()==1 ) {H_W_CD_sec1->Fill(W);}
-	  if( electrons[0]->getSector()==2 ) {H_W_CD_sec2->Fill(W);}
-	  if( electrons[0]->getSector()==3 ) {H_W_CD_sec3->Fill(W);}
-	  if( electrons[0]->getSector()==4 ) {H_W_CD_sec4->Fill(W);}
-	  if( electrons[0]->getSector()==5 ) {H_W_CD_sec5->Fill(W);}
-	  if( electrons[0]->getSector()==6 ) {H_W_CD_sec6->Fill(W);}
-	}
-	  
+
       } // end final state particle requirement
 
       
@@ -1090,19 +1120,7 @@ void e4nu_analyzer::EventLoop()
 	 From Justin Esteeves, currently the CD has much worse resolution and so one should look at events reconstructed from
 	 these detectors separately in order to compare how well reconstruction is done.
       */
-      // -- example from Justin ---
-      /*
-      if(p->getRegion()==CD)
-	{
-	  p_chi2_cd->Fill(p->par()->getChi2Pid());
-	  p_chi2_cd_v = p->par()->getChi2Pid();
-	}
-      if(p->getRegion()==FD)
-	{
-	  p_chi2_fd->Fill(p->par()->getChi2Pid());
-	  p_chi2_fd_v = p->par()->getChi2Pid();
-	}
-      */
+
 	 
 
       if (evt_cnt % 1000 == 0){  
@@ -1128,7 +1146,6 @@ void e4nu_analyzer::WriteHist()
   //Make directories to store histograms based on category
   outROOT->mkdir("kin_plots");
   outROOT->mkdir("kin_plots_FD");
-  outROOT->mkdir("kin_plots_CD");
       
   //Write Kinematics histos to kin_plots directory
   outROOT->cd("kin_plots");
@@ -1136,9 +1153,6 @@ void e4nu_analyzer::WriteHist()
 
   outROOT->cd("kin_plots_FD");
   kin_HList_FD->Write();
-
-  outROOT->cd("kin_plots_CD");
-  kin_HList_CD->Write();
   
   outROOT->Close();
 }
