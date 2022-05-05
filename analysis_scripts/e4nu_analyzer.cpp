@@ -86,7 +86,6 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   //Initialize TList Pointers
   kin_HList = NULL;
   kin_HList_FD = NULL;
-  kin_HList_CD = NULL;
   
   // --- initialize histogram pointers ----
 
@@ -157,17 +156,7 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_W_FD_sec3   = NULL;
   H_W_FD_sec4   = NULL;
   H_W_FD_sec5   = NULL;
-  H_W_FD_sec6   = NULL;
-  
-  // selected kin. @ Central Detector 
-  H_W_CD        = NULL;
-  H_W_CD_sec1   = NULL;
-  H_W_CD_sec2   = NULL;
-  H_W_CD_sec3   = NULL;
-  H_W_CD_sec4   = NULL;
-  H_W_CD_sec5   = NULL;
-  H_W_CD_sec6   = NULL;
-  
+  H_W_FD_sec6   = NULL; 
   
 }
 
@@ -270,17 +259,17 @@ void e4nu_analyzer::SetParticleMass()
 
   // load particle database from PDG to get particle mass (GeV)
   auto db=TDatabasePDG::Instance();
-  Double_t amu2GeV = 0.931494  // GeV
+  Double_t amu2GeV = 0.931494;  // GeV
     
   // detected leptons / hadrons (some of these might not be used at all)
-  me   = db->GetParticle(11)->Mass();    // electron
+  me   = db->GetParticle(11)  ->Mass();  // electron
   MP   = db->GetParticle(2212)->Mass();  // proton
   MN   = db->GetParticle(2112)->Mass();  // neutron
-  MPip = db->GetParticle()->Mass(211);   // pi+
-  MPim = db->GetParticle()->Mass(-211);  // pi-
-  MPi0 = db->GetParticle()->Mass(111);   // pi0
-  MKp  = db->GetParticle()->Mass(321);   // K+
-  MKm  = db->GetParticle()->Mass(-321);  // K-
+  MPip = db->GetParticle(211) ->Mass();  // pi+
+  MPim = db->GetParticle(-211)->Mass();  // pi-
+  MPi0 = db->GetParticle(111) ->Mass();  // pi0
+  MKp  = db->GetParticle(321) ->Mass();  // K+
+  MKm  = db->GetParticle(-321)->Mass();  // K-
 
   // target mass (amu -> GeV) (obtained from NIST: https://www.nist.gov/pml/atomic-weights-and-isotopic-compositions-relative-atomic-masses)
   MD     = 2.01410177812 * amu2GeV ;
@@ -793,7 +782,7 @@ void e4nu_analyzer::EventLoop()
 
       Bool_t reaction_type = false;
 
-      if(det_had=="proton"){
+      if(det_had=="p"){
 
 	reaction_type = Aeep;
 
@@ -972,7 +961,7 @@ void e4nu_analyzer::EventLoop()
 
 	
 	// calculate hadron (and "missing" particles) kinematics
-
+	// This we want to make a function and call for different hadrons
 	// 4-momentum of undetected recoil system
 	p4_recoil = p4_q + p4_target - p4_hadron;  
 
