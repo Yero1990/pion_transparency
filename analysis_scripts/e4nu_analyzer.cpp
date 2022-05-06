@@ -1201,7 +1201,7 @@ void e4nu_analyzer::EventLoop()
 	if(W_cut_flag){c_W = W>=c_W_min && W<=c_W_max;}
 	else{c_W=1;}
 
-	c_kinCuts = c_Q2 && c_Em && && c_W;
+	c_kinCuts = c_Q2&&c_Em&&c_W;
 
 	// combine all cuts
 	c_allCuts = c_pidCuts && c_kinCuts;
