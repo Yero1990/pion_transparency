@@ -134,7 +134,7 @@ class e4nu_analyzer
 
   Double_t ztar_diff_nbins;
   Double_t ztar_diff_xmin;
-  Double_t ztar_diff_xman;
+  Double_t ztar_diff_xmax;
 
   Double_t zE_nbins;
   Double_t zE_xmin;
@@ -358,7 +358,7 @@ class e4nu_analyzer
  
   //user-defined variables
   Double_t ztar_diff; // difference between the z-vertex component between scattered electron and detected hadron
-  Double_t z_pi;  // energy of the pion divided by transferred energy E_pi / nu (assuming detected hadron is a pion)
+  Double_t zE;  // energy of the pion divided by transferred energy E_pi / nu (assuming detected hadron is a pion)
 
   // --- declare histograms ---
   
