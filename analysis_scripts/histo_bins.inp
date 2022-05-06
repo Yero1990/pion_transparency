@@ -10,8 +10,8 @@
 
 #chi2pid
 chi2_nbins = 100
-chi2_xmin = -5
-chi2_xmax = 5
+chi2_xmin = -10
+chi2_xmax = 10
 
 # beta
 beta_nbins = 100
@@ -20,8 +20,8 @@ beta_xmax = 1.5
 
 # ztar vertex difference
 ztar_diff_nbins = 100
-ztar_diff_xmin = -7.
-ztar_diff_xmax = 7.
+ztar_diff_xmin = -15.
+ztar_diff_xmax = 15.
 
 # energy transferred to pion
 zE_nbins = 100
@@ -154,7 +154,7 @@ pf_vtime_xmax = 25.
 # final hadron arm momentum 
 pf_nbins = 100
 pf_xmin = 0.
-pf_xmax = 9.
+pf_xmax = 5.
 
 # final hadron arm momentum (x-component)
 pfx_nbins = 100

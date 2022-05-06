@@ -575,7 +575,6 @@ void e4nu_analyzer::SetCuts()
   c_chi2pid_min = stod(split(FindString("c_chi2pid_min", input_CutFileName.Data())[0], '=')[1]);
   c_chi2pid_max = stod(split(FindString("c_chi2pid_max", input_CutFileName.Data())[0], '=')[1]);
   
-  
   // Z-Reaction Vertex Difference Cut
   ztarDiff_cut_flag = stoi(split(FindString("ztarDiff_cut_flag", input_CutFileName.Data())[0], '=')[1]);
   c_ztarDiff_min = stod(split(FindString("c_ztarDiff_min", input_CutFileName.Data())[0], '=')[1]);
@@ -587,17 +586,17 @@ void e4nu_analyzer::SetCuts()
   Q2_cut_flag = stoi(split(FindString("Q2_cut_flag", input_CutFileName.Data())[0], '=')[1]);
   c_Q2_min = stod(split(FindString("c_Q2_min", input_CutFileName.Data())[0], '=')[1]);
   c_Q2_max = stod(split(FindString("c_Q2_max", input_CutFileName.Data())[0], '=')[1]);
-  
+
   //Missing Energy [GeV]
   Em_cut_flag = stoi(split(FindString("Em_cut_flag", input_CutFileName.Data())[0], '=')[1]);
   c_Em_min = stod(split(FindString("c_Em_min", input_CutFileName.Data())[0], '=')[1]);
   c_Em_max = stod(split(FindString("c_Em_max", input_CutFileName.Data())[0], '=')[1]);
-  
+
   //Invariant Mass, W [GeV]
   W_cut_flag = stoi(split(FindString("W_cut_flag", input_CutFileName.Data())[0], '=')[1]);
   c_W_min = stod(split(FindString("c_W_min", input_CutFileName.Data())[0], '=')[1]);
   c_W_max = stod(split(FindString("c_W_max", input_CutFileName.Data())[0], '=')[1]);
-
+  
 }
 
 //_______________________________________________________________________________
@@ -1197,19 +1196,20 @@ void e4nu_analyzer::EventLoop()
 	if(Em_cut_flag){c_Em = Em_nuc>=c_Em_min && Em_nuc<=c_Em_max;}
 	else{c_Em=1;}
 	
+	
 	//Invariant Mass, W
 	if(W_cut_flag){c_W = W>=c_W_min && W<=c_W_max;}
 	else{c_W=1;}
 
 	c_kinCuts = c_Q2&&c_Em&&c_W;
-
+	
 	// combine all cuts
 	c_allCuts = c_pidCuts && c_kinCuts;
 
-
+       	
 	//Apply cuts
 	if( c_allCuts ) {
-	  
+
 	  // Fill Histograms
 	  
 	  //--------------------
@@ -1369,6 +1369,7 @@ void e4nu_analyzer::run_data_analysis()
   
  
   CreateHist();
+  SetCuts();
   CreateTree();
   EventLoop();
   WriteHist();
