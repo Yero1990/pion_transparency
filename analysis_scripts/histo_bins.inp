@@ -18,6 +18,16 @@ beta_nbins = 100
 beta_xmin = 0.01
 beta_xmax = 1.5
 
+# ztar vertex difference
+ztar_diff_nbins = 100
+ztar_diff_xmin = -7.
+ztar_diff_xmax = 7.
+
+# energy transferred to pion
+zE_nbins = 100
+zE_xmin = 0.
+zE_xmax = 1.
+
 #=============================
 # Kinematics Histograms Bins
 #=============================

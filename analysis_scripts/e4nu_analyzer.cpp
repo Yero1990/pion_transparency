@@ -105,6 +105,8 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_beta_had   = NULL;
   H_beta_vs_kf = NULL;
   H_beta_vs_pf = NULL;
+  H_ztar_diff = NULL;
+  H_zE = NULL;
   
   //--------------------
   // Kinematics Histos
@@ -214,6 +216,8 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_beta_had; H_beta_had = NULL;
     delete H_beta_vs_kf; H_beta_vs_kf = NULL;
     delete H_beta_vs_pf; H_beta_vs_pf = NULL;
+    delete H_ztar_diff; H_ztar_diff = NULL;
+    delete H_zE; H_zE = NULL;
     
     //--------------------
     // Kinematics Histos
@@ -367,6 +371,14 @@ void e4nu_analyzer::SetHistBins()
   beta_nbins    = stod(split(FindString("beta_nbins",  input_HBinFileName.Data())[0], '=')[1]);                                                                                                 
   beta_xmin     = stod(split(FindString("beta_xmin",  input_HBinFileName.Data())[0], '=')[1]);                                                                                                     
   beta_xmax     = stod(split(FindString("beta_xmax",  input_HBinFileName.Data())[0], '=')[1]);
+
+  ztar_diff_nbins	= stod(split(FindString("ztar_diff_nbins",  input_HBinFileName.Data())[0], '=')[1]);
+  ztar_diff_xmin 	= stod(split(FindString("ztar_diff_xmin",  input_HBinFileName.Data())[0], '=')[1]);
+  ztar_diff_xmax 	= stod(split(FindString("ztar_diff_xmax",  input_HBinFileName.Data())[0], '=')[1]);
+  
+  zE_nbins	= stod(split(FindString("zE_nbins",  input_HBinFileName.Data())[0], '=')[1]);
+  zE_xmin 	= stod(split(FindString("zE_xmin",  input_HBinFileName.Data())[0], '=')[1]);
+  zE_xmax 	= stod(split(FindString("zE_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
   //---------------------------------
   // Kinematics Histograms Binning
@@ -549,6 +561,46 @@ void e4nu_analyzer::SetHistBins()
 }
 
 //_______________________________________________________________________________
+void e4nu_analyzer::SetCuts()
+{
+
+  TString input_CutFileName = "histo_cuts.inp";
+
+  cout << "Start e4nu_analyzer::SetCuts() ... " << endl;
+
+  //------PID Cuts-----
+
+  // chi2pid Cut
+  chi2pid_cut_flag = stoi(split(FindString("chi2pid_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+  c_chi2pid_min = stod(split(FindString("c_chi2pid_min", input_CutFileName.Data())[0], '=')[1]);
+  c_chi2pid_max = stod(split(FindString("c_chi2pid_max", input_CutFileName.Data())[0], '=')[1]);
+  
+  
+  // Z-Reaction Vertex Difference Cut
+  ztarDiff_cut_flag = stoi(split(FindString("ztarDiff_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+  c_ztarDiff_min = stod(split(FindString("c_ztarDiff_min", input_CutFileName.Data())[0], '=')[1]);
+  c_ztarDiff_max = stod(split(FindString("c_ztarDiff_max", input_CutFileName.Data())[0], '=')[1]);
+  
+  //-----Kinematics Cuts------
+  
+  //4-Momentum Transfers [GeV^2]
+  Q2_cut_flag = stoi(split(FindString("Q2_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+  c_Q2_min = stod(split(FindString("c_Q2_min", input_CutFileName.Data())[0], '=')[1]);
+  c_Q2_max = stod(split(FindString("c_Q2_max", input_CutFileName.Data())[0], '=')[1]);
+  
+  //Missing Energy [GeV]
+  Em_cut_flag = stoi(split(FindString("Em_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+  c_Em_min = stod(split(FindString("c_Em_min", input_CutFileName.Data())[0], '=')[1]);
+  c_Em_max = stod(split(FindString("c_Em_max", input_CutFileName.Data())[0], '=')[1]);
+  
+  //Invariant Mass, W [GeV]
+  W_cut_flag = stoi(split(FindString("W_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+  c_W_min = stod(split(FindString("c_W_min", input_CutFileName.Data())[0], '=')[1]);
+  c_W_max = stod(split(FindString("c_W_max", input_CutFileName.Data())[0], '=')[1]);
+
+}
+
+//_______________________________________________________________________________
 void e4nu_analyzer::CreateHist()
 {
   
@@ -577,7 +629,13 @@ void e4nu_analyzer::CreateHist()
   H_beta_had  = new TH1F("H_beta_had",  Form("%s #beta", det_had.Data()),                                   beta_nbins, beta_xmin, beta_xmax); 			     	           
   H_beta_vs_kf = new TH2F("H_beta_vs_kf", " #beta_{e} vs. e^{-} Momentum; k_{f} [GeV/c]; #beta_{e}", kf_nbins, kf_xmin, kf_xmax, beta_nbins, beta_xmin, beta_xmax);      
   H_beta_vs_pf = new TH2F("H_beta_vs_pf", " #beta_{h} vs. Hadron Momentum; p_{f} [GeV/c]; #beta_{h}", pf_nbins, pf_xmin, pf_xmax, beta_nbins, beta_xmin, beta_xmax);
-  
+
+  //difference in reaction vertex z (user-defined)
+  H_ztar_diff = new TH1F("H_ztar_diff", "Ztar Difference; z-Target Difference [cm]; Counts", ztar_diff_nbins, ztar_diff_xmin, ztar_diff_xmax);
+
+  // fraction of the total energy transferred to the pion Epi / nu
+  H_zE = new TH1F("H_zE", Form("Energy Transferred to %s, E_{h}/#nu; E_{h}/#nu; Counts", det_had.Data()), zE_nbins, zE_xmin, zE_xmax);
+    
   //--------------------
   // Kinematics Histos
   //-------------------
@@ -665,6 +723,8 @@ void e4nu_analyzer::CreateHist()
   pid_HList->Add( H_beta_had );
   pid_HList->Add( H_beta_vs_kf );
   pid_HList->Add( H_beta_vs_pf );
+  pid_HList->Add( H_ztar_diff);
+  pid_HList->Add( H_zE);
   
   //--------------------
   // Kinematics Histos
@@ -1106,106 +1166,151 @@ void e4nu_analyzer::EventLoop()
 	Em_nuc    = nu - Tx - Tr;  // does not apply for hydrogen elastics
 	Em        = nu + p4_target.M() - p4_hadron.E();
 	Em_recoil = p4_recoil.E();
-	
-	
-	
-	// Fill Histograms
-	
-	//--------------------
-	// Acceptance Histos
-	//--------------------
-	H_the_vs_phe ->Fill(ph_e, th_e);
-	
-	//--------------------
-	// Particle ID Histos
-	//--------------------
-	H_chi2pid_elec->Fill(e_chi2pid);
-	H_chi2pid_had->Fill(h_chi2pid);
-	H_beta_elec->Fill(e_beta);
-	H_beta_had->Fill(h_beta);
-	H_beta_vs_kf ->Fill(kf, e_beta);
-	H_beta_vs_pf ->Fill(pf, h_beta);
-	
-	//--------------------
-	// Kinematics Histos
-	//-------------------
-	
-	// electron kinematics
-	H_kf_vx  ->Fill(kf_vx);
-	H_kf_vy  ->Fill(kf_vy);
-	H_kf_vz  ->Fill(kf_vz);
-	H_kf_vt  ->Fill(kf_vt); 
-	H_kf  ->Fill(kf);
-	H_kfx ->Fill(kf_x); 
-	H_kfy ->Fill(kf_y); 
-	H_kfz ->Fill(kf_z);
-	H_q   ->Fill(q);
-	H_qx  ->Fill(qx);
-	H_qy  ->Fill(qy);
-	H_qz  ->Fill(qz);  
-	H_nu  ->Fill(nu);  
-	H_Q2  ->Fill(Q2);
-	H_xbj ->Fill(xbj); 	
-	H_the ->Fill(th_e);
-	H_phe ->Fill(ph_e);		
-	H_thq ->Fill(th_q);
-	H_phq ->Fill(ph_q);	
-	H_W   ->Fill(W);   
-	H_W2  ->Fill(W2);  	
 
-	
-	// hadron kinematics
-	H_pf_vx  ->Fill(pf_vx);
-	H_pf_vy  ->Fill(pf_vy);
-	H_pf_vz  ->Fill(pf_vz);
-	H_pf_vt  ->Fill(pf_vt); 
-	H_pf   ->Fill(pf);
-	H_pfx  ->Fill(pf_x);
-	H_pfy  ->Fill(pf_y);
-	H_pfz  ->Fill(pf_z);
-	H_thx  ->Fill(th_x);
-	H_MM   ->Fill(MM);  
-	H_MM2  ->Fill(MM2); 
-	H_Em   ->Fill(Em);	  
-	H_Em_nuc    ->Fill(Em_nuc);
-	H_Em_recoil ->Fill(Em_recoil); 
-	H_Pm        ->Fill(Pm);	  
-	H_Pmx_lab   ->Fill(Pmx_lab);
-	H_Pmy_lab   ->Fill(Pmy_lab);
-	H_Pmz_lab   ->Fill(Pmz_lab);
-	H_Pmx_q     ->Fill(Pmx_q);  
-	H_Pmy_q     ->Fill(Pmy_q);  
-	H_Pmz_q     ->Fill(Pmz_q);  
-	H_Tx        ->Fill(Tx);	  
-	H_Tr        ->Fill(Tr);	  
-	H_thxq      ->Fill(th_xq);	  
-	H_thrq      ->Fill(th_rq);	  
-	H_phxq      ->Fill(ph_xq);	  
-	H_phrq      ->Fill(ph_rq);
+	//reaction vertex z difference
+	ztar_diff = kf_vz - pf_vz;  
+
+	//energy transferred to the hadron
+	zE = p4_hadron.E() / nu;
 	
 
-	// 2d kinematics
-	H_kf_vs_the ->Fill(th_e, kf);
+	//--------------DEFINE CUTS--------------------
+	
+	//----PID Cuts----
 
-	// Fill certain kin. variables per region (either detected in Forward or Central Detector, FD - 2000, CD - 4000)
+	//chi2pid on hadrons
+	if(chi2pid_cut_flag) {c_chi2pid = h_chi2pid >=c_chi2pid_min &&   h_chi2pid <=c_chi2pid_max;}
+	else{c_chi2pid=1;}
 
-	//cout << "electrons[0]->getRegion() --> " << electrons[0]->getRegion() << endl;
-	//Forward Detector
-	if(electrons[0]->getRegion()==2000){
-	  //cout <<  "electrons[0]->getSector() --> " <<  electrons[0]->getSector() << endl;
-	  H_W_FD->Fill(W);
-	  if( electrons[0]->getSector()==1 ) {H_W_FD_sec1->Fill(W);}
-	  if( electrons[0]->getSector()==2 ) {H_W_FD_sec2->Fill(W);}
-	  if( electrons[0]->getSector()==3 ) {H_W_FD_sec3->Fill(W);}
-	  if( electrons[0]->getSector()==4 ) {H_W_FD_sec4->Fill(W);}
-	  if( electrons[0]->getSector()==5 ) {H_W_FD_sec5->Fill(W);}
-	  if( electrons[0]->getSector()==6 ) {H_W_FD_sec6->Fill(W);}
+	// z-reaction vertex difference between electron and detected hadron
+	if(ztarDiff_cut_flag) {c_ztarDiff = ztar_diff>=c_ztarDiff_min && ztar_diff<=c_ztarDiff_max;}
+	else{c_ztarDiff=1;}
 
+	c_pidCuts = c_chi2pid&&c_ztarDiff;
+	
+	//----Kinematic Cuts----
+	//Q2
+	if(Q2_cut_flag){c_Q2 = Q2>=c_Q2_min && Q2<=c_Q2_max;}
+	else{c_Q2=1;}
+
+	//Missing Energy, Em
+	if(Em_cut_flag){c_Em = Em_nuc>=c_Em_min && Em_nuc<=c_Em_max;}
+	else{c_Em=1;}
+	
+	//Invariant Mass, W
+	if(W_cut_flag){c_W = W>=c_W_min && W<=c_W_max;}
+	else{c_W=1;}
+
+	c_kinCuts = c_Q2 && c_Em && && c_W;
+
+	// combine all cuts
+	c_allCuts = c_pidCuts && c_kinCuts;
+
+
+	//Apply cuts
+	if( c_allCuts ) {
 	  
-	}
-
+	  // Fill Histograms
+	  
+	  //--------------------
+	  // Acceptance Histos
+	  //--------------------
+	  H_the_vs_phe ->Fill(ph_e, th_e);
+	  
+	  //--------------------
+	  // Particle ID Histos
+	  //--------------------
+	  H_chi2pid_elec->Fill(e_chi2pid);
+	  H_chi2pid_had->Fill(h_chi2pid);
+	  H_beta_elec->Fill(e_beta);
+	  H_beta_had->Fill(h_beta);
+	  H_beta_vs_kf ->Fill(kf, e_beta);
+	  H_beta_vs_pf ->Fill(pf, h_beta);
+	  H_ztar_diff ->Fill(ztar_diff);
+	  H_zE -> Fill(zE);
+	  
+	  //--------------------
+	  // Kinematics Histos
+	  //-------------------
+	  
+	  // electron kinematics
+	  H_kf_vx  ->Fill(kf_vx);
+	  H_kf_vy  ->Fill(kf_vy);
+	  H_kf_vz  ->Fill(kf_vz);
+	  H_kf_vt  ->Fill(kf_vt); 
+	  H_kf  ->Fill(kf);
+	  H_kfx ->Fill(kf_x); 
+	  H_kfy ->Fill(kf_y); 
+	  H_kfz ->Fill(kf_z);
+	  H_q   ->Fill(q);
+	  H_qx  ->Fill(qx);
+	  H_qy  ->Fill(qy);
+	  H_qz  ->Fill(qz);  
+	  H_nu  ->Fill(nu);  
+	  H_Q2  ->Fill(Q2);
+	  H_xbj ->Fill(xbj); 	
+	  H_the ->Fill(th_e);
+	  H_phe ->Fill(ph_e);		
+	  H_thq ->Fill(th_q);
+	  H_phq ->Fill(ph_q);	
+	  H_W   ->Fill(W);   
+	  H_W2  ->Fill(W2);  	
+	  
+	  
+	  // hadron kinematics
+	  H_pf_vx  ->Fill(pf_vx);
+	  H_pf_vy  ->Fill(pf_vy);
+	  H_pf_vz  ->Fill(pf_vz);
+	  H_pf_vt  ->Fill(pf_vt); 
+	  H_pf   ->Fill(pf);
+	  H_pfx  ->Fill(pf_x);
+	  H_pfy  ->Fill(pf_y);
+	  H_pfz  ->Fill(pf_z);
+	  H_thx  ->Fill(th_x);
+	  H_MM   ->Fill(MM);  
+	  H_MM2  ->Fill(MM2); 
+	  H_Em   ->Fill(Em);	  
+	  H_Em_nuc    ->Fill(Em_nuc);
+	  H_Em_recoil ->Fill(Em_recoil); 
+	  H_Pm        ->Fill(Pm);	  
+	  H_Pmx_lab   ->Fill(Pmx_lab);
+	  H_Pmy_lab   ->Fill(Pmy_lab);
+	  H_Pmz_lab   ->Fill(Pmz_lab);
+	  H_Pmx_q     ->Fill(Pmx_q);  
+	  H_Pmy_q     ->Fill(Pmy_q);  
+	  H_Pmz_q     ->Fill(Pmz_q);  
+	  H_Tx        ->Fill(Tx);	  
+	  H_Tr        ->Fill(Tr);	  
+	  H_thxq      ->Fill(th_xq);	  
+	  H_thrq      ->Fill(th_rq);	  
+	  H_phxq      ->Fill(ph_xq);	  
+	  H_phrq      ->Fill(ph_rq);
+	  
+	  
+	  // 2d kinematics
+	  H_kf_vs_the ->Fill(th_e, kf);
+	  
+	  // Fill certain kin. variables per region (either detected in Forward or Central Detector, FD - 2000, CD - 4000)
+	  
+	  //cout << "electrons[0]->getRegion() --> " << electrons[0]->getRegion() << endl;
+	  //Forward Detector
+	  if(electrons[0]->getRegion()==2000){
+	    //cout <<  "electrons[0]->getSector() --> " <<  electrons[0]->getSector() << endl;
+	    H_W_FD->Fill(W);
+	    if( electrons[0]->getSector()==1 ) {H_W_FD_sec1->Fill(W);}
+	    if( electrons[0]->getSector()==2 ) {H_W_FD_sec2->Fill(W);}
+	    if( electrons[0]->getSector()==3 ) {H_W_FD_sec3->Fill(W);}
+	    if( electrons[0]->getSector()==4 ) {H_W_FD_sec4->Fill(W);}
+	    if( electrons[0]->getSector()==5 ) {H_W_FD_sec5->Fill(W);}
+	    if( electrons[0]->getSector()==6 ) {H_W_FD_sec6->Fill(W);}
+	    
+	    
+	  }
+	  
+	} // end analysis cuts
+	
       } // end final state particle requirement
-
+      
       
       
      

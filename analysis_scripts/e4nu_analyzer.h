@@ -20,6 +20,7 @@ class e4nu_analyzer
   // function prototypes
   void SetParticleMass(); 
   void SetHistBins();
+  void SetCuts();
   void CreateHist();
   void CreateTree();
   void EventLoop();
@@ -75,6 +76,48 @@ class e4nu_analyzer
   TLorentzVector p4_q; 
   TLorentzVector p4_recoil; // recoil system 4-momenta (usually, undetected)
 
+   //----------DEFINE CUT VARIABLES ---------
+
+  //-------PID cuts-------
+
+  // chi2_pid (for the hadron)
+  Bool_t chi2pid_cut_flag;
+  Bool_t c_chi2pid;
+  Double_t c_chi2pid_min;
+  Double_t c_chi2pid_max;
+ 
+  // Z-Reaction Vertex Difference Cut
+  Bool_t ztarDiff_cut_flag;
+  Bool_t c_ztarDiff;
+  Double_t c_ztarDiff_min;
+  Double_t c_ztarDiff_max;
+
+  //---------Kinematics Cuts----------
+
+  //4-Momentum Transfers
+  Bool_t Q2_cut_flag;
+  Bool_t c_Q2;
+  Double_t c_Q2_min;
+  Double_t c_Q2_max;
+
+  //Missing Energy
+  Bool_t Em_cut_flag;
+  Bool_t c_Em;
+  Double_t c_Em_min;
+  Double_t c_Em_max;
+
+  //Invariant Mass, W
+  Bool_t W_cut_flag;
+  Bool_t c_W;
+  Double_t c_W_min;
+  Double_t c_W_max;
+
+
+  // combined cuts variables
+  Bool_t c_accpCuts;
+  Bool_t c_pidCuts;
+  Bool_t c_kinCuts;
+  Bool_t c_allCuts;
   
   // declare histogram bining variables
 
@@ -88,6 +131,14 @@ class e4nu_analyzer
   Double_t beta_nbins;
   Double_t beta_xmin;
   Double_t beta_xmax;
+
+  Double_t ztar_diff_nbins;
+  Double_t ztar_diff_xmin;
+  Double_t ztar_diff_xman;
+
+  Double_t zE_nbins;
+  Double_t zE_xmin;
+  Double_t zE_xmax;
   
   //-----------------------------
   //Kinematics Histograms Bins
@@ -305,6 +356,9 @@ class e4nu_analyzer
   Double_t ph_xq;                 //Out-of-plane angle between detected particle and q [rad]   
   Double_t ph_rq;                 //Out-of-plane anfle between recoil system and q [rad]
  
+  //user-defined variables
+  Double_t ztar_diff; // difference between the z-vertex component between scattered electron and detected hadron
+  Double_t z_pi;  // energy of the pion divided by transferred energy E_pi / nu (assuming detected hadron is a pion)
 
   // --- declare histograms ---
   
@@ -322,10 +376,13 @@ class e4nu_analyzer
   TH1F *H_beta_had;
   TH2F *H_beta_vs_kf;
   TH2F *H_beta_vs_pf;
+  TH1F *H_ztar_diff;
+  TH1F *H_zE;
   
   //--------------------
   // Kinematics Histos
   //-------------------
+
   
   // electron
   TH1F *H_kf_vx;

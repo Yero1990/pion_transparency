@@ -1,0 +1,46 @@
+#--------------------------------------------
+#------Basic Input Cuts Parameter File-------
+#--------------------------------------------
+
+#------TURN BASIC CUTS FLAG ON/OFF------
+# TRUE (ON) = 1, FALSE (OFF) = 0
+
+
+#==========
+# PID Cuts
+#==========
+
+# chi2pid on detected hadron
+chi2pid_cut_flag = 1
+c_chi2pid_min = -2.5
+c_chi2pid_max = 2.5
+
+# diff. between z-reaction vertex of electrin and hadron
+ztarDiff_cut_flag = 0
+c_ztarDiff_min = -2.
+c_ztarDiff_max = 2.
+
+# energy transferred to the pion
+# need to add cut eventually . . .
+
+#=================
+# Kinematics Cuts
+#=================
+
+# 4-momentum transfer [GeV^2]
+Q2_cut_flag = 0
+c_Q2_min = 1.
+c_Q2_max = 3.
+
+# nuclear missing energy [GeV]
+# Em_nuc = nu - T_detected - T_recoil
+Em_cut_flag = 0
+c_Em_min = -0.05
+c_Em_max = 0.08
+
+# invariant mass [GeV]
+W_cut_flag = 0
+c_W_min = 0.85
+c_W_min = 1.05
+
+# missing mass cut
