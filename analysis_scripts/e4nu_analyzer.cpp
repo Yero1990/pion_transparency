@@ -1236,7 +1236,7 @@ void e4nu_analyzer::EventLoop()
 	  H_beta_vs_pf ->Fill(pf, h_beta);
 	  H_ztar_diff ->Fill(ztar_diff);
 	  H_zE -> Fill(zE);
-	  H_pf_vs_thxq ->Fill(thxq, pf);
+	  H_pf_vs_thxq ->Fill(th_xq, pf);
 	    
 	  //--------------------
 	  // Kinematics Histos
