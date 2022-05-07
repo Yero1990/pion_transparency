@@ -23,7 +23,7 @@ ztar_diff_nbins = 100
 ztar_diff_xmin = -15.
 ztar_diff_xmax = 15.
 
-# energy transferred to pion
+# fraction of energy transferred to detected hadron ( E_had / nu )
 zE_nbins = 100
 zE_xmin = 0.
 zE_xmax = 1.
@@ -178,8 +178,8 @@ thx_xmax = 180.
 
 # Missing Mass (Undetected Recoil System Mass)
 MM_nbins = 100
-MM_xmin = -5.
-MM_xmax = 5.
+MM_xmin = -0.5
+MM_xmax = 2.
 
 # Missing Mass Squared
 MM2_nbins = 100  
@@ -188,8 +188,8 @@ MM2_xmax = 10.
 
 # Missing Energy
 Em_nbins = 100
-Em_xmin = -10
-Em_xmax = 10
+Em_xmin = -1
+Em_xmax = 5
 
 # Missing (Recoil) Momentum
 Pm_nbins = 100

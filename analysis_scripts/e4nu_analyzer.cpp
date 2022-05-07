@@ -107,6 +107,7 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   H_beta_vs_pf = NULL;
   H_ztar_diff = NULL;
   H_zE = NULL;
+  H_pf_vs_thxq = NULL;
   
   //--------------------
   // Kinematics Histos
@@ -218,6 +219,7 @@ e4nu_analyzer::~e4nu_analyzer()
     delete H_beta_vs_pf; H_beta_vs_pf = NULL;
     delete H_ztar_diff; H_ztar_diff = NULL;
     delete H_zE; H_zE = NULL;
+    delete H_pf_vs_thxq; H_pf_vs_thxq = NULL;
     
     //--------------------
     // Kinematics Histos
@@ -634,7 +636,8 @@ void e4nu_analyzer::CreateHist()
 
   // fraction of the total energy transferred to the pion Epi / nu
   H_zE = new TH1F("H_zE", Form("Energy Transferred to %s, E_{h}/#nu; E_{h}/#nu; Counts", det_had.Data()), zE_nbins, zE_xmin, zE_xmax);
-    
+  H_pf_vs_thxq = new TH2F("H_pf_vs_thxq", Form("%s p_{f} vs. #theta_{xq}", det_had.Data()), thxq_nbins, thxq_xmin, thxq_xmax,  pf_nbins, pf_xmin, pf_xmax);
+
   //--------------------
   // Kinematics Histos
   //-------------------
@@ -724,6 +727,7 @@ void e4nu_analyzer::CreateHist()
   pid_HList->Add( H_beta_vs_pf );
   pid_HList->Add( H_ztar_diff);
   pid_HList->Add( H_zE);
+  pid_HList->Add( H_pf_vs_thxq );
   
   //--------------------
   // Kinematics Histos
@@ -1161,9 +1165,14 @@ void e4nu_analyzer::EventLoop()
 	Tx =  p4_hadron.E() - p4_hadron.M();
 	Tr =  p4_recoil.E() - p4_recoil.M();
 	
-	// missing energy calculations
-	Em_nuc    = nu - Tx - Tr;  // does not apply for hydrogen elastics
-	Em        = nu + p4_target.M() - p4_hadron.E();
+	// ------- missing energy calculations -------
+
+	// does not apply for hydrogen elastics (definition for electro-breakup of nucleons)
+	// --> mass diff. between free and bounf nucleons
+	Em_nuc    = nu - Tx - Tr;
+	
+	// definition for electro-production reactions (virtual photon hits quark in nucleon leading to electro-production of other particles)
+	Em        = nu + p4_target.M() - p4_hadron.E(); 
 	Em_recoil = p4_recoil.E();
 
 	//reaction vertex z difference
@@ -1192,11 +1201,10 @@ void e4nu_analyzer::EventLoop()
 	if(Q2_cut_flag){c_Q2 = Q2>=c_Q2_min && Q2<=c_Q2_max;}
 	else{c_Q2=1;}
 
-	//Missing Energy, Em
-	if(Em_cut_flag){c_Em = Em_nuc>=c_Em_min && Em_nuc<=c_Em_max;}
+	//Missing Energy, Em (assuming electro-production or H(e,e'p) )
+	if(Em_cut_flag){c_Em = Em>=c_Em_min && Em<=c_Em_max;}
 	else{c_Em=1;}
-	
-	
+		
 	//Invariant Mass, W
 	if(W_cut_flag){c_W = W>=c_W_min && W<=c_W_max;}
 	else{c_W=1;}
@@ -1228,7 +1236,8 @@ void e4nu_analyzer::EventLoop()
 	  H_beta_vs_pf ->Fill(pf, h_beta);
 	  H_ztar_diff ->Fill(ztar_diff);
 	  H_zE -> Fill(zE);
-	  
+	  H_pf_vs_thxq ->Fill(thxq, pf);
+	    
 	  //--------------------
 	  // Kinematics Histos
 	  //-------------------

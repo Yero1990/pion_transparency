@@ -378,7 +378,7 @@ class e4nu_analyzer
   TH2F *H_beta_vs_pf;
   TH1F *H_ztar_diff;
   TH1F *H_zE;
-  
+  TH2F *H_pf_vs_thxq;  // detected hadron momentum (pf) vs. hadron angle relative to q-vector (th_xq)
   //--------------------
   // Kinematics Histos
   //-------------------
