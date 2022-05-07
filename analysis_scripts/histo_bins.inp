@@ -15,7 +15,7 @@ chi2_xmax = 10
 
 # beta
 beta_nbins = 100
-beta_xmin = 0.01
+beta_xmin = 0.6
 beta_xmax = 1.5
 
 # ztar vertex difference
@@ -26,7 +26,7 @@ ztar_diff_xmax = 15.
 # fraction of energy transferred to detected hadron ( E_had / nu )
 zE_nbins = 100
 zE_xmin = 0.
-zE_xmax = 1.
+zE_xmax = 1.2
 
 #=============================
 # Kinematics Histograms Bins
@@ -179,17 +179,17 @@ thx_xmax = 180.
 # Missing Mass (Undetected Recoil System Mass)
 MM_nbins = 100
 MM_xmin = -0.5
-MM_xmax = 2.
+MM_xmax = 20.
 
 # Missing Mass Squared
 MM2_nbins = 100  
 MM2_xmin = -10.
-MM2_xmax = 10.
+MM2_xmax = 20.
 
 # Missing Energy
 Em_nbins = 100
 Em_xmin = -1
-Em_xmax = 5
+Em_xmax = 10
 
 # Missing (Recoil) Momentum
 Pm_nbins = 100

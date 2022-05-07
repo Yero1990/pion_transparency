@@ -929,7 +929,7 @@ void e4nu_analyzer::EventLoop()
       Aeep   = electrons.size()==1 && protons.size()>=1 && particles.size()>=2;
       
       // pion+ electro-production A(e,e'pi+) : eN -> e'pi+ (X) :  virtual photon strikes quark in nucleon, producing a pi+ + (continuum of "missing" particles)
-      Aeepip = electrons.size()==1 && pip.size()>=1 && particles.size()>=2;
+      Aeepip = electrons.size()==1 && pip.size()==1 && particles.size()>=2;
 
       // pion- electro-production A(e,e'pi-) : eN -> e'pi+ (X) :  virtual photon strikes quark in nucleon, producing a pi- + (continuum of "missing" particles)
       Aeepim = electrons.size()==1 && pim.size()>=1 && particles.size()>=2;
@@ -1165,7 +1165,7 @@ void e4nu_analyzer::EventLoop()
 	// invariant mass of the recoil system a.k.a. "missing" mass 
 	MM2 = p4_recoil.M2();  
 	MM = p4_recoil.M();
-
+	
 	//if(MM2>0){
 	//  MM = sqrt(MM2); // INVARIANT MASS
 	//}
@@ -1190,7 +1190,10 @@ void e4nu_analyzer::EventLoop()
 	//energy transferred to the hadron
 	zE = p4_hadron.E() / nu;
 	
-
+	//cout << "MM = " << MM << endl;
+	//double MM_v2 = sqrt(Em*Em - Pm*Pm);
+	//cout << "MM_v2 = " << MM_v2 << endl;
+	
 	//--------------DEFINE CUTS--------------------
 	
 	//----PID Cuts----
@@ -1215,7 +1218,11 @@ void e4nu_analyzer::EventLoop()
 	else{c_Q2=1;}
 
 	//Missing Energy, Em (assuming electro-production or H(e,e'p) )
-	if(Em_cut_flag){c_Em = Em>=c_Em_min && Em<=c_Em_max;}
+	
+	if(Em_cut_flag){
+	  if(det_had=="p" && (target!="H") ){c_Em = Em_nuc>=c_Em_min && Em_nuc<=c_Em_max;} // breakup reactions A(e,e'p)
+	  else {c_Em = Em>=c_Em_min && Em<=c_Em_max;} 
+	} 
 	else{c_Em=1;}
 		
 	//Invariant Mass, W

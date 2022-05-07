@@ -11,9 +11,9 @@
 #==========
 
 # chi2pid on detected hadron
-chi2pid_cut_flag = 0
-c_chi2pid_min = -1.5
-c_chi2pid_max = 1.5
+chi2pid_cut_flag = 1
+c_chi2pid_min = -2.5
+c_chi2pid_max = 2.5
 
 # diff. between z-reaction vertex of electron and hadron
 ztarDiff_cut_flag = 0
@@ -21,9 +21,9 @@ c_ztarDiff_min = -0.51
 c_ztarDiff_max = 1.49
 
 # z = E_had/nu (fraction of energy transferred to hadron) Cut
-zE_cut_flag = 1
-zE_min = 0.6
-zE_max = 1.0
+zE_cut_flag = 0
+c_zE_min = 0.6
+c_zE_max = 1.0
 
 #=================
 # Kinematics Cuts
@@ -36,8 +36,8 @@ c_Q2_max = 3.
 
 # nuclear missing energy [GeV]
 Em_cut_flag = 0
-c_Em_min = -0.05
-c_Em_max = 0.08
+c_Em_min = -0.1
+c_Em_max = 0.140
 
 # invariant mass [GeV]
 W_cut_flag = 0
