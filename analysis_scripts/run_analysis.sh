@@ -27,7 +27,7 @@ fi
 if [[ $target == "H" ]]; then
     inFile="/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.00001.hipo";
 elif [[ $target == "D" ]]; then
-    inFile="/work/clas12/rg-m/LD2/prod1.4/dst/recon/015045/rec_clas_015045.evio.00001.hipo";
+    inFile="/work/clas12/rg-m/LD2/prod1.4/dst/recon/015045/rec_clas_015045.evio.*.hipo";
 elif [[ $target == "He4" ]]; then
     inFile="/work/clas12/rg-m/LHe/prod1.4/dst/recon/015133/rec_clas_015133.evio.00001.hipo";
 elif [[ $target == "C12" ]]; then
