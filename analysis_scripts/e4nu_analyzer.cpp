@@ -581,6 +581,11 @@ void e4nu_analyzer::SetCuts()
   ztarDiff_cut_flag = stoi(split(FindString("ztarDiff_cut_flag", input_CutFileName.Data())[0], '=')[1]);
   c_ztarDiff_min = stod(split(FindString("c_ztarDiff_min", input_CutFileName.Data())[0], '=')[1]);
   c_ztarDiff_max = stod(split(FindString("c_ztarDiff_max", input_CutFileName.Data())[0], '=')[1]);
+
+  // z = E_had/nu (fraction of energy transferred to hadron) Cut
+  zE_cut_flag = stoi(split(FindString("zE_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+  c_zE_min = stod(split(FindString("c_zE_min", input_CutFileName.Data())[0], '=')[1]);
+  c_zE_max = stod(split(FindString("c_zE_max", input_CutFileName.Data())[0], '=')[1]);
   
   //-----Kinematics Cuts------
   
@@ -598,7 +603,11 @@ void e4nu_analyzer::SetCuts()
   W_cut_flag = stoi(split(FindString("W_cut_flag", input_CutFileName.Data())[0], '=')[1]);
   c_W_min = stod(split(FindString("c_W_min", input_CutFileName.Data())[0], '=')[1]);
   c_W_max = stod(split(FindString("c_W_max", input_CutFileName.Data())[0], '=')[1]);
-  
+
+  //Missing Mass, MM [GeV]
+  MM_cut_flag = stoi(split(FindString("MM_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+  c_MM_min = stod(split(FindString("c_MM_min", input_CutFileName.Data())[0], '=')[1]);
+  c_MM_max = stod(split(FindString("c_MM_max", input_CutFileName.Data())[0], '=')[1]);
 }
 
 //_______________________________________________________________________________
@@ -1194,7 +1203,11 @@ void e4nu_analyzer::EventLoop()
 	if(ztarDiff_cut_flag) {c_ztarDiff = ztar_diff>=c_ztarDiff_min && ztar_diff<=c_ztarDiff_max;}
 	else{c_ztarDiff=1;}
 
-	c_pidCuts = c_chi2pid&&c_ztarDiff;
+	// z = E_had/nu (fraction of energy transferred to hadron) Cut
+	if(zE_cut_flag) {c_zE = zE>=c_zE_min && zE<=c_zE_max;}
+	else{c_zE=1;}
+	
+	c_pidCuts = c_chi2pid && c_ztarDiff && c_zE;
 	
 	//----Kinematic Cuts----
 	//Q2
@@ -1209,7 +1222,11 @@ void e4nu_analyzer::EventLoop()
 	if(W_cut_flag){c_W = W>=c_W_min && W<=c_W_max;}
 	else{c_W=1;}
 
-	c_kinCuts = c_Q2&&c_Em&&c_W;
+	//Missing Mass, MM
+	if(MM_cut_flag){c_MM = MM>=c_MM_min && MM<=c_MM_max;}
+	else{c_MM=1;}
+	
+	c_kinCuts = c_Q2 && c_Em && c_W && c_MM;
 	
 	// combine all cuts
 	c_allCuts = c_pidCuts && c_kinCuts;

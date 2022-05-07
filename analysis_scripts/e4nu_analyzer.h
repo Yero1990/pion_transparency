@@ -92,6 +92,12 @@ class e4nu_analyzer
   Double_t c_ztarDiff_min;
   Double_t c_ztarDiff_max;
 
+  // z = E_had/nu (fraction of energy transferred to hadron) Cut
+  Bool_t zE_cut_flag;
+  Bool_t c_zE;
+  Double_t c_zE_min;
+  Double_t c_zE_max;
+  
   //---------Kinematics Cuts----------
 
   //4-Momentum Transfers
@@ -112,6 +118,11 @@ class e4nu_analyzer
   Double_t c_W_min;
   Double_t c_W_max;
 
+  //Missing Mass cut
+  Bool_t MM_cut_flag;
+  Bool_t c_MM;
+  Double_t c_MM_min;
+  Double_t c_MM_max;
 
   // combined cuts variables
   Bool_t c_accpCuts;
