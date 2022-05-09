@@ -33,6 +33,8 @@ b)  pion momentum vs th_pi-q
 if we can do a similar missing mass cut as in: https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.99.242502
 to exclude multi-pion events (i.e., cut out events in which pion re-scatters due to FSI)
 
+Then plot the missing mass differente: MA - Mx,  where MA is the mass of the nucleus (exact number) and Mx is the
+missing mass definition, to make it easier to apply a cut and plot (for a variety of targets), rather than an absolute missing mass.
 
 Take ratios of:
 ar40/he4 should be much less model-dependent than the ratio of ar40/d2 or c12/d2 
