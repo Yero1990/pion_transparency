@@ -317,7 +317,9 @@ void e4nu_analyzer::SetParticleMass()
   MKm  = db->GetParticle(-321)->Mass();  // K-
 
   // target mass (amu -> GeV) (obtained from NIST: https://www.nist.gov/pml/atomic-weights-and-isotopic-compositions-relative-atomic-masses)
-  MD     = 2.01410177812 * amu2GeV ;
+
+  MH2     = 1.00794       * amu2GeV ;
+  MD2     = 2.01410177812 * amu2GeV ;
   MHe4   = 4.00260325413 * amu2GeV ;
   MC12   = 12.0000000    * amu2GeV ;
   MCa40  = 39.962590863  * amu2GeV ;
@@ -326,8 +328,8 @@ void e4nu_analyzer::SetParticleMass()
   MSn120 = 119.90220163  * amu2GeV ;
 
   // set target mass
-  if      (target=="H")     { Mt = MP     ;} 
-  else if (target=="D")     { Mt = MD     ;}
+  if      (target=="H")     { Mt = MH2     ;} 
+  else if (target=="D")     { Mt = MD2     ;}
   else if (target=="He4")   { Mt = MHe4   ;}
   else if (target=="C12")   { Mt = MC12   ;}
   else if (target=="Ca40")  { Mt = MCa40  ;}
@@ -1094,6 +1096,7 @@ void e4nu_analyzer::EventLoop()
 	 
 	// set 4-momenta of beam, target, scattered electron and primary hadron detected 
 	p4_beam.SetXYZM(0., 0., Eb, me);
+	p4_proton.SetXYZM(0., 0., 0., MH); //only for calculation of invariant mass W
 	p4_target.SetXYZM(0.,0.,0., Mt);
 	p4_electron.SetXYZM(kf_x, kf_y, kf_z, me);
 	p4_hadron.SetXYZM(pf_x, pf_y, pf_z, Mh);		
@@ -1115,8 +1118,12 @@ void e4nu_analyzer::EventLoop()
 	ph_e = electrons[0]->getPhi()*TMath::RadToDeg();
 
 	//invariant mass squared 
-	W2 = (p4_q + p4_target).M2();
-	W =  (p4_q + p4_target).M();
+	//W2 = (p4_q + p4_target).M2();
+	//W =  (p4_q + p4_target).M();  //p4_nucleon (proton) use mass of proton
+
+	W2 = (p4_q + p4_proton).M2();
+	W =  (p4_q + p4_proton).M();
+	
 	//if(W2>0){
 	//  W = sqrt(W2); // INVARIANT MASS
 	//}

@@ -52,6 +52,7 @@ class e4nu_analyzer
   Double_t MKm;
   
   // declare target particle masses
+  Double_t MH;
   Double_t MD;
   Double_t MHe4;
   Double_t MC12;
@@ -71,6 +72,7 @@ class e4nu_analyzer
   // declare particles 4-momentum 
   TLorentzVector p4_beam;
   TLorentzVector p4_target;
+  TLorentzVector p4_proton; //4-momentum of hydrogen (proton) for W calculation
   TLorentzVector p4_electron;
   TLorentzVector p4_hadron;
   TLorentzVector p4_q; 

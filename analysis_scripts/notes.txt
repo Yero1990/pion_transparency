@@ -1,0 +1,39 @@
+---------------------------
+May 09 : Meeting w/ Larry
+---------------------------
+
+** Ask Rafaella about how to recover initial events from GEMC (for example from GENIE input)
+
+
+** As a start to take ratios, I can get total charge from run db
+(recovering events with beam time cuts will be more precise, later on -- meeting w/ Justin, Nathan and Rafaella tomorrow
+to talk about fixing the scaler issue)
+
+
+** Ask tracking experts, How does the calculation of chi2 vary with momentum?
+Since we see a significant effect pion momentum with different chi2pid cuts? How many deg. of freedom does chi2 have?
+
+
+** Kinematic Plots to make
+1) ztar_elec vs phi_e   
+
+2) dz_tar (ztar_elec-ztar_pion) vs. phi_e
+(there should be a sinusoidal dependence, since dz_tar is not aligned,
+when we look at opposite sector of electron, we should see a shift in the opposite direction)
+
+3) plot Q2 vs W
+
+Look at:
+a)  (E_pion / nu) vs th_pi-q
+b)  pion momentum vs th_pi-q
+
+ ... for different bins in Q2 and W
+
+4) We can try to simulate multi-pion reactions (in Genie) and pass it thru GEMC to see
+if we can do a similar missing mass cut as in: https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.99.242502
+to exclude multi-pion events (i.e., cut out events in which pion re-scatters due to FSI)
+
+
+Take ratios of:
+ar40/he4 should be much less model-dependent than the ratio of ar40/d2 or c12/d2 
+( we need at leas the total charge, which can be obtained from rcdb to 1st order )
