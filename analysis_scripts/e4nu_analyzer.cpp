@@ -959,7 +959,7 @@ void e4nu_analyzer::EventLoop()
 	  pf   = protons[0]->par()->getP();
 	  
 	  // knocked-out protons beta
-	  h_beta = protons[0]->par()->getBeta();
+	  h_beta = protons[0]->par()->getBeta();  //Florian suggests to calculate beta as p/E
 	  h_chi2pid = protons[0]->par()->getChi2Pid();
 	  
 	  // detected particle in-plane angle
@@ -1330,7 +1330,8 @@ void e4nu_analyzer::EventLoop()
 	  // 2d kinematics
 	  H_kf_vs_the ->Fill(th_e, kf);
 	  
-	  // Fill certain kin. variables per region (either detected in Forward or Central Detector, FD - 2000, CD - 4000)
+	  // Fill certain kin. variables per region (either detected in Forward or Central Detector, FD: (>=2000 && <4000), CD () )
+
 	  
 	  //cout << "electrons[0]->getRegion() --> " << electrons[0]->getRegion() << endl;
 	  //Forward Detector

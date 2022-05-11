@@ -2,16 +2,23 @@
 May 09 : Meeting w/ Larry
 ---------------------------
 
-** Ask Rafaella about how to recover initial events from GEMC (for example from GENIE input)
+** Ask Rafaella about how to recover initial events from GEMC (for example from GENIE input) Events that start at the
+reaction vertex, get propagated throughout the detectors, and then reconstructed back to the target. But is the initial
+thrown events recoverable? Maybe stored in a vector somewhere? 
 
+** Ask tracking experts, How does the calculation of chi2 vary with momentum? Is there a momentum dependence in the chi2pid definition?
+Since we see a significant effect pion momentum with different chi2pid cuts? How many deg. of freedom does chi2 have?
+
+** Is it a correct interpretation to say: cutting out the tails of the chi2pid histo removes apparent "good" events in the
+reconstructed track vertex-z difference between electron-hadron. These "apparently good" events might actually correspond
+to other particle mis-identified as a pion which reconstruct to the same reaction vertex as the electron.
+So a decrease in the reaction vertex peak might actually correspond to subtraction of mis-identified pions.
 
 ** As a start to take ratios, I can get total charge from run db
 (recovering events with beam time cuts will be more precise, later on -- meeting w/ Justin, Nathan and Rafaella tomorrow
 to talk about fixing the scaler issue)
 
 
-** Ask tracking experts, How does the calculation of chi2 vary with momentum?
-Since we see a significant effect pion momentum with different chi2pid cuts? How many deg. of freedom does chi2 have?
 
 
 ** Kinematic Plots to make
