@@ -59,6 +59,9 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   /* hipo file locations:
      "/volatile/clas12/rg-m/LAr/prod1.0/dst/recon/015672/rec_clas_015672.evio.*.hipo"  
      "/work/clas12/rg-m/LH2/prod1.4/dst/recon/015024/rec_clas_015024.evio.0001*.hipo"
+
+     //July 01, 2022: New location of RGM data
+     /cache/hallb/scratch/rg-m
   */
   
   /*
@@ -72,8 +75,8 @@ e4nu_analyzer::e4nu_analyzer(TString inHIPO_fname="", TString outROOT_fname="", 
   // load CLAS12 databases / Chain multiple .hipo files
   // the user can give multiple .hipo file inputs to be chained,
   // i.e., path/to/run/*.hipo (all hipo files of a given run)
-  clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
-  clas12databases::SetRCDBRootConnection("rcdb.root");
+  //clas12databases::SetCCDBLocalConnection("ccdb.sqlite");
+  // clas12databases::SetRCDBRootConnection("rcdb.root");
 
   SetParticleMass();
   
